@@ -33,6 +33,8 @@ style: |
 |[Jupyter Lab](http://175.6.7.87:25888/)||[My HomePage](lizhemin.top)|[workflowy](https://workflowy.com/)|
 ||[万词王](https://linggle.com/)|[面包树找资源](https://mianbaoshu.cc/)|[AirTable](https://airtable.com/)|
 ||[Linggle](https://linggle.com/)|[快搜](https://search.chongbuluo.com/)|[语雀](https://www.yuque.com/dashboard)|
+|||[个人网页托管](https://airtable.com/shroRlDoKBYs0WjHF)||
+
 
 
 ---
