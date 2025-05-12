@@ -3,4 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --text-color: #2c3e50;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            font-family: "Arial", sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+
+        .section {
+            padding: 50px 0;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-links a {
+            color: var(--primary-color);
+            margin: 0 10px;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .publication-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 3px solid var(--accent-color);
+            background-color: var(--light-bg);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header text-center">
+        <div class="container">
+            <img src="https://via.placeholder.com/150" alt="Profile Photo" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
+            <h1 class="display-4">Your Name</h1>
+            <p class="lead">Position / Research Area</p>
+            <div class="social-links mt-4">
+                <a href="#"><i class="fab fa-google-scholar"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- About Me -->
+        <section class="section">
+            <h2 class="section-title">About Me</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <p>Add your personal introduction and research interests here. Include your research directions, major achievements, and other relevant information.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Areas -->
+        <section class="section bg-light">
+            <h2 class="section-title">Research Areas</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Research Area 1</h5>
+                            <p class="card-text">Detailed description of your first research area.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Research Area 2</h5>
+                            <p class="card-text">Detailed description of your second research area.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Research Area 3</h5>
+                            <p class="card-text">Detailed description of your third research area.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Publications -->
+        <section class="section">
+            <h2 class="section-title">Publications</h2>
+            <div class="publication-item">
+                <h5>Publication Title 1</h5>
+                <p class="text-muted">Authors, Journal Name, Year</p>
+                <p>Abstract or brief description...</p>
+            </div>
+            <div class="publication-item">
+                <h5>Publication Title 2</h5>
+                <p class="text-muted">Authors, Journal Name, Year</p>
+                <p>Abstract or brief description...</p>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section class="section bg-light">
+            <h2 class="section-title">Education</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Degree Name</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">University Name</h6>
+                            <p class="card-text">Time Period</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>© 2024 Your Name. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
 
