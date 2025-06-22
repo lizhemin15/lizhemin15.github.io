@@ -124,7 +124,36 @@ jobs:
           console.log('成功生成 blogs.json');
           "
 
+      - name: Verify blogs.json generation
+        run: |
+          echo "检查 blogs.json 文件是否生成..."
+          if [ -f "./blogs.json" ]; then
+            echo "✓ blogs.json 文件已生成"
+            echo "文件大小: $(stat -c%s ./blogs.json) bytes"
+            echo "文件内容:"
+            cat ./blogs.json
+          else
+            echo "✗ blogs.json 文件未找到"
+            exit 1
+          fi
+          
+          echo ""
+          echo "检查当前目录所有文件..."
+          ls -la
+
       - uses: actions/configure-pages@v4
+
+      - name: Prepare deployment files
+        run: |
+          echo "准备部署文件..."
+          echo "当前目录内容："
+          find . -maxdepth 2 -type f -name "*.json" -o -name "*.html" -o -name "*.md" | head -20
+          
+          echo ""
+          echo "验证关键文件存在："
+          [ -f "./index.html" ] && echo "✓ index.html 存在" || echo "✗ index.html 缺失"
+          [ -f "./blogs.json" ] && echo "✓ blogs.json 存在" || echo "✗ blogs.json 缺失"
+          [ -d "./blogs" ] && echo "✓ blogs/ 目录存在" || echo "✗ blogs/ 目录缺失"
 
       - uses: actions/upload-pages-artifact@v3
         with:
