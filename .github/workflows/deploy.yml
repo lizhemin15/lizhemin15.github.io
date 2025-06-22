@@ -26,9 +26,6 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Generate blogs.json
         run: |
           node -e "
@@ -127,14 +124,11 @@ jobs:
           console.log('成功生成 blogs.json');
           "
 
-      - name: Build
-        run: npm run build -- --base /lizhemin15.github.io/
-
       - uses: actions/configure-pages@v4
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: .
 
       - name: Deploy
         id: deployment
