@@ -1,0 +1,108 @@
+# Website Configuration File
+
+# Basic Information
+site:
+  title: "Zhemin Li's Academic Homepage"
+  language: "en-US"
+  favicon: "/favicon.ico"
+
+# Personal Information
+profile:
+  name: "Zhemin Li"
+  avatar: "./src/idphoto.jpeg"
+  title: 
+    - "PhD Student at National University of Defense Technology"
+    - "Computational Mathematics"
+    - "Numerical Algorithms and Applied Research"
+  position: "Computational Mathematics / Information Processing Research"
+  bio: "Dedicated to developing novel numerical algorithms and promoting the integration of theoretical innovation with practical applications"
+
+# Social Links
+social:
+  # - name: "Google Scholar"
+  #   icon: "fas fa-graduation-cap"
+  #   url: "https://scholar.google.com"
+  #   tooltip: "Google Scholar"
+  - name: "GitHub"
+    icon: "fab fa-github"
+    url: "https://github.com/lizhemin15"
+    tooltip: "GitHub"
+  - name: "Email"
+    icon: "fas fa-envelope"
+    url: "mailto:lizhemin@nudt.edu.cn"
+    tooltip: "Email"
+  - name: "ORCID"
+    icon: "fab fa-orcid"
+    url: "https://orcid.org/0000-0001-8390-108X"
+    tooltip: "ORCID"
+  # - name: "LinkedIn"
+  #   icon: "fab fa-linkedin"
+  #   url: "https://linkedin.com"
+  #   tooltip: "LinkedIn"
+
+# Navigation Menu
+navigation:
+  - id: "news"
+    title: "News"
+    icon: "fas fa-newspaper"
+    file: "news.md"
+    default: true
+  - id: "about"
+    title: "About"
+    icon: "fas fa-user"
+    file: "about.md"
+  - id: "publications"
+    title: "Publications"
+    icon: "fas fa-file-alt"
+    file: "publications.md"
+  - id: "blogs"
+    title: "Blogs"
+    icon: "fas fa-blog"
+    file: "blogs.md"
+  - id: "projects"
+    title: "Projects"
+    icon: "fas fa-folder-open"
+    file: "projects.md"
+  - id: "group-members"
+    title: "Team"
+    icon: "fas fa-users"
+    file: "group-members.md"
+
+# Contact Information
+contact:
+  email: "lizhemin@nudt.edu.cn"
+  phone: "+86-731-84574000"
+  office: "Department of Mathematics, National University of Defense Technology"
+  website: "https://www.nudt.edu.cn"
+
+# Theme Configuration
+theme:
+  primary_color: "#2c3e50"
+  secondary_color: "#34495e"
+  accent_color: "#3498db"
+  sidebar_width: "320px"
+  
+# Feature Switches
+features:
+  dark_mode: false
+  search: false
+  comments: false
+  analytics: false
+
+# Third-party Services
+services:
+  google_analytics: ""
+  disqus_shortname: ""
+
+# Page Configuration
+pages:
+  loading_text: "Loading content..."
+  error_title: "Failed to load content"
+  error_message: "Unable to load file"
+  retry_button: "Retry"
+
+# Other Configuration
+misc:
+  copyright: "© 2024 Zhemin Li. All rights reserved."
+  powered_by: "Powered by Academic Homepage Template"
+  markdown_folder: "./contents/" 

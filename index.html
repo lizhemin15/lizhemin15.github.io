@@ -3,180 +3,1923 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Homepage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
+    <title id="page-title">Academic Homepage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Marked.js for markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- js-yaml for YAML parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <!-- KaTeX for math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <style id="dynamic-styles">
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #34495e;
             --accent-color: #3498db;
             --text-color: #2c3e50;
             --light-bg: #f8f9fa;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --sidebar-width: 320px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: "Arial", sans-serif;
+            font-family: "Segoe UI", "Arial", "Microsoft YaHei", sans-serif;
             color: var(--text-color);
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 100px 0;
-            margin-bottom: 50px;
-        }
-
-        .section {
-            padding: 50px 0;
-        }
-
-        .section-title {
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
             left: 0;
-            width: 50px;
-            height: 3px;
-            background-color: var(--accent-color);
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
+        /* Profile section */
+        .profile-section {
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            object-fit: cover;
+            object-position: center 20%;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-photo:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .profile-title {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
         }
 
         .social-links a {
-            color: var(--primary-color);
-            margin: 0 10px;
+            color: white;
             font-size: 1.5rem;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
         }
 
         .social-links a:hover {
             color: var(--accent-color);
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
         }
 
-        .publication-item {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-left: 3px solid var(--accent-color);
-            background-color: var(--light-bg);
+        /* Navigation menu */
+        .nav-menu {
+            padding: 20px 0;
         }
+
+        .nav-item {
+            margin: 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            background: none;
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding-left: 40px;
+        }
+
+        .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            border-right: 4px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-color);
+        }
+
+        /* Main content area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background-color: white;
+            position: relative;
+        }
+
+        .content-wrapper {
+            padding: 40px 50px;
+            max-width: 1000px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 0;
+            color: var(--secondary-color);
+        }
+
+        .loading i {
+            font-size: 3rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Markdown content styles */
+        .markdown-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .markdown-content h1 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 15px;
+            margin: 0 0 30px 0;
+            font-size: 2.5rem;
+        }
+
+        .markdown-content h2 {
+            color: var(--secondary-color);
+            margin: 35px 0 20px 0;
+            position: relative;
+            padding-left: 25px;
+            font-size: 1.8rem;
+        }
+
+        .markdown-content h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            border-radius: 3px;
+        }
+
+        .markdown-content h3 {
+            color: var(--text-color);
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid var(--accent-color);
+            background: linear-gradient(135deg, var(--light-bg), #ffffff);
+            padding: 20px 25px;
+            margin: 25px 0;
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .markdown-content code {
+            background-color: var(--light-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: var(--primary-color);
+        }
+
+                 .markdown-content pre {
+             background-color: #f6f8fa;
+             border: 1px solid #e1e4e8;
+             border-radius: 8px;
+             padding: 20px;
+             overflow-x: auto;
+             margin: 20px 0;
+             position: relative;
+         }
+
+         .markdown-content pre code {
+             background: none;
+             padding: 0;
+             color: inherit;
+         }
+
+         /* Code copy button */
+         .code-block-wrapper {
+             position: relative;
+         }
+
+         .copy-code-btn {
+             position: absolute;
+             top: 8px;
+             right: 8px;
+             background: rgba(255, 255, 255, 0.8);
+             border: 1px solid #d1d5da;
+             border-radius: 4px;
+             padding: 4px 8px;
+             font-size: 12px;
+             cursor: pointer;
+             opacity: 0;
+             transition: opacity 0.3s ease;
+             z-index: 10;
+         }
+
+         .code-block-wrapper:hover .copy-code-btn {
+             opacity: 1;
+         }
+
+         .copy-code-btn:hover {
+             background: #f6f8fa;
+             border-color: #586069;
+         }
+
+         .copy-code-btn.copied {
+             background: #28a745;
+             color: white;
+             border-color: #28a745;
+         }
+
+         /* Improved table styles */
+         .markdown-content table {
+             border-collapse: collapse;
+             width: 100%;
+             margin: 20px 0;
+             border: 1px solid #e1e4e8;
+             border-radius: 8px;
+             overflow: hidden;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+         }
+
+         .markdown-content th,
+         .markdown-content td {
+             border: 1px solid #e1e4e8;
+             padding: 12px 16px;
+             text-align: left;
+         }
+
+         .markdown-content th {
+             background-color: var(--light-bg);
+             font-weight: 600;
+             color: var(--primary-color);
+             border-bottom: 2px solid var(--accent-color);
+         }
+
+         .markdown-content tr:nth-child(even) {
+             background-color: #f8f9fa;
+         }
+
+         .markdown-content tr:hover {
+             background-color: #f1f8ff;
+         }
+
+         /* Math formula styles */
+         .katex {
+             font-size: 1.1em;
+         }
+
+         .katex-display {
+             margin: 20px 0;
+             text-align: center;
+         }
+
+         /* Selectable math formulas (for copying original text) */
+         .math-container {
+             position: relative;
+             display: inline-block;
+         }
+
+         .math-source {
+             display: none;
+             position: absolute;
+             top: 100%;
+             left: 0;
+             background: #2d3748;
+             color: white;
+             padding: 4px 8px;
+             border-radius: 4px;
+             font-size: 12px;
+             white-space: nowrap;
+             z-index: 1000;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+         }
+
+         .math-container:hover .math-source {
+             display: block;
+         }
+
+        .markdown-content ul, .markdown-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .markdown-content li {
+            margin: 10px 0;
+        }
+
+        .markdown-content strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .markdown-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content a:hover {
+            border-bottom-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .markdown-content p {
+            margin: 15px 0;
+        }
+
+        .markdown-content hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+            margin: 30px 0;
+        }
+
+        /* Enhanced project gallery styles */
+        .projects-gallery .project-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .projects-gallery .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+            z-index: 1;
+        }
+
+        .projects-gallery .project-card:hover::before {
+            left: 100%;
+        }
+
+        .projects-gallery .tag {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .projects-gallery .tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.4s ease;
+        }
+
+        .projects-gallery .tag:hover::after {
+            left: 100%;
+        }
+
+        .projects-gallery .project-image:before {
+            content: '🚀';
+            font-size: 3rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .projects-gallery .project-card[data-category="algorithms"] .project-image:before {
+            content: '⚙️';
+        }
+
+        .projects-gallery .project-card[data-category="applications"] .project-image:before {
+            content: '🔬';
+        }
+
+        .projects-gallery .project-card[data-category="materials"] .project-image:before {
+            content: '🧪';
+        }
+
+        .projects-gallery .project-card[data-category="security"] .project-image:before {
+            content: '🛡️';
+        }
+
+        /* Error message */
+        .error-message {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #f5c6cb;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-wrapper {
+                padding: 20px 25px;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .profile-photo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .profile-name {
+                font-size: 1.5rem;
+            }
+
+            .profile-section {
+                padding: 30px 20px;
+            }
+
+            .nav-link {
+                padding: 12px 20px;
+            }
+
+            .nav-link:hover {
+                padding-left: 30px;
+            }
+
+            .markdown-content h1 {
+                font-size: 2rem;
+            }
+
+            .markdown-content h2 {
+                font-size: 1.5rem;
+            }
+
+            .markdown-content {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content-wrapper {
+                padding: 15px 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .profile-section {
+                padding: 25px 15px;
+            }
+
+            .social-links {
+                gap: 10px;
+            }
+
+            .social-links a {
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Overlay */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+                 .overlay.active {
+             display: block;
+         }
+
+         /* Blog page styles */
+         .blogs-container {
+             max-width: 100%;
+         }
+
+         .blogs-header {
+             margin-bottom: 30px;
+             text-align: center;
+         }
+
+         .blogs-header h1 {
+             color: var(--primary-color);
+             margin-bottom: 15px;
+             font-size: 2.5rem;
+         }
+
+         .search-section {
+             background: var(--light-bg);
+             padding: 25px;
+             border-radius: 12px;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+         }
+
+         .search-box {
+             position: relative;
+         }
+
+         .search-box i {
+             position: absolute;
+             left: 15px;
+             top: 50%;
+             transform: translateY(-50%);
+             color: var(--secondary-color);
+         }
+
+         .search-box input {
+             padding-left: 45px;
+             border: 1px solid #ddd;
+             border-radius: 8px;
+             font-size: 1rem;
+             transition: all 0.3s ease;
+         }
+
+         .search-box input:focus {
+             border-color: var(--accent-color);
+             box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+         }
+
+         .blog-card {
+             background: white;
+             border: 1px solid #e1e4e8;
+             border-radius: 12px;
+             padding: 25px;
+             margin-bottom: 25px;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+         }
+
+         .blog-card:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+             border-color: var(--accent-color);
+         }
+
+         .blog-meta {
+             display: flex;
+             align-items: center;
+             gap: 15px;
+             margin-bottom: 15px;
+             flex-wrap: wrap;
+         }
+
+         .blog-date {
+             color: var(--secondary-color);
+             font-size: 0.9rem;
+             display: flex;
+             align-items: center;
+             gap: 5px;
+         }
+
+         .blog-tag {
+             background: var(--accent-color);
+             color: white;
+             padding: 3px 8px;
+             border-radius: 4px;
+             font-size: 0.8rem;
+             font-weight: 500;
+         }
+
+         .blog-title {
+             color: var(--primary-color);
+             margin-bottom: 15px;
+             font-size: 1.4rem;
+             font-weight: 600;
+             line-height: 1.4;
+         }
+
+         .blog-excerpt {
+             color: var(--text-color);
+             line-height: 1.6;
+             margin-bottom: 15px;
+         }
+
+         .blog-actions {
+             display: flex;
+             justify-content: flex-end;
+         }
+
+         .read-more {
+             color: var(--accent-color);
+             font-weight: 500;
+             display: flex;
+             align-items: center;
+             gap: 5px;
+             transition: all 0.3s ease;
+         }
+
+         .blog-card:hover .read-more {
+             transform: translateX(5px);
+         }
+
+         .search-results {
+             background: rgba(52, 152, 219, 0.1);
+             padding: 10px 15px;
+             border-radius: 6px;
+             border-left: 4px solid var(--accent-color);
+         }
+
+         .no-results {
+             background: var(--light-bg);
+             border-radius: 12px;
+             padding: 40px 20px;
+         }
+
+         /* Single blog post styles */
+         .blog-post {
+             max-width: 100%;
+         }
+
+         .blog-post-header {
+             margin-bottom: 30px;
+             padding-bottom: 20px;
+             border-bottom: 2px solid var(--light-bg);
+         }
+
+         .blog-post-meta {
+             display: flex;
+             align-items: center;
+             gap: 15px;
+             margin-bottom: 20px;
+             flex-wrap: wrap;
+         }
+
+         .blog-post-title {
+             color: var(--primary-color);
+             font-size: 2.2rem;
+             font-weight: bold;
+             line-height: 1.3;
+             margin: 0;
+         }
+
+         .blog-post-content {
+             font-size: 1.1rem;
+             line-height: 1.8;
+         }
+
+         /* Responsive design */
+         @media (max-width: 768px) {
+             .blogs-header h1 {
+                 font-size: 2rem;
+             }
+
+             .search-section {
+                 padding: 20px 15px;
+             }
+
+             .blog-card {
+                 padding: 20px;
+             }
+
+             .blog-title {
+                 font-size: 1.2rem;
+             }
+
+             .blog-post-title {
+                 font-size: 1.8rem;
+             }
+
+             .blog-meta {
+                 flex-direction: column;
+                 align-items: flex-start;
+             }
+         }
+
+         @media (max-width: 576px) {
+             .search-section .row > div {
+                 margin-bottom: 15px;
+             }
+
+             .blog-card {
+                 padding: 15px;
+             }
+
+             .blog-post-title {
+                 font-size: 1.6rem;
+             }
+         }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="header text-center">
-        <div class="container">
-            <img src="https://via.placeholder.com/150" alt="Profile Photo" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
-            <h1 class="display-4">Your Name</h1>
-            <p class="lead">Position / Research Area</p>
-            <div class="social-links mt-4">
-                <a href="#"><i class="fab fa-google-scholar"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-                <a href="#"><i class="fas fa-envelope"></i></a>
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Overlay -->
+    <div class="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <!-- Profile section -->
+        <div class="profile-section">
+            <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Profile Photo" class="profile-photo">
+                            <div id="profile-name" class="profile-name">Loading...</div>
+                <div id="profile-title" class="profile-title">Loading...</div>
+            <div id="social-links" class="social-links">
+                                  <!-- Social links will be dynamically generated by JavaScript -->
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <!-- About Me -->
-        <section class="section">
-            <h2 class="section-title">About Me</h2>
-            <div class="row">
-                <div class="col-md-8">
-                    <p>Add your personal introduction and research interests here. Include your research directions, major achievements, and other relevant information.</p>
-                </div>
-            </div>
-        </section>
+        <!-- Navigation menu -->
+        <nav class="nav-menu" id="nav-menu">
+            <!-- Navigation menu will be dynamically generated by JavaScript -->
+        </nav>
+    </aside>
 
-        <!-- Research Areas -->
-        <section class="section bg-light">
-            <h2 class="section-title">Research Areas</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Research Area 1</h5>
-                            <p class="card-text">Detailed description of your first research area.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Research Area 2</h5>
-                            <p class="card-text">Detailed description of your second research area.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">Research Area 3</h5>
-                            <p class="card-text">Detailed description of your third research area.</p>
-                        </div>
-                    </div>
+    <!-- Main content area -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div id="content">
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p id="loading-text">Loading content...</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Publications -->
-        <section class="section">
-            <h2 class="section-title">Publications</h2>
-            <div class="publication-item">
-                <h5>Publication Title 1</h5>
-                <p class="text-muted">Authors, Journal Name, Year</p>
-                <p>Abstract or brief description...</p>
-            </div>
-            <div class="publication-item">
-                <h5>Publication Title 2</h5>
-                <p class="text-muted">Authors, Journal Name, Year</p>
-                <p>Abstract or brief description...</p>
-            </div>
-        </section>
-
-        <!-- Education -->
-        <section class="section bg-light">
-            <h2 class="section-title">Education</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Degree Name</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">University Name</h6>
-                            <p class="card-text">Time Period</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container text-center">
-            <p>© 2024 Your Name. All rights reserved.</p>
-        </div>
-    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global configuration object
+        let siteConfig = null;
+        let currentSection = null;
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        // Initialization after page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Load configuration file
+                await loadConfig();
+                
+                // Apply configuration
+                applyConfig();
+                
+                // Generate navigation menu
+                generateNavigation();
+                
+                // Load default page
+                loadDefaultContent();
+                
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                showError('Configuration Load Failed', 'Unable to load website configuration file');
+            }
+
+            // Listen for window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    document.getElementById('sidebar').classList.remove('active');
+                    document.querySelector('.overlay').classList.remove('active');
+                }
+            });
+        });
+
+        // Load configuration file
+        async function loadConfig() {
+            try {
+                const response = await fetch('./config.yml');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const yamlText = await response.text();
+                siteConfig = jsyaml.load(yamlText);
+                console.log('Configuration loaded successfully:', siteConfig);
+            } catch (error) {
+                console.error('Configuration load failed:', error);
+                throw error;
+            }
+        }
+
+        // Apply configuration to page
+        function applyConfig() {
+            if (!siteConfig) return;
+
+            // Set page title
+            if (siteConfig.site?.title) {
+                document.getElementById('page-title').textContent = siteConfig.site.title;
+                document.title = siteConfig.site.title;
+            }
+
+            // Set language
+            if (siteConfig.site?.language) {
+                document.documentElement.lang = siteConfig.site.language;
+            }
+
+            // Apply theme colors
+            if (siteConfig.theme) {
+                const root = document.documentElement;
+                Object.entries(siteConfig.theme).forEach(([key, value]) => {
+                    const cssVar = `--${key.replace(/_/g, '-')}`;
+                    root.style.setProperty(cssVar, value);
+                });
+            }
+
+            // Set profile information
+            if (siteConfig.profile) {
+                // Avatar
+                if (siteConfig.profile.avatar) {
+                    document.getElementById('profile-avatar').src = siteConfig.profile.avatar;
+                }
+
+                // Name
+                if (siteConfig.profile.name) {
+                    document.getElementById('profile-name').textContent = siteConfig.profile.name;
+                }
+
+                // Position information
+                if (siteConfig.profile.title) {
+                    const titleElement = document.getElementById('profile-title');
+                    if (Array.isArray(siteConfig.profile.title)) {
+                        titleElement.innerHTML = siteConfig.profile.title.join('<br>');
+                    } else {
+                        titleElement.textContent = siteConfig.profile.title;
+                    }
+                }
+            }
+
+            // Generate social links
+            if (siteConfig.social) {
+                generateSocialLinks();
+            }
+
+            // Set loading text
+            if (siteConfig.pages?.loading_text) {
+                document.getElementById('loading-text').textContent = siteConfig.pages.loading_text;
+            }
+        }
+
+        // Generate social links
+        function generateSocialLinks() {
+            const socialContainer = document.getElementById('social-links');
+            socialContainer.innerHTML = '';
+
+            siteConfig.social.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link.url;
+                a.title = link.tooltip || link.name;
+                a.innerHTML = `<i class="${link.icon}"></i>`;
+                
+                // For email links, no need for target="_blank"
+                if (!link.url.startsWith('mailto:')) {
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                }
+                
+                socialContainer.appendChild(a);
+            });
+        }
+
+        // Generate navigation menu
+        function generateNavigation() {
+            const navContainer = document.getElementById('nav-menu');
+            navContainer.innerHTML = '';
+
+            siteConfig.navigation.forEach((item, index) => {
+                const navItem = document.createElement('div');
+                navItem.className = 'nav-item';
+
+                const navLink = document.createElement('button');
+                navLink.className = 'nav-link';
+                navLink.setAttribute('data-section', item.id);
+                navLink.onclick = () => loadContent(item.id);
+
+                // Set default active item
+                if (item.default || index === 0) {
+                    navLink.classList.add('active');
+                }
+
+                navLink.innerHTML = `
+                    <i class="${item.icon}"></i>
+                    ${item.title}
+                `;
+
+                navItem.appendChild(navLink);
+                navContainer.appendChild(navItem);
+
+                // Add click event listener
+                navLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update navigation state
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
+                });
+            });
+        }
+
+        // Load default content
+        function loadDefaultContent() {
+            const defaultItem = siteConfig.navigation.find(item => item.default) || siteConfig.navigation[0];
+            if (defaultItem) {
+                loadContent(defaultItem.id);
+            }
+        }
+
+        // Markdown configuration
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true,
+            gfm: true
+        });
+
+        // Fixed mathematical formula processing system
+        function preprocessMathFormulas(content) {
+            const mathBlocks = [];
+            let blockIndex = 0;
+            let inlineIndex = 0;
+
+            // First process block-level math formulas $$...$$
+            content = content.replace(/\$\$([^$]*?)\$\$/g, function(match, formula) {
+                const placeholder = `MATH_BLOCK_${blockIndex}`;
+                mathBlocks.push({
+                    placeholder: placeholder,
+                    formula: formula.trim(),
+                    isBlock: true,
+                    original: match
+                });
+                console.log('Found block math:', formula.trim(), 'placeholder:', placeholder);
+                blockIndex++;
+                return placeholder;
+            });
+
+            // Then process inline math formulas $...$ (avoid conflicts with block formulas)
+            content = content.replace(/\$([^$\n]+?)\$/g, function(match, formula) {
+                const placeholder = `MATH_INLINE_${inlineIndex}`;
+                mathBlocks.push({
+                    placeholder: placeholder,
+                    formula: formula.trim(),
+                    isBlock: false,
+                    original: match
+                });
+                console.log('Found inline math:', formula.trim(), 'placeholder:', placeholder);
+                inlineIndex++;
+                return placeholder;
+            });
+
+            console.log('Preprocessed content:', content);
+            console.log('Math blocks:', mathBlocks);
+            return { content, mathBlocks };
+        }
+
+        function renderMathFormulas(htmlContent, mathBlocks) {
+            console.log('Rendering math in HTML:', htmlContent);
+            console.log('Math blocks to render:', mathBlocks);
+            
+            // Replace placeholders with rendered math formulas in HTML
+            mathBlocks.forEach(function(mathBlock) {
+                try {
+                    const rendered = katex.renderToString(mathBlock.formula, { 
+                        throwOnError: false,
+                        displayMode: mathBlock.isBlock 
+                    });
+                    
+                    const mathHtml = mathBlock.isBlock 
+                        ? `<div class="math-container katex-display">${rendered}<span class="math-source">${mathBlock.original}</span></div>`
+                        : `<span class="math-container">${rendered}<span class="math-source">${mathBlock.original}</span></span>`;
+                    
+                    console.log(`Replacing ${mathBlock.placeholder} with rendered math`);
+                    htmlContent = htmlContent.replace(new RegExp(mathBlock.placeholder, 'g'), mathHtml);
+                } catch (e) {
+                    console.warn('KaTeX render error:', e);
+                    // Keep original text when rendering fails
+                    htmlContent = htmlContent.replace(new RegExp(mathBlock.placeholder, 'g'), mathBlock.original);
+                }
+            });
+
+            console.log('Final HTML with math:', htmlContent);
+            return htmlContent;
+        }
+
+        // Code copy functionality
+        function addCopyButtons() {
+            const codeBlocks = document.querySelectorAll('pre code');
+            codeBlocks.forEach(function(codeBlock) {
+                const pre = codeBlock.parentElement;
+                
+                // Avoid duplicate additions
+                if (pre.querySelector('.copy-code-btn')) return;
+
+                // Create wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(pre);
+
+                // Create copy button
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'copy-code-btn';
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                copyBtn.setAttribute('title', 'Copy Code');
+                
+                copyBtn.addEventListener('click', function() {
+                    const code = codeBlock.textContent;
+                    navigator.clipboard.writeText(code).then(function() {
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                        copyBtn.classList.add('copied');
+                        
+                        setTimeout(function() {
+                            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+                    }).catch(function() {
+                        // Fallback copy method for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = code;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied';
+                        copyBtn.classList.add('copied');
+                        
+                        setTimeout(function() {
+                            copyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                            copyBtn.classList.remove('copied');
+                        }, 2000);
+                    });
+                });
+
+                wrapper.appendChild(copyBtn);
+            });
+        }
+
+        // Enhanced content processing function - process before markdown parsing
+        // Math formula processing: preprocess and extract formulas, then render after Markdown parsing
+
+        // Math formula copy function
+        function addMathCopyFunction() {
+            const mathContainers = document.querySelectorAll('.math-container');
+            mathContainers.forEach(function(container) {
+                const mathSource = container.querySelector('.math-source');
+                if (mathSource) {
+                    container.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const sourceText = mathSource.textContent;
+                        
+                        navigator.clipboard.writeText(sourceText).then(function() {
+                            // Show copy success notification
+                            showToast('Formula copied: ' + sourceText);
+                        }).catch(function() {
+                            // Compatibility with older browsers
+                            const textArea = document.createElement('textarea');
+                            textArea.value = sourceText;
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textArea);
+                            showToast('Formula copied: ' + sourceText);
+                        });
+                    });
+                    
+                    // Add click hint
+                    container.style.cursor = 'pointer';
+                    container.setAttribute('title', 'Click to copy formula source code');
+                }
+            });
+        }
+
+        // Show Toast notification
+        function showToast(message) {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 6px;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: all 0.3s ease;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Animated display
+            setTimeout(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Auto hide
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        // Toggle sidebar display state (mobile)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.overlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Load Markdown content
+        async function loadContent(section) {
+            const contentDiv = document.getElementById('content');
+            currentSection = section;
+            
+            // Show loading state
+            const loadingText = siteConfig?.pages?.loading_text || 'Loading content...';
+            contentDiv.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>${loadingText}</p>
+                </div>
+            `;
+
+            try {
+                // Special handling for blogs section
+                if (section === 'blogs') {
+                    await loadBlogsContent();
+                    return;
+                }
+
+                // Get corresponding file name
+                const navItem = siteConfig.navigation.find(item => item.id === section);
+                const fileName = navItem ? navItem.file : `${section}.md`;
+                const markdownFolder = siteConfig?.misc?.markdown_folder || './md/';
+                
+                const response = await fetch(`${markdownFolder}${fileName}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const markdownText = await response.text();
+                
+                // Preprocess math formulas (extract before Markdown parsing)
+                const { content: preprocessedMarkdown, mathBlocks } = preprocessMathFormulas(markdownText);
+                
+                // Parse Markdown
+                let htmlContent = marked.parse(preprocessedMarkdown);
+                
+                // Render math formulas (replace placeholders in HTML)
+                htmlContent = renderMathFormulas(htmlContent, mathBlocks);
+                
+                contentDiv.innerHTML = `<div class="markdown-content">${htmlContent}</div>`;
+                
+                // Highlight code blocks
+                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Add code copy buttons
+                addCopyButtons();
+                
+                // Add math formula copy function
+                addMathCopyFunction();
+                
+                // Add target="_blank" for external links
+                contentDiv.querySelectorAll('a[href^="http"]').forEach(link => {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                });
+                
+                // Handle responsive images
+                handleResponsiveImages();
+                
+                // Scroll to top
+                const mainContent = document.querySelector('.main-content');
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error loading content:', error);
+                showError(
+                    siteConfig?.pages?.error_title || 'Content Load Failed',
+                    `${siteConfig?.pages?.error_message || 'Unable to load file'} "${section}"`,
+                    error.message,
+                    section
+                );
+            }
+        }
+
+        // Blog post data storage
+        let blogPosts = [];
+        let filteredPosts = [];
+
+        // Special function to load blogs content
+        async function loadBlogsContent() {
+            const contentDiv = document.getElementById('content');
+            
+            try {
+                // Get list of all markdown files in blogs folder
+                // We need a way to get file list, through an index file or directory traversal
+                const blogFiles = await getBlogFileList();
+                
+                // Load all blog articles
+                blogPosts = [];
+                for (const fileName of blogFiles) {
+                    try {
+                        const response = await fetch(`./blogs/${fileName}`);
+                        if (response.ok) {
+                            const markdownText = await response.text();
+                            const post = parseBlogPost(markdownText, fileName);
+                            if (post) {
+                                // Only include visible posts (default is visible if not specified)
+                                if (post.visible !== false) {
+                                    blogPosts.push(post);
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn(`Failed to load blog file: ${fileName}`, error);
+                    }
+                }
+                
+                // Sort by date in descending order (show newest first by default)
+                blogPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
+                filteredPosts = [...blogPosts];
+                
+                // Render blogs page
+                renderBlogsPage();
+                
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                showError('Blog Loading Failed', 'Unable to load blog content', error.message, 'blogs');
+            }
+        }
+
+                // Get blog file list - smart discovery using GitHub API
+        async function getBlogFileList() {
+            console.log('Starting smart blog file discovery...');
+            
+            try {
+                // Try GitHub API first (for GitHub Pages)
+                const repoPath = window.location.hostname.includes('github.io') ? 
+                    window.location.hostname.replace('.github.io', '') : null;
+                
+                if (repoPath) {
+                    console.log(`Trying GitHub API for repository: ${repoPath}`);
+                    const apiUrl = `https://api.github.com/repos/${repoPath}/contents/blogs`;
+                    
+                    try {
+                        const response = await fetch(apiUrl);
+                        if (response.ok) {
+                            const files = await response.json();
+                            const blogFiles = files
+                                .filter(file => file.name.match(/^blog-.*\.md$/))
+                                .map(file => file.name);
+                            
+                            console.log(`GitHub API found ${blogFiles.length} blog files:`, blogFiles);
+                            return blogFiles;
+                        }
+                    } catch (error) {
+                        console.log('GitHub API failed, falling back to pattern matching:', error);
+                    }
+                }
+                
+                // Fallback: Optimized pattern matching
+                console.log('Using optimized pattern matching for blog-*.md files...');
+                const discoveredFiles = new Set();
+                
+                // Smart pattern generation - focus on common patterns
+                const patterns = new Set();
+                
+                // Common blog naming patterns
+                const commonWords = [
+                    'welcome', 'intro', 'test', 'demo', 'sample', 'example',
+                    'data-augmentation', 'ml-paradigms', 'research-thoughts', 'visibility-test',
+                    'post', 'article', 'guide', 'tutorial', 'review', 'news'
+                ];
+                
+                // Add common word patterns
+                commonWords.forEach(word => patterns.add(`blog-${word}.md`));
+                
+                // Add numbered patterns (optimized ranges)
+                for (let i = 1; i <= 100; i++) patterns.add(`blog-${i}.md`);
+                for (let i = 1000; i <= 9999; i += 1111) patterns.add(`blog-${i}.md`);
+                
+                // Add word+number combinations for common cases
+                ['test', 'post', 'demo'].forEach(word => {
+                    for (let i = 1; i <= 10; i++) patterns.add(`blog-${word}${i}.md`);
+                    [100, 1000, 2222, 3333].forEach(num => patterns.add(`blog-${word}${num}.md`));
+                });
+                
+                // Add letter combinations
+                for (let i = 0; i < 26; i++) {
+                    const letter = String.fromCharCode(97 + i);
+                    patterns.add(`blog-${letter}.md`);
+                }
+                
+                console.log(`Testing ${patterns.size} optimized patterns...`);
+                
+                // Batch check files (limit concurrent requests)
+                const patternArray = Array.from(patterns);
+                const batchSize = 20;
+                
+                for (let i = 0; i < patternArray.length; i += batchSize) {
+                    const batch = patternArray.slice(i, i + batchSize);
+                    const promises = batch.map(async (fileName) => {
+                        try {
+                            const response = await fetch(`./blogs/${fileName}`, { method: 'HEAD' });
+                            return response.ok ? fileName : null;
+                        } catch {
+                            return null;
+                        }
+                    });
+                    
+                    const results = await Promise.all(promises);
+                    results.filter(Boolean).forEach(file => discoveredFiles.add(file));
+                    
+                    if ((i + batchSize) % 100 === 0) {
+                        console.log(`Checked ${i + batchSize}/${patternArray.length}, found ${discoveredFiles.size} files`);
+                    }
+                }
+                
+                const validFiles = Array.from(discoveredFiles);
+                console.log(`Pattern matching completed! Found ${validFiles.length} blog files:`, validFiles);
+                return validFiles;
+                
+            } catch (error) {
+                console.error('Blog file discovery failed:', error);
+                return [];
+            }
+        }
+
+        // Parse blog post, extract front matter and content
+        function parseBlogPost(markdownText, fileName) {
+            const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
+            const match = markdownText.match(frontMatterRegex);
+            
+            if (match) {
+                try {
+                    // Parse YAML front matter
+                    const frontMatter = jsyaml.load(match[1]);
+                    const content = match[2];
+                    
+                    return {
+                        ...frontMatter,
+                        content: content,
+                        fileName: fileName,
+                        excerpt: generateExcerpt(content)
+                    };
+                } catch (error) {
+                    console.warn(`Failed to parse front matter for ${fileName}:`, error);
+                }
+            }
+            
+            // If no front matter, try to extract information from content
+            const lines = markdownText.split('\n');
+            const title = lines.find(line => line.startsWith('# '))?.replace('# ', '') || 'Untitled';
+            
+            return {
+                title: title,
+                date: new Date().toISOString().split('T')[0],
+                tags: [],
+                content: markdownText,
+                fileName: fileName,
+                excerpt: generateExcerpt(markdownText)
+            };
+        }
+
+        // Generate article excerpt
+        function generateExcerpt(content, maxLength = 200) {
+            // Remove markdown syntax
+            const plainText = content
+                .replace(/#{1,6}\s+/g, '') // Remove heading symbols
+                .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+                .replace(/\*(.*?)\*/g, '$1') // Remove italic
+                .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links, keep text
+                .replace(/```[\s\S]*?```/g, '[Code Block]') // Replace code blocks
+                .replace(/`(.*?)`/g, '$1') // Remove inline code symbols
+                .trim();
+            
+            return plainText.length > maxLength 
+                ? plainText.substring(0, maxLength) + '...'
+                : plainText;
+        }
+
+        // Render blogs page
+        function renderBlogsPage() {
+            const contentDiv = document.getElementById('content');
+            
+            const blogsHtml = `
+                <div class="blogs-container">
+                    <div class="blogs-header">
+                        <h1><i class="fas fa-blog"></i> Blog Posts</h1>
+                        <p class="text-muted">Sharing research insights, technical discoveries, and academic reflections</p>
+                        
+                        <div class="search-section mt-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input 
+                                            type="text" 
+                                            id="blog-search" 
+                                            placeholder="Search article titles, content, or tags..." 
+                                            class="form-control"
+                                            oninput="searchBlogs(this.value)"
+                                        >
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="tag-filter" class="form-select" onchange="filterByTag(this.value)">
+                                        <option value="">All Tags</option>
+                                        ${generateTagOptions()}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="sort-order" class="form-select" onchange="sortBlogs(this.value)">
+                                        <option value="date-desc">Time: Newest First</option>
+                                        <option value="date-asc">Time: Oldest First</option>
+                                        <option value="title-asc">Title: A-Z</option>
+                                        <option value="title-desc">Title: Z-A</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-results mt-3" id="search-results" style="display: none;">
+                        <small class="text-muted">Found <span id="results-count">0</span> articles</small>
+                    </div>
+                    
+                    <div class="blogs-list mt-4" id="blogs-list">
+                        ${renderBlogsList(filteredPosts)}
+                    </div>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = blogsHtml;
+            
+            // 滚动到顶部
+            const mainContent = document.querySelector('.main-content');
+            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 生成标签选项
+        function generateTagOptions() {
+            const allTags = new Set();
+            // Only generate tags from visible posts
+            blogPosts.forEach(post => {
+                if (post.visible !== false && post.tags && Array.isArray(post.tags)) {
+                    post.tags.forEach(tag => allTags.add(tag));
+                }
+            });
+            
+            return Array.from(allTags)
+                .sort()
+                .map(tag => `<option value="${tag}">${tag}</option>`)
+                .join('');
+        }
+
+        // Render blog list
+        function renderBlogsList(posts) {
+            if (posts.length === 0) {
+                return `
+                    <div class="no-results text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No matching articles found</h5>
+                        <p class="text-muted">Try using different keywords or clear the filter conditions</p>
+                    </div>
+                `;
+            }
+            
+            return posts.map(post => {
+                const date = formatDate(post.date);
+                const tags = post.tags && Array.isArray(post.tags) 
+                    ? post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')
+                    : '';
+                
+                return `
+                    <article class="blog-card" onclick="viewBlogPost('${post.fileName}')">
+                        <div class="blog-meta">
+                            <span class="blog-date">
+                                <i class="fas fa-calendar"></i> ${date}
+                            </span>
+                            ${tags}
+                        </div>
+                        <h3 class="blog-title">${post.title || 'Untitled'}</h3>
+                        <p class="blog-excerpt">${post.excerpt}</p>
+                        <div class="blog-actions">
+                            <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'Unknown Date';
+            
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch {
+                return dateString;
+            }
+        }
+
+        // Search blogs
+        function searchBlogs(query) {
+            const searchResults = document.getElementById('search-results');
+            const resultsCount = document.getElementById('results-count');
+            
+            if (!query.trim()) {
+                filteredPosts = [...blogPosts];
+                searchResults.style.display = 'none';
+            } else {
+                const lowerQuery = query.toLowerCase();
+                filteredPosts = blogPosts.filter(post => {
+                    // Only search through visible posts
+                    if (post.visible === false) return false;
+                    
+                    const title = (post.title || '').toLowerCase();
+                    const content = (post.content || '').toLowerCase();
+                    const tags = (post.tags || []).join(' ').toLowerCase();
+                    const excerpt = (post.excerpt || '').toLowerCase();
+                    
+                    return title.includes(lowerQuery) || 
+                           content.includes(lowerQuery) || 
+                           tags.includes(lowerQuery) ||
+                           excerpt.includes(lowerQuery);
+                });
+                
+                searchResults.style.display = 'block';
+                resultsCount.textContent = filteredPosts.length;
+            }
+            
+            // Apply current sorting
+            const sortOrder = document.getElementById('sort-order')?.value || 'date-desc';
+            applySorting(sortOrder);
+            
+            document.getElementById('blogs-list').innerHTML = renderBlogsList(filteredPosts);
+        }
+
+        // Filter by tag
+        function filterByTag(selectedTag) {
+            const searchInput = document.getElementById('blog-search');
+            searchInput.value = ''; // Clear search box
+            
+            if (!selectedTag) {
+                filteredPosts = [...blogPosts];
+            } else {
+                filteredPosts = blogPosts.filter(post => {
+                    // Only filter through visible posts
+                    if (post.visible === false) return false;
+                    return post.tags && post.tags.includes(selectedTag);
+                });
+            }
+            
+            // Apply current sorting
+            const sortOrder = document.getElementById('sort-order')?.value || 'date-desc';
+            applySorting(sortOrder);
+            
+            const searchResults = document.getElementById('search-results');
+            if (selectedTag) {
+                searchResults.style.display = 'block';
+                document.getElementById('results-count').textContent = filteredPosts.length;
+            } else {
+                searchResults.style.display = 'none';
+            }
+            
+            document.getElementById('blogs-list').innerHTML = renderBlogsList(filteredPosts);
+        }
+
+        // Blog sorting function
+        function sortBlogs(sortOrder) {
+            applySorting(sortOrder);
+            document.getElementById('blogs-list').innerHTML = renderBlogsList(filteredPosts);
+            
+            // If search results are displayed, update count
+            const searchResults = document.getElementById('search-results');
+            if (searchResults && searchResults.style.display !== 'none') {
+                document.getElementById('results-count').textContent = filteredPosts.length;
+            }
+        }
+
+        // Apply sorting logic
+        function applySorting(sortOrder) {
+            switch (sortOrder) {
+                case 'date-desc':
+                    filteredPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
+                    break;
+                case 'date-asc':
+                    filteredPosts.sort((a, b) => new Date(a.date || '1970-01-01') - new Date(b.date || '1970-01-01'));
+                    break;
+                case 'title-asc':
+                    filteredPosts.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'en-US'));
+                    break;
+                case 'title-desc':
+                    filteredPosts.sort((a, b) => (b.title || '').localeCompare(a.title || '', 'en-US'));
+                    break;
+                default:
+                    // Default to descending order by time
+                    filteredPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
+            }
+        }
+
+        // View single blog post
+        async function viewBlogPost(fileName) {
+            const contentDiv = document.getElementById('content');
+            
+            // Show loading state
+            contentDiv.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading article...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`./blogs/${fileName}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const markdownText = await response.text();
+                const post = parseBlogPost(markdownText, fileName);
+                
+                if (!post) {
+                    throw new Error('Article parsing failed');
+                }
+                
+                // Render single article
+                const { content: preprocessedContent, mathBlocks } = preprocessMathFormulas(post.content);
+                let htmlContent = marked.parse(preprocessedContent);
+                htmlContent = renderMathFormulas(htmlContent, mathBlocks);
+                
+                const date = formatDate(post.date);
+                const tags = post.tags && Array.isArray(post.tags) 
+                    ? post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')
+                    : '';
+                
+                contentDiv.innerHTML = `
+                    <div class="blog-post">
+                        <div class="blog-post-header">
+                            <button class="btn btn-outline-secondary mb-3" onclick="loadContent('blogs')">
+                                <i class="fas fa-arrow-left"></i> Back to Blog List
+                            </button>
+                            <div class="blog-post-meta">
+                                <span class="blog-date">
+                                    <i class="fas fa-calendar"></i> ${date}
+                                </span>
+                                ${tags}
+                            </div>
+                            <h1 class="blog-post-title">${post.title || 'Untitled'}</h1>
+                        </div>
+                        <div class="blog-post-content markdown-content">
+                            ${htmlContent}
+                        </div>
+                    </div>
+                `;
+                
+                // Highlight code blocks
+                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Add code copy buttons
+                addCopyButtons();
+                
+                // Add math formula copy function
+                addMathCopyFunction();
+                
+                // Add target="_blank" for external links
+                contentDiv.querySelectorAll('a[href^="http"]').forEach(link => {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                });
+                
+                // Handle responsive images
+                handleResponsiveImages();
+                
+                // Scroll to top
+                const mainContent = document.querySelector('.main-content');
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error loading blog post:', error);
+                showError('Article Loading Failed', `Unable to load article "${fileName}"`, error.message, 'blogs');
+            }
+        }
+
+        // Show error message
+        function showError(title, message, details, section) {
+            const contentDiv = document.getElementById('content');
+            const retryText = siteConfig?.pages?.retry_button || 'Retry';
+            
+            contentDiv.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle mb-3" style="font-size: 2.5rem;"></i>
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                    ${details ? `<small>Error details: ${details}</small>` : ''}
+                    <div class="mt-3">
+                        <button class="btn btn-primary" onclick="loadContent('${section}')">
+                            <i class="fas fa-redo me-1"></i>${retryText}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Responsive image handling
+        function handleResponsiveImages() {
+            const images = document.querySelectorAll('.markdown-content img');
+            images.forEach(img => {
+                img.classList.add('img-fluid');
+                img.style.maxWidth = '100%';
+                img.style.height = 'auto';
+                img.style.borderRadius = '8px';
+                img.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+            });
+        }
+
+        // Listen for content changes to handle newly loaded images
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    handleResponsiveImages();
+                }
+            });
+        });
+
+        observer.observe(document.getElementById('content'), {
+            childList: true,
+            subtree: true
+        });
+    </script>
 </body>
 </html>
 
