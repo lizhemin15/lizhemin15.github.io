@@ -4,7 +4,7 @@ date: "2024-12-19"
 tags: ["Feature Guide", "Usage Instructions"]
 keywords: ["visibility", "blog management"]
 excerpt: "Introducing the new visibility control feature in the blog system to help better manage article display."
-visible: true
+visible: false
 ---
 
 # Blog Visibility Feature Usage Guide
