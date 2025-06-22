@@ -29,6 +29,104 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Generate blogs.json
+        run: |
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // 读取 blogs 文件夹中的所有 .md 文件
+          const blogsDir = './blogs';
+          
+          if (!fs.existsSync(blogsDir)) {
+            console.log('blogs 文件夹不存在，跳过生成');
+            process.exit(0);
+          }
+          
+          // 解析 front matter 的简单函数
+          function parseFrontMatter(content) {
+            const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n/;
+            const match = content.match(frontMatterRegex);
+            
+            if (!match) return null;
+            
+            const frontMatter = {};
+            const lines = match[1].split('\n');
+            
+            for (const line of lines) {
+              const colonIndex = line.indexOf(':');
+              if (colonIndex > 0) {
+                const key = line.substring(0, colonIndex).trim();
+                let value = line.substring(colonIndex + 1).trim();
+                
+                // 移除引号
+                if ((value.startsWith('\"') && value.endsWith('\"')) || 
+                    (value.startsWith(\"'\") && value.endsWith(\"'\"))) {
+                  value = value.slice(1, -1);
+                }
+                
+                // 处理布尔值
+                if (value === 'true') value = true;
+                if (value === 'false') value = false;
+                
+                frontMatter[key] = value;
+              }
+            }
+            
+            return frontMatter;
+          }
+          
+          // 获取所有 .md 文件，排除 README.md
+          const allFiles = fs.readdirSync(blogsDir)
+            .filter(file => file.endsWith('.md') && file !== 'README.md');
+          
+          // 解析每个文件，检查 visible 字段
+          const blogFiles = [];
+          const fileInfo = [];
+          
+          for (const file of allFiles) {
+            try {
+              const filePath = path.join(blogsDir, file);
+              const content = fs.readFileSync(filePath, 'utf8');
+              const frontMatter = parseFrontMatter(content);
+              
+              // 如果没有 front matter 或者 visible 不是 false，则包含该文件
+              const isVisible = !frontMatter || frontMatter.visible !== false;
+              
+              if (isVisible) {
+                blogFiles.push(file);
+                fileInfo.push({
+                  file: file,
+                  date: frontMatter?.date || '1970-01-01',
+                  title: frontMatter?.title || file
+                });
+              } else {
+                console.log('跳过隐藏的博客文件：', file);
+              }
+            } catch (error) {
+              console.warn('解析文件失败：', file, error.message);
+              // 如果解析失败，默认包含该文件
+              blogFiles.push(file);
+            }
+          }
+          
+          // 按日期排序（最新的在前）
+          fileInfo.sort((a, b) => new Date(b.date) - new Date(a.date));
+          const sortedFiles = fileInfo.map(info => info.file);
+          
+          console.log('发现博客文件：', sortedFiles);
+          console.log('总计：', sortedFiles.length, '个可见博客文件，', allFiles.length - sortedFiles.length, '个隐藏文件');
+          
+          // 生成 blogs.json
+          const blogsJson = {
+            blogs: sortedFiles
+          };
+          
+          // 写入 blogs.json 文件
+          fs.writeFileSync('./blogs.json', JSON.stringify(blogsJson, null, 2));
+          console.log('成功生成 blogs.json');
+          "
+
       - name: Build
         run: npm run build -- --base /lizhemin15.github.io/
 

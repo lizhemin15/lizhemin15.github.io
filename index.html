@@ -1376,27 +1376,39 @@
             const contentDiv = document.getElementById('content');
             
             try {
-                // Get list of all markdown files in blogs folder
-                // We need a way to get file list, through an index file or directory traversal
-                const blogFiles = await getBlogFileList();
+                console.log('Loading blogs content from JSON...');
                 
-                // Load all blog articles
+                // Load blog file list from JSON
+                const response = await fetch('./blogs.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to load blogs.json: ${response.status} ${response.statusText}`);
+                }
+                
+                const blogsData = await response.json();
+                const blogFiles = blogsData.blogs;
+                
+                console.log(`Found ${blogFiles.length} blog files in JSON:`, blogFiles);
+                
+                // Load and parse each blog file
                 blogPosts = [];
                 for (const fileName of blogFiles) {
                     try {
-                        const response = await fetch(`./blogs/${fileName}`);
-                        if (response.ok) {
-                            const markdownText = await response.text();
+                        const fileResponse = await fetch(`./blogs/${fileName}`);
+                        if (fileResponse.ok) {
+                            const markdownText = await fileResponse.text();
                             const post = parseBlogPost(markdownText, fileName);
+                            
                             if (post) {
                                 // Only include visible posts (default is visible if not specified)
                                 if (post.visible !== false) {
                                     blogPosts.push(post);
                                 }
                             }
+                        } else {
+                            console.warn(`Failed to load blog file: ${fileName} (${fileResponse.status})`);
                         }
                     } catch (error) {
-                        console.warn(`Failed to load blog file: ${fileName}`, error);
+                        console.warn(`Error loading blog file: ${fileName}`, error);
                     }
                 }
                 
@@ -1404,111 +1416,18 @@
                 blogPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
                 filteredPosts = [...blogPosts];
                 
+                console.log(`Successfully loaded ${blogPosts.length} visible blog posts`);
+                
                 // Render blogs page
                 renderBlogsPage();
                 
             } catch (error) {
-                console.error('Error loading blogs:', error);
-                showError('Blog Loading Failed', 'Unable to load blog content', error.message, 'blogs');
+                console.error('Error loading blogs from JSON:', error);
+                showError('Blog Loading Failed', 'Unable to load blog content from blogs.json', error.message, 'blogs');
             }
         }
 
-                // Get blog file list - smart discovery using GitHub API
-        async function getBlogFileList() {
-            console.log('Starting smart blog file discovery...');
-            
-            try {
-                // Try GitHub API first (for GitHub Pages)
-                const repoPath = window.location.hostname.includes('github.io') ? 
-                    window.location.hostname.replace('.github.io', '') : null;
-                
-                if (repoPath) {
-                    console.log(`Trying GitHub API for repository: ${repoPath}`);
-                    const apiUrl = `https://api.github.com/repos/${repoPath}/contents/blogs`;
-                    
-                    try {
-                        const response = await fetch(apiUrl);
-                        if (response.ok) {
-                            const files = await response.json();
-                            const blogFiles = files
-                                .filter(file => file.name.match(/^blog-.*\.md$/))
-                                .map(file => file.name);
-                            
-                            console.log(`GitHub API found ${blogFiles.length} blog files:`, blogFiles);
-                            return blogFiles;
-                        }
-                    } catch (error) {
-                        console.log('GitHub API failed, falling back to pattern matching:', error);
-                    }
-                }
-                
-                // Fallback: Optimized pattern matching
-                console.log('Using optimized pattern matching for blog-*.md files...');
-                const discoveredFiles = new Set();
-                
-                // Smart pattern generation - focus on common patterns
-                const patterns = new Set();
-                
-                // Common blog naming patterns
-                const commonWords = [
-                    'welcome', 'intro', 'test', 'demo', 'sample', 'example',
-                    'data-augmentation', 'ml-paradigms', 'research-thoughts', 'visibility-test',
-                    'post', 'article', 'guide', 'tutorial', 'review', 'news'
-                ];
-                
-                // Add common word patterns
-                commonWords.forEach(word => patterns.add(`blog-${word}.md`));
-                
-                // Add numbered patterns (optimized ranges)
-                for (let i = 1; i <= 100; i++) patterns.add(`blog-${i}.md`);
-                for (let i = 1000; i <= 9999; i += 1111) patterns.add(`blog-${i}.md`);
-                
-                // Add word+number combinations for common cases
-                ['test', 'post', 'demo'].forEach(word => {
-                    for (let i = 1; i <= 10; i++) patterns.add(`blog-${word}${i}.md`);
-                    [100, 1000, 2222, 3333].forEach(num => patterns.add(`blog-${word}${num}.md`));
-                });
-                
-                // Add letter combinations
-                for (let i = 0; i < 26; i++) {
-                    const letter = String.fromCharCode(97 + i);
-                    patterns.add(`blog-${letter}.md`);
-                }
-                
-                console.log(`Testing ${patterns.size} optimized patterns...`);
-                
-                // Batch check files (limit concurrent requests)
-                const patternArray = Array.from(patterns);
-                const batchSize = 20;
-                
-                for (let i = 0; i < patternArray.length; i += batchSize) {
-                    const batch = patternArray.slice(i, i + batchSize);
-                    const promises = batch.map(async (fileName) => {
-                        try {
-                            const response = await fetch(`./blogs/${fileName}`, { method: 'HEAD' });
-                            return response.ok ? fileName : null;
-                        } catch {
-                            return null;
-                        }
-                    });
-                    
-                    const results = await Promise.all(promises);
-                    results.filter(Boolean).forEach(file => discoveredFiles.add(file));
-                    
-                    if ((i + batchSize) % 100 === 0) {
-                        console.log(`Checked ${i + batchSize}/${patternArray.length}, found ${discoveredFiles.size} files`);
-                    }
-                }
-                
-                const validFiles = Array.from(discoveredFiles);
-                console.log(`Pattern matching completed! Found ${validFiles.length} blog files:`, validFiles);
-                return validFiles;
-                
-            } catch (error) {
-                console.error('Blog file discovery failed:', error);
-                return [];
-            }
-        }
+
 
         // Parse blog post, extract front matter and content
         function parseBlogPost(markdownText, fileName) {
