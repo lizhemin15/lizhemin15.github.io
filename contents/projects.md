@@ -2,20 +2,19 @@
 
 ## Research Overview
 
-The following are the main research projects I have participated in, covering computational mathematics, numerical algorithms, and deep learning applications in various fields.
+The following are the main research projects I have participated in, covering applications of **computational mathematics**, **numerical algorithms**, and **deep learning** in various fields.
 
 <div class="projects-gallery">
 
-## Learnable Regularization Algorithms for Deep Representation of High-Dimensional Data
+## Toolbox of Differentiable Signal and Regularization Representation
 
 <div class="project-card" data-category="algorithms">
-<div class="project-image">
-<img src="./src/project1.jpg" alt="Deep Representation of High-Dimensional Data" onerror="this.style.display='none';">
+<div class="project-image" style="background-image: url('https://github.com/lizhemin15/RSS/raw/master/statics/logo.jpg'); background-color: #f5f5f5;">
 </div>
 <div class="project-content">
 <div class="project-info">
-<h3>Learnable Regularization Algorithms for Deep Representation of High-Dimensional Data</h3>
-<p>Developed learnable regularization theories and algorithms based on deep learning for effective representation and recovery of high-dimensional data.</p>
+<h3>RSS</h3>
+<p>Toolbox of Differentiable Signal and Regularization Representation.</p>
 <div class="project-tags">
 <span class="tag">Deep Learning</span>
 <span class="tag">Regularization</span>
@@ -23,126 +22,13 @@ The following are the main research projects I have participated in, covering co
 </div>
 </div>
 <div class="project-links">
-<a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
+<a href="https://github.com/lizhemin15/RSS" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
+<a href="https://github.com/lizhemin15/RSS" class="project-link"><i class="fab fa-github"></i> Code</a>
 </div>
 </div>
 </div>
 
-## Reconnaissance Data Recovery Technology
 
-<div class="project-card" data-category="applications">
-<div class="project-image">
-<img src="./src/project2.jpg" alt="Reconnaissance Data Recovery" onerror="this.style.display='none';">
-</div>
-<div class="project-content">
-<div class="project-info">
-<h3>Reconnaissance Data Recovery Technology</h3>
-<p>Applied advanced numerical algorithms to intelligent recovery and processing of reconnaissance data, improving data quality and usability.</p>
-<div class="project-tags">
-<span class="tag">Data Recovery</span>
-<span class="tag">Signal Processing</span>
-<span class="tag">Numerical Algorithms</span>
-</div>
-</div>
-<div class="project-links">
-<a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="#" class="project-link"><i class="fas fa-file-pdf"></i> Paper</a>
-</div>
-</div>
-</div>
-
-## Microscopic Material Structure Analysis
-
-<div class="project-card" data-category="materials">
-<div class="project-image">
-<img src="./src/project3.jpg" alt="Material Structure Analysis" onerror="this.style.display='none';">
-</div>
-<div class="project-content">
-<div class="project-info">
-<h3>Microscopic Material Structure Analysis</h3>
-<p>Developed a deep learning-based system for automatic recognition and analysis of material microstructures, applied to new material development.</p>
-<div class="project-tags">
-<span class="tag">Materials Science</span>
-<span class="tag">Image Analysis</span>
-<span class="tag">Deep Learning</span>
-</div>
-</div>
-<div class="project-links">
-<a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="#" class="project-link"><i class="fas fa-chart-bar"></i> Data</a>
-</div>
-</div>
-</div>
-
-## Matrix Completion Algorithm Optimization
-
-<div class="project-card" data-category="algorithms">
-<div class="project-image">
-<img src="./src/project4.jpg" alt="Matrix Completion" onerror="this.style.display='none';">
-</div>
-<div class="project-content">
-<div class="project-info">
-<h3>Adaptive Implicit Regularization for Matrix Completion</h3>
-<p>Proposed novel adaptive and implicit regularization methods that significantly improved the performance and efficiency of matrix completion tasks.</p>
-<div class="project-tags">
-<span class="tag">Matrix Theory</span>
-<span class="tag">Optimization</span>
-<span class="tag">Machine Learning</span>
-</div>
-</div>
-<div class="project-links">
-<a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="#" class="project-link"><i class="fab fa-github"></i> Code</a>
-</div>
-</div>
-</div>
-
-## Deep Image Denoising Technology
-
-<div class="project-card" data-category="applications">
-<div class="project-image">
-<img src="./src/project5.jpg" alt="Image Denoising" onerror="this.style.display='none';">
-</div>
-<div class="project-content">
-<div class="project-info">
-<h3>Deep Prior-Based Image Denoising</h3>
-<p>Developed the Drop-DIP method, utilizing deep image priors to achieve high-quality denoising of single images.</p>
-<div class="project-tags">
-<span class="tag">Image Processing</span>
-<span class="tag">Deep Prior</span>
-<span class="tag">Denoising</span>
-</div>
-</div>
-<div class="project-links">
-<a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="#" class="project-link"><i class="fas fa-play"></i> Demo</a>
-</div>
-</div>
-</div>
-
-## Neural Network Robustness Analysis
-
-<div class="project-card" data-category="security">
-<div class="project-image">
-<img src="./src/project6.jpg" alt="Network Security" onerror="this.style.display='none';">
-</div>
-<div class="project-content">
-<div class="project-info">
-<h3>Robustness Analysis of Defensive Distillation Networks</h3>
-<p>Conducted in-depth analysis of the robustness of defensive distillation networks against gradient attacks, providing theoretical foundations for AI security.</p>
-<div class="project-tags">
-<span class="tag">AI Security</span>
-<span class="tag">Adversarial Attack</span>
-<span class="tag">Robustness</span>
-</div>
-</div>
-<div class="project-links">
-<a href="#" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="#" class="project-link"><i class="fas fa-shield-alt"></i> Security</a>
-</div>
-</div>
-</div>
 
 </div>
 
@@ -171,31 +57,29 @@ The following are the main research projects I have participated in, covering co
 
 .project-image {
     height: 200px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
-}
-
-.project-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-.project-card:hover .project-image img {
+.project-card:hover .project-image {
     transform: scale(1.05);
 }
 
-.project-image:empty::before {
-    content: '🔬';
-    font-size: 3rem;
-    color: white;
+.project-image::before,
+.project-image::after {
+    display: none !important;
 }
+
+.project-image * {
+    display: none !important;
+}
+
+
 
 .project-content {
     padding: 25px 25px 30px 25px;
@@ -293,4 +177,4 @@ The following are the main research projects I have participated in, covering co
 
 ---
 
-*Projects are displayed in a responsive gallery layout. Click the corresponding links for detailed information. For more project details, please feel free to contact via email.* 
+*Projects are displayed using responsive card layout. Click the corresponding links to view detailed information. For more project details, please feel free to contact me via email.*

@@ -1,43 +1,35 @@
 # Publications
 
-## Research Overview
-
-During my doctoral studies, I primarily focused on learnable regularization algorithms and theories for deep representation of high-dimensional data, with applications in reconnaissance data recovery and microscopic material structure analysis. I have formally published 9 academic papers in total, including 5 first-author papers, with 4 additional papers currently under review. I hold 1 Chinese invention patent.
-
-## Journal Papers
-
 ### 2025
 
-[3] Wenqiang Huang, Yucheng Jin, **Zhemin Li**, et al. Auto-resolving atomic structure at van der Waals interfaces using a generative model. *Nature Communications* 16, no. 2927 (2025).
+[7] **Zhemin Li**, Liyuan Ma, Hongxia Wang, Yaoyun Zeng, Xiaolong Han. Learning Input Encodings for Kernel-Optimal Implicit Neural Representations. *Proceedings of the International Conference on Machine Learning (ICML)*, pp. 1-12, Vancouver, Canada, July 2025. (CCF-A) 
+ [📋](https://openreview.net/pdf?id=Cx80t5FAQJ)  [🔗](https://github.com/lizhemin15/KAR)
+
+[6] Wenqiang Huang†, Yucheng Jin†, **Zhemin Li**†, et al. Auto-resolving atomic structure at van der Waals interfaces using a generative model. *Nature Communications*, vol. 16, no. 2927, 2025. († Co-first authors)
+ [📋](https://www.nature.com/articles/s41467-025-58160-3)  [🔗](https://github.com/dptech-corp/TED-Gen)
 
 ### 2023
 
-[5] Yisi Luo, Xile Zhao, **Zhemin Li**, Michael K. Ng, and Deyu Meng. Low-rank tensor function representation for multi-dimensional data recovery. *IEEE Transactions on Pattern Analysis and Machine Intelligence* 46, no. 5 (2023): 3351-3369.
+[5] **Zhemin Li**, Hongxia Wang, and Deyu Meng. Regularize implicit neural representation by itself. *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pp. 10280-10288, Vancouver, Canada, June 2023. **(Highlight Paper, Top 2.5%)**
+ [📋](https://openaccess.thecvf.com/content/CVPR2023/papers/Li_Regularize_Implicit_Neural_Representation_by_Itself_CVPR_2023_paper.pdf)  [🔗](https://github.com/lizhemin15/RSS)
 
-[6] Xueding Zhang, **Zhemin Li**, Hongxia Wang. Drop-DIP: A single-image denoising method based on deep image prior. *Journal of Nonlinear Variational Analysis* 7, no. 4 (2023).
+[4] Yisi Luo, Xile Zhao, **Zhemin Li**, Michael K. Ng, and Deyu Meng. Low-rank tensor function representation for multi-dimensional data recovery. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. 46, no. 5, pp. 3351-3369, 2023.
+ [📋](https://ieeexplore.ieee.org/document/10354352)  [🔗](https://github.com/YisiLuo/Continuous-Tensor-Toolbox)
 
-[9] Pudu Zhang, Weiquan Wang, **Zhemin Li**, Zixuan Zhang, Yechen Wang, Hongyu Zhou, Yan Yin. Deep learning-based modeling of borehole radiation pressure ion acceleration. *Acta Physica Sinica* 72, no. 18 (2023).
+[3] Xueding Zhang, **Zhemin Li**, Hongxia Wang. Drop-DIP: A single-image denoising method based on deep image prior. *Journal of Nonlinear Variational Analysis*, vol. 7, no. 4, 2023.
+ [📋](https://jnva.biemdas.com/issues/JNVA2023-4-4.pdf)  [🔗](#)
 
 ### 2022
 
-[1] **Zhemin Li**, Tao Sun, Hongxia Wang, and Bao Wang. Adaptive and implicit regularization for matrix completion. *SIAM Journal on Imaging Sciences* 15, no. 4 (2022): 2000-2022.
+[2] **Zhemin Li**, Tao Sun, Hongxia Wang, and Bao Wang. Adaptive and implicit regularization for matrix completion. *SIAM Journal on Imaging Sciences*, vol. 15, no. 4, pp. 2000-2022, 2022.
+ [📋](https://epubs.siam.org/doi/10.1137/22M1489228)  [🔗](https://github.com/lizhemin15/AIR-Net)
 
-[4] **Zhemin Li**, Zhi-Qin John Xu, Tao Luo, and Hongxia Wang. A regularised deep matrix factorised model of matrix completion for image restoration. *IET Image Processing* 16, no. 12 (2022): 3212-3224.
+[1] **Zhemin Li**, Zhi-Qin John Xu, Tao Luo, and Hongxia Wang. A regularised deep matrix factorised model of matrix completion for image restoration. *IET Image Processing*, vol. 16, no. 12, pp. 3212-3224, 2022.
+ [📋](https://ietresearch.onlinelibrary.wiley.com/doi/epdf/10.1049/ipr2.12553)  [🔗](#)
 
-[7] **Zhemin Li**, Hongxia Wang, Zhiqin Xu. Robustness analysis of defensive distillation networks against gradient attacks. *Journal of Systems Science and Mathematical Sciences* 42, no. 8 (2022): 1929-1945.
 
-[8] Xin Li, **Zhemin Li**, Juhui Wei, Yating Yang, Hongxia Wang. Cross-domain adaptive learning model based on feature separation. *Journal of Computer Research and Development* 59, no. 1 (2022): 105-117.
 
-## Conference Papers
 
-### 2023
 
-[2] **Zhemin Li**, Hongxia Wang, and Deyu Meng. Regularize implicit neural representation by itself. *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition*, pp. 10280-10288, Vancouver, Canada, June 2023.
 
-## Patents
 
-1 Chinese invention patent
-
----
-
-*Note: In the above publications, **bold** indicates first-author or co-first-author papers. An additional 4 papers are currently under review.* 

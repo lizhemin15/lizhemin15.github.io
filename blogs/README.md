@@ -1,124 +1,124 @@
-# 博客文章管理指南
+# Blog Articles Management Guide
 
-这个文件夹包含了网站上显示的所有博客文章。现在网站会自动读取这个文件夹中的所有 `.md` 文件，无需手动维护文件列表。
+This folder contains all blog articles displayed on the website. The website now automatically reads all `.md` files in this folder, eliminating the need to manually maintain file lists.
 
-## 添加新博客文章
+## Adding New Blog Articles
 
-1. **创建新的 `.md` 文件**：在 `blogs/` 文件夹中创建一个新的 Markdown 文件
-   - 文件名建议使用有意义的英文名称，如：`machine-learning-guide.md`
-   - 系统会自动发现新创建的文件，无需手动配置
+1. **Create a new `.md` file**: Create a new Markdown file in the `blogs/` folder
+   - It's recommended to use meaningful English names for filenames, such as: `machine-learning-guide.md`
+   - The system will automatically discover newly created files without manual configuration
 
-2. **添加前置元数据**：每个博客文件都必须以YAML前置元数据开始：
+2. **Add front matter metadata**: Each blog file must start with YAML front matter metadata:
 
 ```markdown
 ---
-title: "文章标题"
+title: "Article Title"
 date: "2024-12-19"
-tags: ["标签1", "标签2", "标签3"]
-keywords: ["关键词1", "关键词2"]
-excerpt: "文章摘要，将显示在博客列表中"
+tags: ["tag1", "tag2", "tag3"]
+keywords: ["keyword1", "keyword2"]
+excerpt: "Article summary that will be displayed in the blog list"
 visible: true
 ---
 
-# 文章标题
+# Article Title
 
-这里是文章内容...
+Article content goes here...
 ```
 
-3. **保存文件**：保存后刷新网站页面，系统会自动检测并显示新文章
+3. **Save the file**: After saving, refresh the website page, and the system will automatically detect and display the new article
 
-## 自动文件发现机制
+## Automatic File Discovery Mechanism
 
-博客系统使用智能发现机制来自动检测新的博客文章：
+The blog system uses an intelligent discovery mechanism to automatically detect new blog articles:
 
-### 工作原理
-- 系统会自动尝试发现 `blogs/` 文件夹中的 `.md` 文件
-- 无需维护文件列表或运行额外脚本
-- 支持各种常见的文件命名模式
+### How It Works
+- The system automatically attempts to discover `.md` files in the `blogs/` folder
+- No need to maintain file lists or run additional scripts
+- Supports various common file naming patterns
 
-### 支持的文件命名
-系统现在支持更广泛的文件命名模式，包括：
-- **简单名称**: `test.md`, `demo.md`, `notes.md`, `blog.md`
-- **主题相关**: `deep-learning.md`, `pytorch-tutorial.md`
-- **功能说明**: `user-guide.md`, `getting-started.md`
-- **编号系列**: `post-1.md`, `article-2.md`, `test-1.md`
-- **日期前缀**: `2024-12-19-new-feature.md`
-- **单字母**: `a.md`, `b.md`, `test-a.md`
-- **纯数字**: `1.md`, `2.md`, `3.md`
+### Supported File Naming
+The system now supports a wide range of file naming patterns, including:
+- **Simple names**: `test.md`, `demo.md`, `notes.md`, `blog.md`
+- **Topic-related**: `deep-learning.md`, `pytorch-tutorial.md`
+- **Functional descriptions**: `user-guide.md`, `getting-started.md`
+- **Numbered series**: `post-1.md`, `article-2.md`, `test-1.md`
+- **Date prefixes**: `2024-12-19-new-feature.md`
+- **Single letters**: `a.md`, `b.md`, `test-a.md`
+- **Pure numbers**: `1.md`, `2.md`, `3.md`
 
-### 特殊说明
-- `README.md` 文件会被自动排除，不会显示在博客列表中
-- 系统会尝试多种常见的文件命名模式
-- 如果文件没有立即显示，请检查文件名是否符合常见模式
+### Special Notes
+- `README.md` files are automatically excluded and will not appear in the blog list
+- The system will try multiple common file naming patterns
+- If a file doesn't appear immediately, please check if the filename follows common patterns
 
-## 文章排序
+## Article Sorting
 
-网站会根据文章的 `date` 字段自动排序：
-- **默认排序**：按时间最新在前
-- **用户可调整**：通过页面上的排序下拉菜单调整显示顺序
+The website automatically sorts articles based on the `date` field:
+- **Default sorting**: By time, newest first
+- **User adjustable**: Users can adjust display order through the sorting dropdown menu on the page
 
-## 支持的排序选项
+## Supported Sorting Options
 
-- **时间：最新在前** - 按日期倒序（默认）
-- **时间：最早在前** - 按日期正序
-- **标题：A-Z** - 按标题字母顺序
-- **标题：Z-A** - 按标题字母倒序
+- **Time: Newest First** - Sort by date in descending order (default)
+- **Time: Oldest First** - Sort by date in ascending order
+- **Title: A-Z** - Sort by title alphabetically
+- **Title: Z-A** - Sort by title in reverse alphabetical order
 
-## 元数据字段说明
+## Metadata Field Descriptions
 
-- `title`: 文章标题（必需）
-- `date`: 发布日期，格式为 "YYYY-MM-DD"（必需）
-- `tags`: 标签数组，用于分类和筛选（可选）
-- `keywords`: 关键词数组，用于搜索优化（可选）
-- `excerpt`: 文章摘要，如果没有提供会自动生成（可选）
-- `visible`: 文章是否可见，默认为 `true`（可选）
-  - `true` 或未设置：文章在博客列表中可见
-  - `false`：文章隐藏，不会在博客列表中显示
+- `title`: Article title (required)
+- `date`: Publication date in "YYYY-MM-DD" format (required)
+- `tags`: Tag array for categorization and filtering (optional)
+- `keywords`: Keyword array for search optimization (optional)
+- `excerpt`: Article summary; if not provided, will be auto-generated (optional)
+- `visible`: Whether the article is visible, defaults to `true` (optional)
+  - `true` or unset: Article is visible in the blog list
+  - `false`: Article is hidden and won't appear in the blog list
 
-## 搜索功能
+## Search Functionality
 
-用户可以通过以下方式搜索文章：
-- 文章标题
-- 文章内容
-- 标签
-- 摘要文字
+Users can search articles through:
+- Article titles
+- Article content
+- Tags
+- Summary text
 
-## 文件命名建议
+## File Naming Recommendations
 
-- 使用有意义的文件名
-- 建议使用英文和连字符，如：`machine-learning-basics.md`
-- 避免空格和特殊字符
+- Use meaningful filenames
+- Recommend using English and hyphens, such as: `machine-learning-basics.md`
+- Avoid spaces and special characters
 
-## 文章可见性控制
+## Article Visibility Control
 
-通过 `visible` 字段可以控制文章是否在博客列表中显示：
+The `visible` field can control whether an article appears in the blog list:
 
-### 隐藏文章示例
+### Hidden Article Example
 
 ```markdown
 ---
-title: "草稿文章"
+title: "Draft Article"
 date: "2024-12-19"
 visible: false
 ---
 
-# 草稿文章
+# Draft Article
 
-这篇文章还在编写中，暂时不显示在博客列表中...
+This article is still being written and is temporarily not displayed in the blog list...
 ```
 
-### 应用场景
+### Use Cases
 
-- **草稿管理**：正在编写但未完成的文章
-- **临时下线**：需要临时隐藏的已发布文章
-- **内部文档**：仅供内部使用的技术文档
-- **季节性内容**：特定时期才显示的文章
+- **Draft management**: Articles being written but not yet completed
+- **Temporary removal**: Published articles that need to be temporarily hidden
+- **Internal documentation**: Technical documents for internal use only
+- **Seasonal content**: Articles that should only be displayed during specific periods
 
-## 注意事项
+## Important Notes
 
-- 确保每个文章文件都有有效的YAML前置元数据
-- 日期格式必须为 "YYYY-MM-DD"
-- `visible` 字段默认为 `true`，可以省略不写
-- 隐藏的文章仍然可以通过直接访问文件URL查看
-- 文章内容支持完整的Markdown语法，包括代码块、图片、表格等
-- 添加新文章后无需手动更新任何配置文件，系统会自动检测 
+- Ensure each article file has valid YAML front matter metadata
+- Date format must be "YYYY-MM-DD"
+- The `visible` field defaults to `true` and can be omitted
+- Hidden articles can still be accessed by directly visiting the file URL
+- Article content supports full Markdown syntax, including code blocks, images, tables, etc.
+- After adding new articles, no manual configuration file updates are needed; the system will automatically detect them 

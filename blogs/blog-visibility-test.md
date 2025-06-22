@@ -1,90 +1,90 @@
 ---
-title: "博客可见性功能使用指南"
+title: "Blog Visibility Feature Usage Guide"
 date: "2024-12-19"
-tags: ["功能说明", "使用指南"]
-keywords: ["可见性", "博客管理"]
-excerpt: "介绍博客系统新增的可见性控制功能，帮助更好地管理文章显示。"
+tags: ["Feature Guide", "Usage Instructions"]
+keywords: ["visibility", "blog management"]
+excerpt: "Introducing the new visibility control feature in the blog system to help better manage article display."
 visible: true
 ---
 
-# 博客可见性功能使用指南
+# Blog Visibility Feature Usage Guide
 
-博客系统现在支持通过 `visible` 字段控制文章的可见性，这为内容管理提供了更多灵活性。
+The blog system now supports controlling article visibility through the `visible` field, providing more flexibility for content management.
 
-## 功能特性
+## Feature Characteristics
 
-### 默认行为
-- 所有文章默认为可见状态（`visible: true`）
-- 如果不设置 `visible` 字段，文章会正常显示
-- 只有明确设置 `visible: false` 的文章才会被隐藏
+### Default Behavior
+- All articles are visible by default (`visible: true`)
+- If the `visible` field is not set, articles will display normally
+- Only articles explicitly set to `visible: false` will be hidden
 
-### 隐藏机制
-当文章设置为 `visible: false` 时：
-- ✅ 不会出现在博客列表页面
-- ✅ 不会出现在搜索结果中  
-- ✅ 不会出现在标签筛选中
-- ✅ 该文章的标签不会出现在标签选择器中
-- ⚠️ 仍可通过直接URL访问文章内容
+### Hiding Mechanism
+When an article is set to `visible: false`:
+- ✅ Will not appear on the blog list page
+- ✅ Will not appear in search results
+- ✅ Will not appear in tag filtering
+- ✅ Tags from this article will not appear in the tag selector
+- ⚠️ Can still be accessed through direct URL
 
-## 使用示例
+## Usage Examples
 
-### 显示文章（默认）
+### Display Article (Default)
 ```yaml
 ---
-title: "我的博客文章"
+title: "My Blog Post"
 date: "2024-12-19"
-# visible: true  # 可以省略，默认为true
+# visible: true  # Can be omitted, defaults to true
 ---
 ```
 
-### 隐藏文章
+### Hide Article
 ```yaml
 ---
-title: "草稿文章"
+title: "Draft Article"
 date: "2024-12-19"
-visible: false  # 明确设置为false
+visible: false  # Explicitly set to false
 ---
 ```
 
-## 应用场景
+## Application Scenarios
 
-### 1. 草稿管理
+### 1. Draft Management
 ```yaml
 ---
-title: "正在编写的研究笔记"
+title: "Research Notes in Progress"
 date: "2024-12-19"
 visible: false
-tags: ["草稿", "研究"]
+tags: ["draft", "research"]
 ---
 ```
 
-### 2. 临时下线
+### 2. Temporary Offline
 ```yaml
 ---
-title: "需要修正的技术文章"
+title: "Technical Article Needing Corrections"
 date: "2024-12-15"
 visible: false
-tags: ["技术", "待修正"]
+tags: ["technical", "pending-fix"]
 ---
 ```
 
-### 3. 季节性内容
+### 3. Seasonal Content
 ```yaml
 ---
-title: "2024年会总结"
+title: "2024 Annual Meeting Summary"
 date: "2024-01-15"
-visible: false  # 年会结束后可以隐藏
-tags: ["年会", "总结"]
+visible: false  # Can be hidden after the meeting ends
+tags: ["annual-meeting", "summary"]
 ---
 ```
 
-## 管理建议
+## Management Recommendations
 
-1. **版本控制**：隐藏的文章仍然保存在代码库中，便于版本管理
-2. **备份完整性**：所有文章都会被备份，不会因为隐藏而丢失
-3. **URL访问**：需要注意隐藏文章仍可通过URL访问，不是完全的访问控制
-4. **SEO影响**：隐藏的文章不会出现在站内搜索中，但搜索引擎仍可能索引到
+1. **Version Control**: Hidden articles are still saved in the code repository for version management
+2. **Backup Integrity**: All articles will be backed up and won't be lost due to being hidden
+3. **URL Access**: Note that hidden articles can still be accessed via URL, this is not complete access control
+4. **SEO Impact**: Hidden articles won't appear in site search, but search engines may still index them
 
 ---
 
-*这个功能让博客管理更加灵活，无论是处理草稿、临时下线内容，还是管理季节性文章，都变得更加方便。* 
+*This feature makes blog management more flexible, whether handling drafts, temporarily taking content offline, or managing seasonal articles, everything becomes more convenient.* 
