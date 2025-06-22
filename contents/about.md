@@ -2,6 +2,12 @@
 
 Zhemin Li is currently a doctoral student in the Department of Mathematics at National University of Defense Technology, supervised by Researcher Hongxia Wang, pursuing a Ph.D. degree in Mathematics. 📚
 
+## Contact Information 📬
+
+📧 **Email:** 
+- 💌 lizhemin15@163.com (Primary)
+- 🏫 lizhemin@nudt.edu.cn (Academic)
+
 ## Educational Background 🎓
 
 **2019.09-2025.06** - National University of Defense Technology, Ph.D. in Mathematics 🔬  
