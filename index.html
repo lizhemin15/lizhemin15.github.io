@@ -1074,18 +1074,18 @@
     <!-- Table of Contents Float Navigation -->
     <div class="toc-container" id="toc-container">
         <div class="toc-header">
-            <span><i class="fas fa-list"></i> 目录</span>
-            <button class="toc-toggle" onclick="toggleTOC()" title="关闭目录">
+            <span><i class="fas fa-list"></i> Table of Contents</span>
+            <button class="toc-toggle" onclick="toggleTOC()" title="Close Table of Contents">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="toc-content" id="toc-content">
-            <div class="toc-empty">当前页面暂无标题</div>
+            <div class="toc-empty">No headings found on this page</div>
         </div>
     </div>
 
     <!-- TOC Toggle Button -->
-    <button class="toc-fab" id="toc-fab" onclick="toggleTOC()" title="显示目录">
+    <button class="toc-fab" id="toc-fab" onclick="toggleTOC()" title="Show Table of Contents">
         <i class="fas fa-list"></i>
     </button>
 
@@ -1106,7 +1106,7 @@
         // Global configuration object
         let siteConfig = null;
         let currentSection = null;
-        let tocVisible = false;
+        let tocVisible = true;
         let activeHeadingId = null;
 
         // Initialization after page load
@@ -1524,7 +1524,7 @@
             
             if (!content) {
                 console.log('No markdown content found, hiding TOC');
-                tocContent.innerHTML = '<div class="toc-empty">当前页面暂无标题</div>';
+                tocContent.innerHTML = '<div class="toc-empty">No headings found on this page</div>';
                 tocFab.classList.remove('show');
                 return;
             }
@@ -1534,7 +1534,7 @@
             
             if (headings.length === 0) {
                 console.log('No headings found, hiding TOC');
-                tocContent.innerHTML = '<div class="toc-empty">当前页面暂无标题</div>';
+                tocContent.innerHTML = '<div class="toc-empty">No headings found on this page</div>';
                 tocFab.classList.remove('show');
                 return;
             }
@@ -1613,15 +1613,11 @@
                 });
             });
             
-            // Show TOC button
-            console.log('Showing TOC button');
-            tocFab.classList.add('show');
-            
-            // Force button to be visible (debug)
-            setTimeout(() => {
-                tocFab.style.display = 'flex';
-                console.log('TOC button forced to display');
-            }, 500);
+            // Show TOC container by default
+            console.log('Showing TOC container by default');
+            const tocContainer = document.getElementById('toc-container');
+            tocContainer.classList.add('show');
+            tocFab.classList.remove('show');
             
             // Initialize scroll spy
             initScrollSpy();
@@ -1952,12 +1948,12 @@
             }
             tocVisible = false;
             
-            // 滚动到顶部
+            // Scroll to top
             const mainContent = document.querySelector('.main-content');
             mainContent.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 生成标签选项
+        // Generate tag options
         function generateTagOptions() {
             const allTags = new Set();
             // Only generate tags from visible posts
