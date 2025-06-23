@@ -11,5 +11,4 @@
 > 🤖 **AI-Powered Research**  
 > This is a one-person research team leveraging the power of AI assistants to explore cutting-edge topics in machine learning and artificial intelligence. 
 
-> 📝 **Coming Soon**  
-> Future blog posts will detail the methodologies and practical approaches for conducting AI-assisted research, including workflows, tools, and best practices for leveraging AI in academic and experimental settings. 
+> Future blog posts will detail the methodologies and practical approaches for conducting AI-assisted research, including workflows, tools, and best practices for leveraging AI in academic and experimental settings. Such as [Cursor powered Academic Page](?blog=blog-welcome.md)
