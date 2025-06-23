@@ -27,6 +27,24 @@
             --success-color: #27ae60;
             --warning-color: #f39c12;
             --sidebar-width: 320px;
+            
+            /* Dark mode variables */
+            --dark-primary-color: #1a1a2e;
+            --dark-secondary-color: #16213e;
+            --dark-accent-color: #0f3460;
+            --dark-text-color: #e8e8e8;
+            --dark-light-bg: #2d3748;
+            --dark-card-bg: #1a202c;
+            --dark-border-color: #4a5568;
+        }
+        
+        /* Dark mode styles */
+        [data-theme="dark"] {
+            --primary-color: var(--dark-primary-color);
+            --secondary-color: var(--dark-secondary-color);
+            --accent-color: var(--dark-accent-color);
+            --text-color: var(--dark-text-color);
+            --light-bg: var(--dark-light-bg);
         }
         
         * {
@@ -55,6 +73,10 @@
             z-index: 1000;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
+            /* 新增玻璃拟态效果 */
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(44, 62, 80, 0.75);
         }
 
         .sidebar::-webkit-scrollbar {
@@ -86,11 +108,25 @@
             object-fit: cover;
             object-position: center 20%;
             margin-bottom: 20px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.4s cubic-bezier(.4,2,.6,1);
+            /* 新增呼吸发光动画 */
+            box-shadow: 0 0 24px 4px rgba(52,152,219,0.4), 0 4px 20px rgba(0,0,0,0.2);
+            animation: avatar-glow 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes avatar-glow {
+            0% {
+                box-shadow: 0 0 12px 2px rgba(52,152,219,0.25), 0 4px 20px rgba(0,0,0,0.2);
+            }
+            100% {
+                box-shadow: 0 0 32px 8px rgba(52,152,219,0.7), 0 4px 20px rgba(0,0,0,0.2);
+            }
         }
 
         .profile-photo:hover {
-            transform: scale(1.05);
+            transform: scale(1.08);
+            box-shadow: 0 0 48px 12px rgba(52,152,219,0.95), 0 4px 20px rgba(0,0,0,0.2);
+            animation: none;
         }
 
         .profile-name {
@@ -124,12 +160,33 @@
             height: 40px;
             border-radius: 50%;
             background: rgba(255,255,255,0.1);
+            /* 新增动画属性 */
+            will-change: transform;
         }
 
         .social-links a:hover {
             color: var(--accent-color);
             background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
+            transform: scale(1.18) rotate(-15deg);
+            animation: social-bounce-spin 0.5s cubic-bezier(.4,2,.6,1);
+        }
+
+        @keyframes social-bounce-spin {
+            0% {
+                transform: scale(1) rotate(0deg);
+            }
+            40% {
+                transform: scale(1.25) rotate(-20deg);
+            }
+            60% {
+                transform: scale(0.95) rotate(10deg);
+            }
+            80% {
+                transform: scale(1.1) rotate(-8deg);
+            }
+            100% {
+                transform: scale(1.18) rotate(-15deg);
+            }
         }
 
         /* Navigation menu */
@@ -190,7 +247,10 @@
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
-            background-color: white;
+            /* 新增玻璃拟态效果 */
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px) saturate(160%);
+            -webkit-backdrop-filter: blur(8px) saturate(160%);
             position: relative;
         }
 
@@ -207,14 +267,49 @@
 
         .loading i {
             font-size: 3rem;
-            animation: spin 1s linear infinite;
+            animation: pulse-spin 2s ease-in-out infinite;
             margin-bottom: 20px;
             display: block;
+            color: var(--accent-color);
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 2px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #6dd5fa);
+            border-radius: 2px;
+            width: 0%;
+            animation: progress-fill 2s ease-in-out infinite;
+        }
+
+        @keyframes progress-fill {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes pulse-spin {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.1) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 0.7;
+            }
         }
 
         /* Markdown content styles */
@@ -889,14 +984,32 @@
              padding: 25px;
              margin-bottom: 25px;
              cursor: pointer;
-             transition: all 0.3s ease;
+             transition: all 0.3s cubic-bezier(.4,2,.6,1);
              box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+             position: relative;
+             overflow: hidden;
+             /* 新增动画属性 */
+             will-change: transform, box-shadow, border;
+         }
+
+         .blog-card::before {
+             content: '';
+             position: absolute;
+             left: 0; top: 0; right: 0; height: 4px;
+             background: linear-gradient(90deg, var(--accent-color), #6dd5fa, #fffde4);
+             opacity: 0;
+             transition: opacity 0.3s cubic-bezier(.4,2,.6,1);
+             z-index: 2;
          }
 
          .blog-card:hover {
-             transform: translateY(-2px);
-             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+             transform: translateY(-8px) scale(1.025);
+             box-shadow: 0 12px 32px rgba(52,152,219,0.18), 0 2px 8px rgba(0,0,0,0.08);
              border-color: var(--accent-color);
+         }
+
+         .blog-card:hover::before {
+             opacity: 1;
          }
 
          .blog-meta {
@@ -1103,6 +1216,494 @@
             background: rgba(0, 0, 0, 0.1);
             color: #333;
         }
+
+        /* Theme Toggle Button */
+        .theme-toggle-fixed {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(52, 152, 219, 0.3);
+            color: var(--accent-color);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.4,2,.6,1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--accent-color);
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 6px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Dark mode styles for theme toggle */
+        [data-theme="dark"] .theme-toggle-btn {
+            background: rgba(26, 26, 46, 0.9);
+            border-color: rgba(15, 52, 96, 0.5);
+            color: var(--dark-accent-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .theme-toggle-btn:hover {
+            background: rgba(26, 26, 46, 1);
+            border-color: var(--dark-accent-color);
+            box-shadow: 0 6px 25px rgba(15, 52, 96, 0.4);
+        }
+
+        /* Dark mode specific styles */
+        [data-theme="dark"] .sidebar {
+            background: linear-gradient(180deg, var(--dark-primary-color), var(--dark-secondary-color));
+            backdrop-filter: blur(16px) saturate(180%);
+            background-color: rgba(26, 26, 46, 0.85);
+        }
+
+        [data-theme="dark"] .main-content {
+            background: rgba(26, 26, 46, 0.8);
+            backdrop-filter: blur(8px) saturate(160%);
+        }
+
+        [data-theme="dark"] .markdown-content {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .markdown-content h1,
+        [data-theme="dark"] .markdown-content h2,
+        [data-theme="dark"] .markdown-content h3 {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .markdown-content code {
+            background-color: var(--dark-light-bg);
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .markdown-content pre {
+            background-color: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+        }
+
+        [data-theme="dark"] .markdown-content blockquote {
+            background: linear-gradient(135deg, var(--dark-light-bg), var(--dark-card-bg));
+            border-left-color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .blog-card {
+            background: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .blog-card:hover {
+            box-shadow: 0 12px 32px rgba(15, 52, 96, 0.3), 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .search-section {
+            background: var(--dark-light-bg);
+        }
+
+        [data-theme="dark"] .search-box input {
+            background: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .search-box input:focus {
+            border-color: var(--dark-accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(15, 52, 96, 0.25);
+        }
+
+        [data-theme="dark"] .form-select {
+            background: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .toc-container {
+            background: rgba(26, 26, 46, 0.95);
+            border-color: var(--dark-border-color);
+        }
+
+        [data-theme="dark"] .toc-item {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .toc-item:hover {
+            background: rgba(15, 52, 96, 0.2);
+        }
+
+        [data-theme="dark"] .toc-item.active {
+            background: rgba(15, 52, 96, 0.3);
+            color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .toc-item.active {
+            background: rgba(15, 52, 96, 0.3);
+            color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .loading-progress {
+            background: rgba(15, 52, 96, 0.3);
+        }
+
+        [data-theme="dark"] .loading-progress-bar {
+            background: linear-gradient(90deg, var(--dark-accent-color), #4a90e2);
+        }
+
+        /* Enhanced loading animation */
+        .loading {
+            text-align: center;
+            padding: 80px 0;
+            color: var(--secondary-color);
+        }
+
+        .loading i {
+            font-size: 3rem;
+            animation: pulse-spin 2s ease-in-out infinite;
+            margin-bottom: 20px;
+            display: block;
+            color: var(--accent-color);
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 4px;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 2px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), #6dd5fa);
+            border-radius: 2px;
+            width: 0%;
+            animation: progress-fill 2s ease-in-out infinite;
+        }
+
+        @keyframes progress-fill {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes pulse-spin {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.1) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 0.7;
+            }
+        }
+
+        /* Page transition animations */
+        .content-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced card hover effects */
+        .blog-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .blog-card:hover::after {
+            left: 100%;
+        }
+
+        /* Academic decoration elements */
+        .academic-decoration {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .academic-decoration::before {
+            content: '⚗️';
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .academic-decoration::after {
+            content: '🔬';
+            position: absolute;
+            top: 40px;
+            right: -20px;
+            font-size: 1.5rem;
+            animation: float 3s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* Enhanced mobile experience */
+        @media (max-width: 768px) {
+            .theme-toggle-fixed {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .theme-toggle-btn {
+                width: 48px;
+                height: 48px;
+                font-size: 1.1rem;
+            }
+
+            .academic-decoration {
+                display: none;
+            }
+
+            .content-fade-in {
+                animation-duration: 0.4s;
+            }
+
+            .blog-card {
+                margin-bottom: 20px;
+            }
+
+            .blog-card:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+        }
+
+        /* Enhanced focus and interaction states */
+        .btn:focus,
+        .form-control:focus,
+        .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            border-color: var(--accent-color);
+        }
+
+        /* Improved button styles */
+        .btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced table styles */
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content table:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Enhanced code block styles */
+        .markdown-content pre {
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content pre:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Dark mode table and code block adjustments */
+        [data-theme="dark"] .markdown-content table {
+            border-color: var(--dark-border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .markdown-content table:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .markdown-content pre {
+            background-color: var(--dark-card-bg);
+            border-color: var(--dark-border-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .markdown-content pre:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+
+        /* Improved focus states for accessibility */
+        .nav-link:focus,
+        .theme-toggle-btn:focus,
+        .social-links a:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        /* Smooth theme transition */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .markdown-content strong {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .markdown-content b {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .blog-title {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .blog-post-title {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .profile-name {
+            color: white;
+        }
+
+        [data-theme="dark"] .profile-title {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        [data-theme="dark"] .blogs-header h1 {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .blog-post-meta {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .blog-date {
+            color: rgba(232, 232, 232, 0.8);
+        }
+
+        [data-theme="dark"] .read-more {
+            color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .read-more:hover {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .text-muted {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        [data-theme="dark"] .btn-outline-secondary {
+            color: var(--dark-text-color);
+            border-color: var(--dark-border-color);
+        }
+
+        [data-theme="dark"] .btn-outline-secondary:hover {
+            background-color: var(--dark-light-bg);
+            border-color: var(--dark-accent-color);
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .btn-outline-primary {
+            color: var(--dark-accent-color);
+            border-color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .btn-outline-primary:hover {
+            background-color: var(--dark-accent-color);
+            border-color: var(--dark-accent-color);
+            color: white;
+        }
+
+        [data-theme="dark"] .error-message {
+            background: linear-gradient(135deg, #2d1b1b, #1a0f0f);
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        [data-theme="dark"] .no-results {
+            background: var(--dark-light-bg);
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .search-results {
+            background: rgba(15, 52, 96, 0.2);
+            border-left-color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .search-results small {
+            color: rgba(232, 232, 232, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -1119,10 +1720,10 @@
         <!-- Profile section -->
         <div class="profile-section">
             <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Profile Photo" class="profile-photo">
-                            <div id="profile-name" class="profile-name">Loading...</div>
-                <div id="profile-title" class="profile-title">Loading...</div>
+            <div id="profile-name" class="profile-name">Loading...</div>
+            <div id="profile-title" class="profile-title">Loading...</div>
             <div id="social-links" class="social-links">
-                                  <!-- Social links will be dynamically generated by JavaScript -->
+                <!-- Social links will be dynamically generated by JavaScript -->
             </div>
         </div>
 
@@ -1164,12 +1765,23 @@
     <!-- Main content area -->
     <main class="main-content">
         <div class="content-wrapper">
+            <div class="academic-decoration"></div>
             <div id="content">
                 <div class="loading">
                     <i class="fas fa-spinner"></i>
                     <p id="loading-text">Loading content...</p>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Theme Toggle Button - Fixed at bottom left -->
+        <div class="theme-toggle-fixed">
+            <button id="theme-toggle" class="theme-toggle-btn" title="Toggle Dark Mode">
+                <i class="fas fa-sun"></i>
+            </button>
         </div>
     </main>
 
@@ -1185,9 +1797,15 @@
         let currentBlogPost = null;
         let isInitialLoad = true;
 
+        // Theme management
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
         // Initialization after page load
         document.addEventListener('DOMContentLoaded', async function() {
             try {
+                // Initialize theme
+                initializeTheme();
+                
                 // Load configuration file
                 await loadConfig();
                 
@@ -1222,6 +1840,51 @@
                 loadContentFromURL();
             });
         });
+
+        // Theme management functions
+        function initializeTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            
+            // Set initial theme
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(icon, currentTheme);
+            
+            // Add click event listener
+            themeToggle.addEventListener('click', function() {
+                toggleTheme();
+            });
+        }
+
+        function toggleTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const icon = themeToggle.querySelector('i');
+            
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            // Update DOM
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon(icon, currentTheme);
+            
+            // Save to localStorage
+            localStorage.setItem('theme', currentTheme);
+            
+            // Add transition effect
+            themeToggle.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = '';
+            }, 300);
+        }
+
+        function updateThemeIcon(icon, theme) {
+            if (theme === 'dark') {
+                icon.className = 'fas fa-moon';
+                icon.style.color = '#f1c40f';
+            } else {
+                icon.className = 'fas fa-sun';
+                icon.style.color = '#f39c12';
+            }
+        }
 
         // Initialize URL routing system
         function initURLRouting() {
@@ -1327,6 +1990,9 @@
                 <div class="loading">
                     <i class="fas fa-spinner"></i>
                     <p>Loading article...</p>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
                 </div>
             `;
             
@@ -1354,7 +2020,7 @@
                     : '';
                 
                 contentDiv.innerHTML = `
-                    <div class="blog-post">
+                    <div class="blog-post content-fade-in">
                         <div class="blog-post-header">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
@@ -1436,10 +2102,7 @@
         // Load configuration file
         async function loadConfig() {
             try {
-                const response = await fetch('./config.yml');
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
+                const response = await fetchWithRetry('./config.yml');
                 const yamlText = await response.text();
                 siteConfig = jsyaml.load(yamlText);
                 console.log('Configuration loaded successfully:', siteConfig);
@@ -1980,12 +2643,15 @@
             const contentDiv = document.getElementById('content');
             currentSection = section;
             
-            // Show loading state
+            // Show loading state with enhanced animation
             const loadingText = siteConfig?.pages?.loading_text || 'Loading content...';
             contentDiv.innerHTML = `
                 <div class="loading">
                     <i class="fas fa-spinner"></i>
                     <p>${loadingText}</p>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
                 </div>
             `;
 
@@ -2018,7 +2684,8 @@
                 // Render math formulas (replace placeholders in HTML)
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
                 
-                contentDiv.innerHTML = `<div class="markdown-content">${htmlContent}</div>`;
+                // Add fade-in animation class
+                contentDiv.innerHTML = `<div class="markdown-content content-fade-in">${htmlContent}</div>`;
                 
                 // Highlight code blocks
                 contentDiv.querySelectorAll('pre code').forEach((block) => {
@@ -2050,7 +2717,7 @@
                     document.title = siteConfig.site.title;
                 }
                 
-                // Scroll to top
+                // Scroll to top with smooth animation
                 const mainContent = document.querySelector('.main-content');
                 mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 
@@ -2183,7 +2850,7 @@
             const contentDiv = document.getElementById('content');
             
             const blogsHtml = `
-                <div class="blogs-container">
+                <div class="blogs-container content-fade-in">
                     <div class="blogs-header">
                         <h1><i class="fas fa-blog"></i> Blog Posts</h1>
                         <p class="text-muted">Sharing research insights, technical discoveries, and academic reflections</p>
@@ -2467,7 +3134,7 @@
                     : '';
                 
                 contentDiv.innerHTML = `
-                    <div class="blog-post">
+                    <div class="blog-post content-fade-in">
                         <div class="blog-post-header">
                             <div class="d-flex justify-content-between align-items-start mb-3">
                                 <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
@@ -2641,6 +3308,47 @@
             const modal = document.getElementById('qr-modal');
             modal.classList.remove('show');
         }
+
+        // Performance optimization: Preload critical resources
+        function preloadCriticalResources() {
+            // Preload configuration file
+            const configLink = document.createElement('link');
+            configLink.rel = 'preload';
+            configLink.href = './config.yml';
+            configLink.as = 'fetch';
+            configLink.crossOrigin = 'anonymous';
+            document.head.appendChild(configLink);
+
+            // Preload blogs.json if we're likely to visit blogs
+            const blogsLink = document.createElement('link');
+            blogsLink.rel = 'preload';
+            blogsLink.href = './blogs.json';
+            blogsLink.as = 'fetch';
+            blogsLink.crossOrigin = 'anonymous';
+            document.head.appendChild(blogsLink);
+        }
+
+        // Enhanced error handling with retry mechanism
+        async function fetchWithRetry(url, options = {}, maxRetries = 3) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) {
+                        return response;
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        throw error;
+                    }
+                    // Wait before retrying (exponential backoff)
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                }
+            }
+        }
+
+        // Initialize preloading
+        preloadCriticalResources();
     </script>
 </body>
 </html>
