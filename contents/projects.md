@@ -8,27 +8,26 @@ The following are the main research projects I have participated in, covering ap
 
 ## Toolbox of Differentiable Signal and Regularization Representation
 
-<div class="project-card" data-category="algorithms">
-<div class="project-image" style="background-image: url('https://github.com/lizhemin15/RSS/raw/master/statics/logo.jpg'); background-color: #f5f5f5;">
+<div class="project-card" data-category="publications">
+<div class="project-image" style="background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center;">
+<div style="color: white; text-align: center; font-size: 3rem;">📄</div>
 </div>
 <div class="project-content">
 <div class="project-info">
-<h3>RSS</h3>
-<p>Toolbox of Differentiable Signal and Regularization Representation.</p>
+<h3>RSS Paper Details</h3>
+<p>Display detailed information about the RSS paper, including abstract, keywords, related links, and paper metrics.</p>
 <div class="project-tags">
-<span class="tag">Deep Learning</span>
-<span class="tag">Regularization</span>
-<span class="tag">High-Dimensional Data</span>
+<span class="tag">Paper Display</span>
+<span class="tag">Academic Research</span>
+<span class="tag">Signal Processing</span>
 </div>
 </div>
 <div class="project-links">
-<a href="https://github.com/lizhemin15/RSS" class="project-link"><i class="fas fa-external-link-alt"></i> Details</a>
-<a href="https://github.com/lizhemin15/RSS" class="project-link"><i class="fab fa-github"></i> Code</a>
+<a href="../projects/paper-detail.html" class="project-link"><i class="fas fa-external-link-alt"></i> View Details</a>
+<a href="https://github.com/lizhemin15/RSS" class="project-link"><i class="fab fa-github"></i> Paper Code</a>
 </div>
 </div>
 </div>
-
-
 
 </div>
 
@@ -78,8 +77,6 @@ The following are the main research projects I have participated in, covering ap
 .project-image * {
     display: none !important;
 }
-
-
 
 .project-content {
     padding: 25px 25px 30px 25px;

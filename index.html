@@ -1108,6 +1108,10 @@
         let currentSection = null;
         let tocVisible = true;
         let activeHeadingId = null;
+        
+        // URL routing state
+        let currentBlogPost = null;
+        let isInitialLoad = true;
 
         // Initialization after page load
         document.addEventListener('DOMContentLoaded', async function() {
@@ -1121,8 +1125,11 @@
                 // Generate navigation menu
                 generateNavigation();
                 
-                // Load default page
-                loadDefaultContent();
+                // Initialize URL routing
+                initURLRouting();
+                
+                // Load content based on current URL
+                loadContentFromURL();
                 
             } catch (error) {
                 console.error('Initialization failed:', error);
@@ -1136,7 +1143,197 @@
                     document.querySelector('.overlay').classList.remove('active');
                 }
             });
+            
+            // Listen for browser back/forward buttons
+            window.addEventListener('popstate', function(event) {
+                console.log('Popstate event:', event.state);
+                loadContentFromURL();
+            });
         });
+
+        // Initialize URL routing system
+        function initURLRouting() {
+            console.log('Initializing URL routing system');
+            
+            // Set up URL change detection
+            let currentURL = window.location.href;
+            
+            // Check for URL changes (for cases where pushState might not trigger popstate)
+            setInterval(() => {
+                if (window.location.href !== currentURL) {
+                    currentURL = window.location.href;
+                    console.log('URL changed to:', currentURL);
+                    loadContentFromURL();
+                }
+            }, 100);
+        }
+
+        // Load content based on current URL
+        function loadContentFromURL() {
+            const url = new URL(window.location.href);
+            const section = url.searchParams.get('section');
+            const blogPost = url.searchParams.get('blog');
+            
+            console.log('Loading content from URL - section:', section, 'blog:', blogPost);
+            
+            if (blogPost) {
+                // Load specific blog post
+                loadBlogPostByURL(blogPost);
+            } else if (section) {
+                // Load specific section
+                loadContent(section);
+            } else {
+                // Load default content
+                loadDefaultContent();
+            }
+        }
+
+        // Update URL without triggering page reload
+        function updateURL(params, replace = false) {
+            const url = new URL(window.location.href);
+            
+            // Clear existing parameters
+            url.searchParams.delete('section');
+            url.searchParams.delete('blog');
+            
+            // Add new parameters
+            Object.entries(params).forEach(([key, value]) => {
+                if (value) {
+                    url.searchParams.set(key, value);
+                }
+            });
+            
+            const newURL = url.toString();
+            console.log('Updating URL:', newURL, 'replace:', replace);
+            
+            if (replace) {
+                window.history.replaceState(params, '', newURL);
+            } else {
+                window.history.pushState(params, '', newURL);
+            }
+        }
+
+        // Load blog post by URL parameter
+        async function loadBlogPostByURL(fileName) {
+            const contentDiv = document.getElementById('content');
+            currentBlogPost = fileName;
+            
+            // Update navigation state
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const blogsNav = document.querySelector('.nav-link[data-section="blogs"]');
+            if (blogsNav) {
+                blogsNav.classList.add('active');
+            }
+            
+            // Show loading state
+            contentDiv.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading article...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`./blogs/${fileName}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const markdownText = await response.text();
+                const post = parseBlogPost(markdownText, fileName);
+                
+                if (!post) {
+                    throw new Error('Article parsing failed');
+                }
+                
+                // Render single article
+                const { content: preprocessedContent, mathBlocks } = preprocessMathFormulas(post.content);
+                let htmlContent = marked.parse(preprocessedContent);
+                htmlContent = renderMathFormulas(htmlContent, mathBlocks);
+                
+                const date = formatDate(post.date);
+                const tags = post.tags && Array.isArray(post.tags) 
+                    ? post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')
+                    : '';
+                
+                contentDiv.innerHTML = `
+                    <div class="blog-post">
+                        <div class="blog-post-header">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
+                                    <i class="fas fa-arrow-left"></i> Back to Blog List
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
+                                    <i class="fas fa-share-alt"></i> Share
+                                </button>
+                            </div>
+                            <div class="blog-post-meta">
+                                <span class="blog-date">
+                                    <i class="fas fa-calendar"></i> ${date}
+                                </span>
+                                ${tags}
+                            </div>
+                            <h1 class="blog-post-title">${post.title || 'Untitled'}</h1>
+                        </div>
+                        <div class="blog-post-content markdown-content">
+                            ${htmlContent}
+                        </div>
+                    </div>
+                `;
+                
+                // Highlight code blocks
+                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+                
+                // Add code copy buttons
+                addCopyButtons();
+                
+                // Add math formula copy function
+                addMathCopyFunction();
+                
+                // Add target="_blank" for external links
+                contentDiv.querySelectorAll('a[href^="http"]').forEach(link => {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                });
+                
+                // Handle responsive images
+                handleResponsiveImages();
+                
+                // Generate table of contents
+                generateTableOfContents();
+                
+                // Update page title
+                const pageTitle = document.getElementById('page-title');
+                if (pageTitle && post.title) {
+                    pageTitle.textContent = `${post.title} - ${siteConfig.site.title}`;
+                    document.title = `${post.title} - ${siteConfig.site.title}`;
+                }
+                
+                // Scroll to top
+                const mainContent = document.querySelector('.main-content');
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error loading blog post:', error);
+                showError('Article Loading Failed', `Unable to load article "${fileName}"`, error.message, 'blogs');
+            }
+        }
+
+        // Navigate to blogs list
+        function navigateToBlogs() {
+            updateURL({ section: 'blogs' });
+            loadContent('blogs');
+        }
+
+        // Load default content
+        function loadDefaultContent() {
+            const defaultItem = siteConfig.navigation.find(item => item.default) || siteConfig.navigation[0];
+            if (defaultItem) {
+                loadContent(defaultItem.id);
+            }
+        }
 
         // Load configuration file
         async function loadConfig() {
@@ -1245,7 +1442,6 @@
                 const navLink = document.createElement('button');
                 navLink.className = 'nav-link';
                 navLink.setAttribute('data-section', item.id);
-                navLink.onclick = () => loadContent(item.id);
 
                 // Set default active item
                 if (item.default || index === 0) {
@@ -1268,20 +1464,16 @@
                     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
                     
+                    // Update URL and let routing system handle the loading
+                    const section = this.getAttribute('data-section');
+                    updateURL({ section: section });
+                    
                     // Close sidebar on mobile
                     if (window.innerWidth <= 768) {
                         toggleSidebar();
                     }
                 });
             });
-        }
-
-        // Load default content
-        function loadDefaultContent() {
-            const defaultItem = siteConfig.navigation.find(item => item.default) || siteConfig.navigation[0];
-            if (defaultItem) {
-                loadContent(defaultItem.id);
-            }
         }
 
         // Markdown configuration
@@ -1690,6 +1882,9 @@
             const contentDiv = document.getElementById('content');
             currentSection = section;
             
+            // Update URL
+            updateURL({ section: section });
+            
             // Show loading state
             const loadingText = siteConfig?.pages?.loading_text || 'Loading content...';
             contentDiv.innerHTML = `
@@ -1752,6 +1947,13 @@
                 
                 // Generate table of contents
                 generateTableOfContents();
+                
+                // Update page title
+                const pageTitle = document.getElementById('page-title');
+                if (pageTitle && siteConfig.site?.title) {
+                    pageTitle.textContent = siteConfig.site.title;
+                    document.title = siteConfig.site.title;
+                }
                 
                 // Scroll to top
                 const mainContent = document.querySelector('.main-content');
@@ -1828,8 +2030,6 @@
             }
         }
 
-
-
         // Parse blog post, extract front matter and content
         function parseBlogPost(markdownText, fileName) {
             const frontMatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
@@ -1886,6 +2086,9 @@
         // Render blogs page
         function renderBlogsPage() {
             const contentDiv = document.getElementById('content');
+            
+            // Update URL
+            updateURL({ section: 'blogs' });
             
             const blogsHtml = `
                 <div class="blogs-container">
@@ -1948,6 +2151,13 @@
             }
             tocVisible = false;
             
+            // Update page title
+            const pageTitle = document.getElementById('page-title');
+            if (pageTitle && siteConfig.site?.title) {
+                pageTitle.textContent = `Blog - ${siteConfig.site.title}`;
+                document.title = `Blog - ${siteConfig.site.title}`;
+            }
+            
             // Scroll to top
             const mainContent = document.querySelector('.main-content');
             mainContent.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1987,8 +2197,11 @@
                     ? post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')
                     : '';
                 
+                // Create URL for the blog post
+                const blogURL = `?blog=${encodeURIComponent(post.fileName)}`;
+                
                 return `
-                    <article class="blog-card" onclick="viewBlogPost('${post.fileName}')">
+                    <article class="blog-card" onclick="window.location.href='${blogURL}'">
                         <div class="blog-meta">
                             <span class="blog-date">
                                 <i class="fas fa-calendar"></i> ${date}
@@ -2122,6 +2335,12 @@
 
         // View single blog post
         async function viewBlogPost(fileName) {
+            // Update URL and let the routing system handle the loading
+            updateURL({ blog: fileName });
+        }
+
+        // Direct blog post loading (for internal use)
+        async function loadBlogPostDirect(fileName) {
             const contentDiv = document.getElementById('content');
             
             // Show loading state
@@ -2158,9 +2377,14 @@
                 contentDiv.innerHTML = `
                     <div class="blog-post">
                         <div class="blog-post-header">
-                            <button class="btn btn-outline-secondary mb-3" onclick="loadContent('blogs')">
-                                <i class="fas fa-arrow-left"></i> Back to Blog List
-                            </button>
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
+                                    <i class="fas fa-arrow-left"></i> Back to Blog List
+                                </button>
+                                <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
+                                    <i class="fas fa-share-alt"></i> Share
+                                </button>
+                            </div>
                             <div class="blog-post-meta">
                                 <span class="blog-date">
                                     <i class="fas fa-calendar"></i> ${date}
@@ -2197,6 +2421,13 @@
                 
                 // Generate table of contents
                 generateTableOfContents();
+                
+                // Update page title
+                const pageTitle = document.getElementById('page-title');
+                if (pageTitle && post.title) {
+                    pageTitle.textContent = `${post.title} - ${siteConfig.site.title}`;
+                    document.title = `${post.title} - ${siteConfig.site.title}`;
+                }
                 
                 // Scroll to top
                 const mainContent = document.querySelector('.main-content');
@@ -2253,6 +2484,42 @@
             childList: true,
             subtree: true
         });
+
+        // Share blog post function
+        function shareBlogPost(fileName, title) {
+            const currentURL = new URL(window.location.href);
+            const shareURL = `${currentURL.origin}${currentURL.pathname}?blog=${encodeURIComponent(fileName)}`;
+            
+            // Try to use Web Share API if available
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: shareURL
+                }).catch(err => {
+                    console.log('Share failed:', err);
+                    copyToClipboard(shareURL);
+                });
+            } else {
+                // Fallback to clipboard copy
+                copyToClipboard(shareURL);
+            }
+        }
+
+        // Copy text to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                showToast('Link copied to clipboard!');
+            }).catch(function() {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Link copied to clipboard!');
+            });
+        }
     </script>
 </body>
 </html>
