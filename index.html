@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Academic Homepage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Marked.js for markdown parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Highlight.js for syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <!-- js-yaml for YAML parsing -->
-    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-    <!-- KaTeX for math rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <!-- Bootstrap CSS - 使用国内CDN -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome - 使用国内CDN -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Marked.js for markdown parsing - 使用国内CDN -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <!-- Highlight.js for syntax highlighting - 使用国内CDN -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <!-- js-yaml for YAML parsing - 使用国内CDN -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <!-- KaTeX for math rendering - 使用国内CDN -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
     <style id="dynamic-styles">
         :root {
             --primary-color: #2c3e50;
@@ -1785,7 +1787,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
         // Global configuration object
         let siteConfig = null;
@@ -3541,29 +3543,56 @@
             const fallbacks = [
                 {
                     name: 'jsyaml',
-                    url: 'https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js',
+                    urls: [
+                        'https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js',
+                        'https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js',
+                        'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js'
+                    ],
                     check: () => typeof jsyaml !== 'undefined'
                 },
                 {
                     name: 'marked',
-                    url: 'https://unpkg.com/marked@4.3.0/marked.min.js',
+                    urls: [
+                        'https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js',
+                        'https://unpkg.com/marked@4.3.0/marked.min.js',
+                        'https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js'
+                    ],
                     check: () => typeof marked !== 'undefined'
                 },
                 {
                     name: 'highlight.js',
-                    url: 'https://unpkg.com/highlight.js@11.8.0/lib/highlight.min.js',
+                    urls: [
+                        'https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/highlight.min.js',
+                        'https://unpkg.com/highlight.js@11.8.0/lib/highlight.min.js',
+                        'https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/highlight.min.js'
+                    ],
                     check: () => typeof hljs !== 'undefined'
+                },
+                {
+                    name: 'katex',
+                    urls: [
+                        'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js',
+                        'https://unpkg.com/katex@0.16.9/dist/katex.min.js',
+                        'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js'
+                    ],
+                    check: () => typeof katex !== 'undefined'
                 }
             ];
             
             for (const lib of fallbacks) {
                 if (!lib.check()) {
                     console.log(`Loading fallback for ${lib.name}...`);
-                    try {
-                        await loadScript(lib.url);
-                        console.log(`${lib.name} loaded from fallback`);
-                    } catch (error) {
-                        console.error(`Failed to load fallback for ${lib.name}:`, error);
+                    
+                    // Try each URL until one works
+                    for (const url of lib.urls) {
+                        try {
+                            await loadScript(url);
+                            console.log(`${lib.name} loaded from ${url}`);
+                            break; // Success, stop trying other URLs
+                        } catch (error) {
+                            console.warn(`Failed to load ${lib.name} from ${url}:`, error);
+                            continue; // Try next URL
+                        }
                     }
                 }
             }
