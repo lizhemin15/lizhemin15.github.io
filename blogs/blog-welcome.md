@@ -13,7 +13,6 @@ Hello everyone! 🎉
 
 I'm excited to announce that today, **June 22nd, 2025**, I've officially launched my personal GitHub Pages website, and I built it entirely using **Cursor IDE**. This marks an important milestone in my journey as a developer and researcher.
 
-![Welcome Banner](https://via.placeholder.com/800x300/4CAF50/ffffff?text=Welcome+to+My+Personal+Pages)
 *Welcome to my personal corner of the internet!*
 
 ## Why I Created This Site

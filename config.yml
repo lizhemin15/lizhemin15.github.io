@@ -83,9 +83,8 @@ navigation:
 # Contact Information
 contact:
   email: "lizhemin@nudt.edu.cn"
-  phone: "+86-731-84574000"
   office: "Department of Mathematics, National University of Defense Technology"
-  website: "https://www.nudt.edu.cn"
+
 
 # Theme Configuration
 theme:
