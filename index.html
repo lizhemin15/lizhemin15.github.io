@@ -1176,6 +1176,9 @@
             
             console.log('Loading content from URL - section:', section, 'blog:', blogPost);
             
+            // Update navigation state based on current URL
+            updateNavigationState(section, blogPost);
+            
             if (blogPost) {
                 // Load specific blog post
                 loadBlogPostByURL(blogPost);
@@ -1185,6 +1188,35 @@
             } else {
                 // Load default content
                 loadDefaultContent();
+            }
+        }
+
+        // Update navigation state based on current URL
+        function updateNavigationState(section, blogPost) {
+            // Clear all active states
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            if (blogPost) {
+                // If viewing a blog post, activate the blogs section
+                const blogsNav = document.querySelector('.nav-link[data-section="blogs"]');
+                if (blogsNav) {
+                    blogsNav.classList.add('active');
+                }
+            } else if (section) {
+                // If viewing a specific section, activate that section
+                const sectionNav = document.querySelector(`.nav-link[data-section="${section}"]`);
+                if (sectionNav) {
+                    sectionNav.classList.add('active');
+                }
+            } else {
+                // If no section specified, activate the default section
+                const defaultItem = siteConfig.navigation.find(item => item.default) || siteConfig.navigation[0];
+                if (defaultItem) {
+                    const defaultNav = document.querySelector(`.nav-link[data-section="${defaultItem.id}"]`);
+                    if (defaultNav) {
+                        defaultNav.classList.add('active');
+                    }
+                }
             }
         }
 
@@ -1217,13 +1249,6 @@
         async function loadBlogPostByURL(fileName) {
             const contentDiv = document.getElementById('content');
             currentBlogPost = fileName;
-            
-            // Update navigation state
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            const blogsNav = document.querySelector('.nav-link[data-section="blogs"]');
-            if (blogsNav) {
-                blogsNav.classList.add('active');
-            }
             
             // Show loading state
             contentDiv.innerHTML = `
@@ -1324,13 +1349,14 @@
         // Navigate to blogs list
         function navigateToBlogs() {
             updateURL({ section: 'blogs' });
-            loadContent('blogs');
+            loadContentFromURL();
         }
 
         // Load default content
         function loadDefaultContent() {
             const defaultItem = siteConfig.navigation.find(item => item.default) || siteConfig.navigation[0];
             if (defaultItem) {
+                updateURL({ section: defaultItem.id });
                 loadContent(defaultItem.id);
             }
         }
@@ -1443,11 +1469,6 @@
                 navLink.className = 'nav-link';
                 navLink.setAttribute('data-section', item.id);
 
-                // Set default active item
-                if (item.default || index === 0) {
-                    navLink.classList.add('active');
-                }
-
                 navLink.innerHTML = `
                     <i class="${item.icon}"></i>
                     ${item.title}
@@ -1459,10 +1480,6 @@
                 // Add click event listener
                 navLink.addEventListener('click', function(e) {
                     e.preventDefault();
-                    
-                    // Update navigation state
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
                     
                     // Update URL and let routing system handle the loading
                     const section = this.getAttribute('data-section');
@@ -1882,9 +1899,6 @@
             const contentDiv = document.getElementById('content');
             currentSection = section;
             
-            // Update URL
-            updateURL({ section: section });
-            
             // Show loading state
             const loadingText = siteConfig?.pages?.loading_text || 'Loading content...';
             contentDiv.innerHTML = `
@@ -2086,9 +2100,6 @@
         // Render blogs page
         function renderBlogsPage() {
             const contentDiv = document.getElementById('content');
-            
-            // Update URL
-            updateURL({ section: 'blogs' });
             
             const blogsHtml = `
                 <div class="blogs-container">
