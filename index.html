@@ -1042,6 +1042,67 @@
                  font-size: 1.6rem;
              }
          }
+
+        /* WeChat QR Code Modal */
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal.show {
+            display: flex;
+        }
+
+        .qr-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+
+        .qr-content h3 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .qr-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .qr-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -1088,6 +1149,17 @@
     <button class="toc-fab" id="toc-fab" onclick="toggleTOC()" title="Show Table of Contents">
         <i class="fas fa-list"></i>
     </button>
+
+    <!-- WeChat QR Code Modal -->
+    <div class="qr-modal" id="qr-modal">
+        <div class="qr-content">
+            <button class="qr-close" onclick="closeQRModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3>WeChat QR Code</h3>
+            <img id="qr-image" src="" alt="WeChat QR Code" class="qr-image">
+        </div>
+    </div>
 
     <!-- Main content area -->
     <main class="main-content">
@@ -1446,10 +1518,19 @@
                 a.title = link.tooltip || link.name;
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 
-                // For email links, no need for target="_blank"
-                if (!link.url.startsWith('mailto:')) {
-                    a.target = '_blank';
-                    a.rel = 'noopener noreferrer';
+                // Special handling for WeChat QR code
+                if (link.name === 'WeChat' && link.qr_code) {
+                    a.href = '#';
+                    a.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        showQRModal(link.qr_code);
+                    });
+                } else {
+                    // For email links, no need for target="_blank"
+                    if (!link.url.startsWith('mailto:')) {
+                        a.target = '_blank';
+                        a.rel = 'noopener noreferrer';
+                    }
                 }
                 
                 socialContainer.appendChild(a);
@@ -2530,6 +2611,35 @@
                 document.body.removeChild(textArea);
                 showToast('Link copied to clipboard!');
             });
+        }
+
+        // Show QR Code Modal
+        function showQRModal(qrCodePath) {
+            const modal = document.getElementById('qr-modal');
+            const qrImage = document.getElementById('qr-image');
+            
+            qrImage.src = qrCodePath;
+            modal.classList.add('show');
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeQRModal();
+                }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeQRModal();
+                }
+            });
+        }
+
+        // Close QR Code Modal
+        function closeQRModal() {
+            const modal = document.getElementById('qr-modal');
+            modal.classList.remove('show');
         }
     </script>
 </body>
