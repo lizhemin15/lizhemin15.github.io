@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Configuration File Test</h1>
+    <p>This page tests if your configuration file can be loaded correctly.</p>
+    
+    <div class="test-section">
+        <h3>Test Results</h3>
+        <div id="results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Actions</h3>
+        <button onclick="testConfig()">Test Configuration</button>
+        <button onclick="clearCache()">Clear Browser Cache</button>
+        <button onclick="location.reload()">Refresh Page</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Configuration Content</h3>
+        <div id="config-content" class="code"></div>
+    </div>
+
+    <script>
+        async function testConfig() {
+            const resultsDiv = document.getElementById('results');
+            const configDiv = document.getElementById('config-content');
+            
+            resultsDiv.innerHTML = '<p>Testing configuration...</p>';
+            configDiv.textContent = '';
+            
+            try {
+                // Test 1: Check if js-yaml is loaded
+                if (typeof jsyaml === 'undefined') {
+                    throw new Error('js-yaml library not loaded');
+                }
+                
+                // Test 2: Fetch configuration file
+                const timestamp = new Date().getTime();
+                const response = await fetch(`./config.yml?t=${timestamp}`, {
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const yamlText = await response.text();
+                
+                if (!yamlText || yamlText.trim().length === 0) {
+                    throw new Error('Configuration file is empty');
+                }
+                
+                // Test 3: Parse YAML
+                const config = jsyaml.load(yamlText);
+                
+                if (!config) {
+                    throw new Error('YAML parsing returned null or undefined');
+                }
+                
+                // Test 4: Validate essential sections
+                const requiredSections = ['site', 'navigation'];
+                const missingSections = requiredSections.filter(section => !config[section]);
+                
+                if (missingSections.length > 0) {
+                    throw new Error(`Missing required sections: ${missingSections.join(', ')}`);
+                }
+                
+                // Display success
+                resultsDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Configuration Test Passed</h4>
+                        <p>All tests completed successfully!</p>
+                        <ul>
+                            <li>✅ js-yaml library loaded</li>
+                            <li>✅ Configuration file accessible</li>
+                            <li>✅ YAML parsing successful</li>
+                            <li>✅ Required sections present</li>
+                        </ul>
+                    </div>
+                `;
+                
+                // Display configuration content
+                configDiv.textContent = JSON.stringify(config, null, 2);
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Configuration Test Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Type:</strong> ${error.name}</p>
+                    </div>
+                `;
+                
+                configDiv.textContent = 'Configuration could not be loaded';
+            }
+        }
+        
+        function clearCache() {
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            
+            // Clear localStorage
+            localStorage.clear();
+            
+            alert('Browser cache cleared. Please refresh the page.');
+        }
+        
+        // Auto-test on page load
+        window.addEventListener('load', testConfig);
+    </script>
+</body>
+</html> 

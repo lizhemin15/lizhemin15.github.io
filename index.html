@@ -1803,10 +1803,21 @@
         // Initialization after page load
         document.addEventListener('DOMContentLoaded', async function() {
             try {
+                console.log('Starting website initialization...');
+                
+                // Check if all required dependencies are loaded
+                try {
+                    checkDependencies();
+                } catch (depError) {
+                    console.warn('Some dependencies missing, attempting to load fallbacks...');
+                    await loadFallbackLibraries();
+                    checkDependencies(); // Check again after loading fallbacks
+                }
+                
                 // Initialize theme
                 initializeTheme();
                 
-                // Load configuration file
+                // Load configuration file with enhanced error handling
                 await loadConfig();
                 
                 // Apply configuration
@@ -1821,9 +1832,62 @@
                 // Load content based on current URL
                 loadContentFromURL();
                 
+                console.log('Website initialization completed successfully');
+                
             } catch (error) {
                 console.error('Initialization failed:', error);
-                showError('Configuration Load Failed', 'Unable to load website configuration file');
+                
+                // Show more detailed error information
+                let errorMessage = 'Unable to load website configuration file';
+                let errorDetails = error.message;
+                
+                if (error.message.includes('Required libraries not loaded')) {
+                    errorMessage = 'External libraries failed to load';
+                    errorDetails = 'Some required JavaScript libraries could not be loaded. Please check your internet connection and refresh the page.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Network error: Unable to connect to server';
+                    errorDetails = 'Please check your internet connection and try refreshing the page.';
+                } else if (error.message.includes('HTTP 404')) {
+                    errorMessage = 'Configuration file not found';
+                    errorDetails = 'The config.yml file is missing from the server.';
+                } else if (error.message.includes('YAML parsing failed')) {
+                    errorMessage = 'Configuration file format error';
+                    errorDetails = 'The config.yml file contains invalid YAML syntax.';
+                } else if (error.message.includes('Empty configuration file')) {
+                    errorMessage = 'Configuration file is empty';
+                    errorDetails = 'The config.yml file appears to be empty or corrupted.';
+                }
+                
+                showError('Configuration Load Failed', errorMessage, errorDetails);
+                
+                // Add a manual retry button
+                const contentDiv = document.getElementById('content');
+                const retryButton = contentDiv.querySelector('.btn-primary');
+                if (retryButton) {
+                    retryButton.onclick = async function() {
+                        console.log('Manual retry requested');
+                        contentDiv.innerHTML = `
+                            <div class="loading">
+                                <i class="fas fa-spinner"></i>
+                                <p>Retrying configuration load...</p>
+                                <div class="loading-progress">
+                                    <div class="loading-progress-bar"></div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        try {
+                            await loadConfig();
+                            applyConfig();
+                            generateNavigation();
+                            initURLRouting();
+                            loadContentFromURL();
+                        } catch (retryError) {
+                            console.error('Retry failed:', retryError);
+                            showError('Configuration Load Failed', errorMessage, errorDetails);
+                        }
+                    };
+                }
             }
 
             // Listen for window resize
@@ -2101,15 +2165,72 @@
 
         // Load configuration file
         async function loadConfig() {
-            try {
-                const response = await fetchWithRetry('./config.yml');
-                const yamlText = await response.text();
-                siteConfig = jsyaml.load(yamlText);
-                console.log('Configuration loaded successfully:', siteConfig);
-            } catch (error) {
-                console.error('Configuration load failed:', error);
-                throw error;
+            const maxRetries = 3;
+            let lastError = null;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    console.log(`Attempting to load config (attempt ${attempt}/${maxRetries})`);
+                    
+                    // Add cache-busting parameter to prevent caching issues
+                    const timestamp = new Date().getTime();
+                    const configUrl = `./config.yml?t=${timestamp}`;
+                    
+                    const response = await fetch(configUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Cache-Control': 'no-cache, no-store, must-revalidate',
+                            'Pragma': 'no-cache',
+                            'Expires': '0'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const yamlText = await response.text();
+                    
+                    // Validate that we got actual YAML content
+                    if (!yamlText || yamlText.trim().length === 0) {
+                        throw new Error('Empty configuration file received');
+                    }
+                    
+                    // Try to parse YAML
+                    try {
+                        siteConfig = jsyaml.load(yamlText);
+                    } catch (yamlError) {
+                        throw new Error(`YAML parsing failed: ${yamlError.message}`);
+                    }
+                    
+                    // Validate essential configuration
+                    if (!siteConfig) {
+                        throw new Error('Configuration object is null or undefined');
+                    }
+                    
+                    if (!siteConfig.site || !siteConfig.navigation) {
+                        throw new Error('Missing essential configuration sections (site, navigation)');
+                    }
+                    
+                    console.log('Configuration loaded successfully:', siteConfig);
+                    return; // Success, exit the retry loop
+                    
+                } catch (error) {
+                    lastError = error;
+                    console.error(`Configuration load attempt ${attempt} failed:`, error);
+                    
+                    if (attempt < maxRetries) {
+                        // Wait before retrying (exponential backoff)
+                        const waitTime = Math.pow(2, attempt) * 1000;
+                        console.log(`Waiting ${waitTime}ms before retry...`);
+                        await new Promise(resolve => setTimeout(resolve, waitTime));
+                    }
+                }
             }
+            
+            // All retries failed
+            console.error('All configuration load attempts failed');
+            throw new Error(`Configuration load failed after ${maxRetries} attempts. Last error: ${lastError.message}`);
         }
 
         // Apply configuration to page
@@ -3210,12 +3331,56 @@
                     <p>${message}</p>
                     ${details ? `<small>Error details: ${details}</small>` : ''}
                     <div class="mt-3">
-                        <button class="btn btn-primary" onclick="loadContent('${section}')">
+                        <button class="btn btn-primary me-2" onclick="retryInitialization()">
                             <i class="fas fa-redo me-1"></i>${retryText}
                         </button>
+                        <button class="btn btn-outline-secondary" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh Page
+                        </button>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            If the problem persists, try clearing your browser cache or using a different browser.
+                        </small>
                     </div>
                 </div>
             `;
+        }
+
+        // Retry initialization function
+        async function retryInitialization() {
+            const contentDiv = document.getElementById('content');
+            
+            contentDiv.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Retrying initialization...</p>
+                    <div class="loading-progress">
+                        <div class="loading-progress-bar"></div>
+                    </div>
+                </div>
+            `;
+            
+            try {
+                // Clear any cached data
+                siteConfig = null;
+                currentSection = null;
+                currentBlogPost = null;
+                
+                // Re-initialize everything
+                await loadConfig();
+                applyConfig();
+                generateNavigation();
+                initURLRouting();
+                loadContentFromURL();
+                
+                console.log('Retry successful');
+                
+            } catch (error) {
+                console.error('Retry failed:', error);
+                showError('Retry Failed', 'Unable to reload configuration', error.message);
+            }
         }
 
         // Responsive image handling
@@ -3349,6 +3514,71 @@
 
         // Initialize preloading
         preloadCriticalResources();
+
+        // Check if required libraries are loaded
+        function checkDependencies() {
+            const dependencies = {
+                'jsyaml': typeof jsyaml !== 'undefined',
+                'marked': typeof marked !== 'undefined',
+                'hljs': typeof hljs !== 'undefined',
+                'katex': typeof katex !== 'undefined'
+            };
+            
+            const missing = Object.entries(dependencies)
+                .filter(([name, loaded]) => !loaded)
+                .map(([name]) => name);
+            
+            if (missing.length > 0) {
+                console.error('Missing dependencies:', missing);
+                throw new Error(`Required libraries not loaded: ${missing.join(', ')}`);
+            }
+            
+            console.log('All dependencies loaded successfully');
+        }
+
+        // Load fallback libraries if CDN fails
+        async function loadFallbackLibraries() {
+            const fallbacks = [
+                {
+                    name: 'jsyaml',
+                    url: 'https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js',
+                    check: () => typeof jsyaml !== 'undefined'
+                },
+                {
+                    name: 'marked',
+                    url: 'https://unpkg.com/marked@4.3.0/marked.min.js',
+                    check: () => typeof marked !== 'undefined'
+                },
+                {
+                    name: 'highlight.js',
+                    url: 'https://unpkg.com/highlight.js@11.8.0/lib/highlight.min.js',
+                    check: () => typeof hljs !== 'undefined'
+                }
+            ];
+            
+            for (const lib of fallbacks) {
+                if (!lib.check()) {
+                    console.log(`Loading fallback for ${lib.name}...`);
+                    try {
+                        await loadScript(lib.url);
+                        console.log(`${lib.name} loaded from fallback`);
+                    } catch (error) {
+                        console.error(`Failed to load fallback for ${lib.name}:`, error);
+                    }
+                }
+            }
+        }
+
+        // Load script dynamically
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
     </script>
 </body>
 </html>
