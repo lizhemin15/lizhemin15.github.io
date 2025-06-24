@@ -2,13 +2,13 @@
 
 # Basic Information
 site:
-  title: "Zhemin Li's Academic Homepage"
+  title: "Zhemin Li (李哲民)"
   language: "en-US"
   favicon: "/favicon.ico"
 
 # Personal Information
 profile:
-  name: "Zhemin Li"
+  name: "Zhemin Li (李哲民)"
   avatar: "./src/idphoto.jpeg"
   title: 
     - "PhD Student at National University of Defense Technology"

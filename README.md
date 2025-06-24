@@ -207,4 +207,70 @@ This project is licensed under the MIT License. You are free to use, modify, and
 
 ---
 
-> 💡 **Tip**: If you encounter issues during use, please check the browser console error messages, which can usually help you quickly locate problems. 
+> 💡 **Tip**: If you encounter issues during use, please check the browser console error messages, which can usually help you quickly locate problems.
+
+# Academic Homepage
+
+一个现代化的学术个人主页，支持响应式设计、暗色主题、博客系统等功能。
+
+## 功能特性
+
+### 核心功能
+- 📱 响应式设计，支持移动端和桌面端
+- 🌙 暗色/亮色主题切换
+- 📝 Markdown 内容支持
+- 🧮 数学公式渲染 (KaTeX)
+- 💻 代码语法高亮
+- 📚 博客系统
+- 📋 目录导航 (TOC)
+- 🔍 内容搜索
+- 📷 图片全屏查看
+
+### 新增功能
+- 📍 **滚动位置保存** - 页面刷新后自动恢复到刷新前的浏览位置
+  - 自动保存用户的滚动位置
+  - 页面刷新时智能恢复位置
+  - 页面切换时清除位置（避免混淆）
+  - 支持所有页面类型（普通页面、博客列表、博客文章）
+
+## 滚动位置保存功能
+
+### 工作原理
+1. **自动保存**: 用户滚动页面时，系统会自动保存当前滚动位置
+2. **智能恢复**: 页面刷新时，系统会检测是否为刷新操作，并恢复之前的滚动位置
+3. **页面切换**: 用户点击导航或切换页面时，会清除之前的滚动位置，避免混淆
+
+### 技术实现
+- 使用 `sessionStorage` 存储滚动位置（页面关闭后自动清除）
+- 防抖保存机制，避免频繁保存
+- 多种页面刷新检测方法，确保准确性
+- 支持不同页面类型的滚动位置管理
+
+### 调试信息
+在浏览器控制台中可以看到以下调试信息：
+- `📍 Scroll position saved` - 滚动位置已保存
+- `🔄 Page refresh detected` - 检测到页面刷新
+- `📍 Scroll position restored` - 滚动位置已恢复
+- `🗑️ Scroll position cleared` - 滚动位置已清除
+- `➡️ Not a page refresh` - 非页面刷新操作
+
+## 安装和使用
+
+1. 克隆仓库
+2. 配置 `config.yml` 文件
+3. 在浏览器中打开 `index.html`
+
+## 配置说明
+
+详细配置说明请参考 `config.yml` 文件中的注释。
+
+## 浏览器兼容性
+
+- Chrome 60+
+- Firefox 55+
+- Safari 12+
+- Edge 79+
+
+## 许可证
+
+MIT License 

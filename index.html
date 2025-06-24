@@ -477,6 +477,28 @@
          .katex-display {
              margin: 20px 0;
              text-align: center;
+             display: block;
+             overflow: hidden;
+         }
+
+         /* 确保块级公式容器正确显示 */
+         .math-container.katex-display {
+             display: block;
+             text-align: center;
+             margin: 20px 0;
+             overflow: hidden;
+         }
+
+         /* 确保KaTeX渲染的块级公式正确居中 */
+         .katex-display .katex {
+             display: inline-block;
+             text-align: center;
+         }
+
+         /* 防止公式换行 */
+         .katex-display .katex-html {
+             white-space: nowrap;
+             overflow-x: auto;
          }
 
          /* Selectable math formulas (for copying original text) */
@@ -514,8 +536,15 @@
         }
 
         .markdown-content strong {
-            color: var(--primary-color);
+            color: #ff0000; /* 红色 */
             font-weight: 600;
+        }
+
+        .markdown-content em {
+            color: #0000ff; /* 蓝色 */
+            font-style: italic;
+            padding: 0 2px; /* 前后各增加4px的间距 */
+            margin: 0 2px; /* 前后各增加2px的外边距 */
         }
 
         .markdown-content a {
@@ -1219,6 +1248,155 @@
             color: #333;
         }
 
+        /* 图片全屏查看模态框 */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .image-modal.show {
+            display: flex;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .image-modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .image-modal-info {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* 图片缩放控制 */
+        .image-zoom-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .zoom-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .zoom-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .zoom-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .image-modal-content {
+                max-width: 100vw;
+                max-height: 100vh;
+            }
+
+            .image-modal-close {
+                top: 20px;
+                right: 20px;
+            }
+
+            .image-zoom-controls {
+                top: 20px;
+                right: 20px;
+                flex-direction: column;
+            }
+
+            .zoom-btn {
+                padding: 6px 10px;
+                font-size: 1rem;
+            }
+        }
+
+        /* 图片容器中添加点击提示 */
+        .image-container {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .image-container::after {
+            content: '🔍';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .image-container:hover::after {
+            opacity: 1;
+        }
+
         /* Theme Toggle Button */
         .theme-toggle-fixed {
             position: fixed;
@@ -1706,6 +1884,117 @@
         [data-theme="dark"] .search-results small {
             color: rgba(232, 232, 232, 0.8);
         }
+
+        /* 暗色模式下的数学公式样式 */
+        [data-theme="dark"] .katex-display {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .katex {
+            color: var(--dark-text-color);
+        }
+
+        [data-theme="dark"] .math-container.katex-display {
+            background: rgba(26, 26, 46, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        [data-theme="dark"] .math-source {
+            background: var(--dark-card-bg);
+            color: var(--dark-text-color);
+            border: 1px solid var(--dark-border-color);
+        }
+
+        /* 彻底隐藏KaTeX公式滚动条 */
+        .katex, .katex-html, .katex-display, .math-container.katex-display {
+            overflow: visible !important;
+            scrollbar-width: none; /* Firefox */
+        }
+        .katex::-webkit-scrollbar, .katex-html::-webkit-scrollbar, .katex-display::-webkit-scrollbar, .math-container.katex-display::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 图片容器和标题样式 */
+        .image-container {
+            margin: 25px 0;
+            text-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--light-bg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .image-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .image-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+            box-shadow: none;
+            margin: 0;
+        }
+
+        .image-caption {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* 暗色模式下的图片样式 */
+        [data-theme="dark"] .image-container {
+            background: var(--dark-light-bg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        [data-theme="dark"] .image-container:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+        [data-theme="dark"] .image-caption {
+            background: linear-gradient(135deg, var(--dark-accent-color), var(--dark-primary-color));
+        }
+
+        .fullscreen-reading .sidebar,
+        .fullscreen-reading #sidebar,
+        .fullscreen-reading .toc-container,
+        .fullscreen-reading #toc-container,
+        .fullscreen-reading .toc-fab,
+        .fullscreen-reading #toc-fab,
+        .fullscreen-reading .theme-toggle-fixed {
+            display: none !important;
+        }
+        .fullscreen-reading .main-content {
+            margin-left: 0 !important;
+            width: 100vw !important;
+            min-height: 100vh !important;
+            background: #fff !important;
+            box-shadow: none !important;
+            z-index: 2000;
+        }
+        .fullscreen-reading .content-wrapper {
+            max-width: 100vw !important;
+            padding: 0 32px !important;
+        }
+        .fullscreen-reading .blog-post {
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            background: #fff !important;
+            padding: 0 0 40px 0 !important;
+        }
+        .fullscreen-reading #exit-fullscreen-btn {
+            display: block !important;
+        }
     </style>
 </head>
 <body>
@@ -1764,6 +2053,30 @@
         </div>
     </div>
 
+    <!-- 图片全屏查看模态框 -->
+    <div class="image-modal" id="image-modal" onclick="closeImageModal()">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <button class="image-modal-close" onclick="closeImageModal()" title="关闭">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="image-zoom-controls">
+                <button class="zoom-btn" onclick="zoomImage('in')" title="放大">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+                <button class="zoom-btn" onclick="zoomImage('out')" title="缩小">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button class="zoom-btn" onclick="resetImageZoom()" title="重置">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </div>
+            
+            <img id="modal-image" src="" alt="全屏图片">
+            <div class="image-modal-info" id="modal-image-info"></div>
+        </div>
+    </div>
+
     <!-- Main content area -->
     <main class="main-content">
         <div class="content-wrapper">
@@ -1802,10 +2115,149 @@
         // Theme management
         let currentTheme = localStorage.getItem('theme') || 'light';
 
+        // Scroll position management
+        let scrollPositionManager = {
+            // 保存滚动位置
+            saveScrollPosition: function() {
+                const mainContent = document.querySelector('.main-content');
+                if (!mainContent) return;
+                
+                const scrollData = {
+                    scrollTop: mainContent.scrollTop,
+                    scrollLeft: mainContent.scrollLeft,
+                    timestamp: Date.now(),
+                    section: currentSection,
+                    blogPost: currentBlogPost,
+                    url: window.location.href
+                };
+                
+                // 保存到 sessionStorage（页面关闭后清除）
+                sessionStorage.setItem('scrollPosition', JSON.stringify(scrollData));
+                console.log('📍 Scroll position saved:', {
+                    scrollTop: scrollData.scrollTop,
+                    section: scrollData.section,
+                    blogPost: scrollData.blogPost
+                });
+            },
+            
+            // 恢复滚动位置
+            restoreScrollPosition: function() {
+                try {
+                    const savedData = sessionStorage.getItem('scrollPosition');
+                    if (!savedData) return false;
+                    
+                    const scrollData = JSON.parse(savedData);
+                    const currentURL = window.location.href;
+                    
+                    // 检查是否是同一个页面（URL匹配）
+                    if (scrollData.url !== currentURL) {
+                        console.log('URL changed, clearing saved scroll position');
+                        sessionStorage.removeItem('scrollPosition');
+                        return false;
+                    }
+                    
+                    // 检查时间戳（如果超过30分钟，清除保存的位置）
+                    const timeDiff = Date.now() - scrollData.timestamp;
+                    if (timeDiff > 30 * 60 * 1000) {
+                        console.log('Scroll position too old, clearing');
+                        sessionStorage.removeItem('scrollPosition');
+                        return false;
+                    }
+                    
+                    const mainContent = document.querySelector('.main-content');
+                    if (!mainContent) return false;
+                    
+                    // 等待内容加载完成后再恢复滚动位置
+                    setTimeout(() => {
+                        mainContent.scrollTo({
+                            top: scrollData.scrollTop,
+                            left: scrollData.scrollLeft,
+                            behavior: 'instant' // 使用 instant 避免动画
+                        });
+                        console.log('📍 Scroll position restored:', {
+                            scrollTop: scrollData.scrollTop,
+                            section: scrollData.section,
+                            blogPost: scrollData.blogPost
+                        });
+                    }, 100);
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error restoring scroll position:', error);
+                    sessionStorage.removeItem('scrollPosition');
+                    return false;
+                }
+            },
+            
+            // 清除保存的滚动位置
+            clearScrollPosition: function() {
+                sessionStorage.removeItem('scrollPosition');
+                console.log('🗑️ Scroll position cleared');
+            },
+            
+            // 设置滚动位置保存的防抖
+            debounceSave: null,
+            
+            // 防抖保存滚动位置
+            debouncedSave: function() {
+                if (this.debounceSave) {
+                    clearTimeout(this.debounceSave);
+                }
+                this.debounceSave = setTimeout(() => {
+                    this.saveScrollPosition();
+                }, 150); // 150ms 防抖
+            },
+            
+            // 检查是否是页面刷新
+            isPageRefresh: function() {
+                // 方法1：使用 performance.navigation（已废弃但仍有支持）
+                if (window.performance && window.performance.navigation && 
+                    window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD) {
+                    return true;
+                }
+                
+                // 方法2：使用 performance.getEntriesByType
+                if (window.performance && window.performance.getEntriesByType) {
+                    const navigationEntries = window.performance.getEntriesByType('navigation');
+                    if (navigationEntries.length > 0) {
+                        const navigationEntry = navigationEntries[0];
+                        return navigationEntry.type === 'reload';
+                    }
+                }
+                
+                // 方法3：检查页面加载时间戳
+                const loadTime = sessionStorage.getItem('pageLoadTime');
+                const currentTime = Date.now();
+                sessionStorage.setItem('pageLoadTime', currentTime);
+                
+                // 如果时间差小于5秒，可能是刷新
+                if (loadTime && (currentTime - parseInt(loadTime)) < 5000) {
+                    return true;
+                }
+                
+                return false;
+            },
+            
+            // 智能恢复滚动位置（只在页面刷新时恢复）
+            smartRestore: function() {
+                // 只在页面刷新时恢复滚动位置
+                if (this.isPageRefresh()) {
+                    console.log('🔄 Page refresh detected, attempting to restore scroll position');
+                    return this.restoreScrollPosition();
+                } else {
+                    console.log('➡️ Not a page refresh, skipping scroll position restoration');
+                    return false;
+                }
+            }
+        };
+
         // Initialization after page load
         document.addEventListener('DOMContentLoaded', async function() {
             try {
                 console.log('Starting website initialization...');
+                
+                // 设置页面加载时间戳
+                sessionStorage.setItem('pageLoadTime', Date.now().toString());
                 
                 // Check if all required dependencies are loaded
                 try {
@@ -1835,6 +2287,14 @@
                 loadContentFromURL();
                 
                 console.log('Website initialization completed successfully');
+                
+                // 尝试恢复滚动位置
+                setTimeout(() => {
+                    scrollPositionManager.smartRestore();
+                }, 200);
+                
+                // 显示功能状态
+                console.log('✅ Scroll position management enabled - your reading progress will be saved and restored on page refresh');
                 
             } catch (error) {
                 console.error('Initialization failed:', error);
@@ -1904,6 +2364,19 @@
             window.addEventListener('popstate', function(event) {
                 console.log('Popstate event:', event.state);
                 loadContentFromURL();
+            });
+            
+            // 添加滚动位置保存监听器
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) {
+                mainContent.addEventListener('scroll', function() {
+                    scrollPositionManager.debouncedSave();
+                });
+            }
+            
+            // 页面卸载前保存滚动位置
+            window.addEventListener('beforeunload', function() {
+                scrollPositionManager.saveScrollPosition();
             });
         });
 
@@ -1990,6 +2463,8 @@
                 // Load default content
                 loadDefaultContent();
             }
+            // 内容切换后保证全屏状态
+            setTimeout(ensureFullscreenState, 0);
         }
 
         // Update navigation state based on current URL
@@ -2038,6 +2513,11 @@
             
             const newURL = url.toString();
             console.log('Updating URL:', newURL, 'replace:', replace);
+            
+            // 如果不是替换操作（即页面切换），清除滚动位置
+            if (!replace) {
+                scrollPositionManager.clearScrollPosition();
+            }
             
             if (replace) {
                 window.history.replaceState(params, '', newURL);
@@ -2092,9 +2572,14 @@
                                 <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
                                     <i class="fas fa-arrow-left"></i> Back to Blog List
                                 </button>
-                                <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
-                                    <i class="fas fa-share-alt"></i> Share
-                                </button>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-outline-success" id="play-fullscreen-btn" onclick="enterFullscreenReading()" title="沉浸式阅读">
+                                        <i class="fas fa-play"></i> Play
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
+                                        <i class="fas fa-share-alt"></i> Share
+                                    </button>
+                                </div>
                             </div>
                             <div class="blog-post-meta">
                                 <span class="blog-date">
@@ -2144,10 +2629,17 @@
                 const mainContent = document.querySelector('.main-content');
                 mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 
+                // 尝试恢复滚动位置（如果是页面刷新）
+                setTimeout(() => {
+                    scrollPositionManager.smartRestore();
+                }, 300);
+                
             } catch (error) {
                 console.error('Error loading blog post:', error);
                 showError('Article Loading Failed', `Unable to load article "${fileName}"`, error.message, 'blogs');
             }
+            // 渲染后同步按钮和全屏状态
+            ensureFullscreenState();
         }
 
         // Navigate to blogs list
@@ -2348,6 +2840,9 @@
                 navLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     
+                    // 清除滚动位置（页面切换）
+                    scrollPositionManager.clearScrollPosition();
+                    
                     // Update URL and let routing system handle the loading
                     const section = this.getAttribute('data-section');
                     updateURL({ section: section });
@@ -2377,66 +2872,61 @@
             const mathBlocks = [];
             let blockIndex = 0;
             let inlineIndex = 0;
-
-            // First process block-level math formulas $$...$$
-            content = content.replace(/\$\$([^$]*?)\$\$/g, function(match, formula) {
-                const placeholder = `MATH_BLOCK_${blockIndex}`;
+            // 新增：图片alt中的$替换为__DOLLAR__
+            content = content.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, url) {
+                let newAlt = alt.replace(/\$/g, '__DOLLAR__');
+                return `![${newAlt}](${url})`;
+            });
+            // 处理块级公式
+            content = content.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+                const placeholder = `[[[MATH_BLOCK_${blockIndex}]]]`;
                 mathBlocks.push({
                     placeholder: placeholder,
                     formula: formula.trim(),
                     isBlock: true,
                     original: match
                 });
-                console.log('Found block math:', formula.trim(), 'placeholder:', placeholder);
                 blockIndex++;
                 return placeholder;
             });
-
-            // Then process inline math formulas $...$ (avoid conflicts with block formulas)
-            content = content.replace(/\$([^$\n]+?)\$/g, function(match, formula) {
-                const placeholder = `MATH_INLINE_${inlineIndex}`;
+            // 处理行内公式
+            content = content.replace(/(?<!\$)\$([^$\n]+?)\$(?!\$)/g, function(match, formula) {
+                const placeholder = `[[[MATH_INLINE_${inlineIndex}]]]`;
                 mathBlocks.push({
                     placeholder: placeholder,
                     formula: formula.trim(),
                     isBlock: false,
                     original: match
                 });
-                console.log('Found inline math:', formula.trim(), 'placeholder:', placeholder);
                 inlineIndex++;
                 return placeholder;
             });
-
-            console.log('Preprocessed content:', content);
-            console.log('Math blocks:', mathBlocks);
             return { content, mathBlocks };
         }
 
+        // 工具函数：转义正则特殊字符
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
         function renderMathFormulas(htmlContent, mathBlocks) {
-            console.log('Rendering math in HTML:', htmlContent);
-            console.log('Math blocks to render:', mathBlocks);
-            
-            // Replace placeholders with rendered math formulas in HTML
             mathBlocks.forEach(function(mathBlock) {
                 try {
                     const rendered = katex.renderToString(mathBlock.formula, { 
                         throwOnError: false,
-                        displayMode: mathBlock.isBlock 
+                        displayMode: mathBlock.isBlock,
+                        fleqn: false,
+                        leqno: false
                     });
-                    
                     const mathHtml = mathBlock.isBlock 
-                        ? `<div class="math-container katex-display">${rendered}<span class="math-source">${mathBlock.original}</span></div>`
-                        : `<span class="math-container">${rendered}<span class="math-source">${mathBlock.original}</span></span>`;
-                    
-                    console.log(`Replacing ${mathBlock.placeholder} with rendered math`);
-                    htmlContent = htmlContent.replace(new RegExp(mathBlock.placeholder, 'g'), mathHtml);
+                        ? `<div class="math-container katex-display" style="display: block; text-align: center; margin: 20px 0; width: 100%;">${rendered}<span class="math-source">${mathBlock.original}</span></div>`
+                        : `<span class="math-container">${rendered}<span class="math-source">${mathBlock.original}</span></span>&#8203;`;
+                    // 用全字匹配替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathHtml);
                 } catch (e) {
-                    console.warn('KaTeX render error:', e);
-                    // Keep original text when rendering fails
-                    htmlContent = htmlContent.replace(new RegExp(mathBlock.placeholder, 'g'), mathBlock.original);
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathBlock.original);
                 }
             });
-
-            console.log('Final HTML with math:', htmlContent);
             return htmlContent;
         }
 
@@ -2844,6 +3334,11 @@
                 const mainContent = document.querySelector('.main-content');
                 mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 
+                // 尝试恢复滚动位置（如果是页面刷新）
+                setTimeout(() => {
+                    scrollPositionManager.smartRestore();
+                }, 300);
+                
             } catch (error) {
                 console.error('Error loading content:', error);
                 showError(
@@ -2853,6 +3348,8 @@
                     section
                 );
             }
+            // 内容切换后保证全屏状态
+            setTimeout(ensureFullscreenState, 0);
         }
 
         // Blog post data storage
@@ -2913,6 +3410,8 @@
                 console.error('Error loading blogs from JSON:', error);
                 showError('Blog Loading Failed', 'Unable to load blog content from blogs.json', error.message, 'blogs');
             }
+            // 内容切换后保证全屏状态
+            setTimeout(ensureFullscreenState, 0);
         }
 
         // Parse blog post, extract front matter and content
@@ -3083,7 +3582,7 @@
                 const blogURL = `?blog=${encodeURIComponent(post.fileName)}`;
                 
                 return `
-                    <article class="blog-card" onclick="window.location.href='${blogURL}'">
+                    <article class="blog-card" onclick="viewBlogPostWithScrollClear('${post.fileName}')">
                         <div class="blog-meta">
                             <span class="blog-date">
                                 <i class="fas fa-calendar"></i> ${date}
@@ -3221,6 +3720,14 @@
             updateURL({ blog: fileName });
         }
 
+        // View blog post with scroll position clearing
+        function viewBlogPostWithScrollClear(fileName) {
+            // 清除滚动位置（页面切换）
+            scrollPositionManager.clearScrollPosition();
+            // Update URL and let the routing system handle the loading
+            updateURL({ blog: fileName });
+        }
+
         // Direct blog post loading (for internal use)
         async function loadBlogPostDirect(fileName) {
             const contentDiv = document.getElementById('content');
@@ -3263,9 +3770,14 @@
                                 <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
                                     <i class="fas fa-arrow-left"></i> Back to Blog List
                                 </button>
-                                <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
-                                    <i class="fas fa-share-alt"></i> Share
-                                </button>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-outline-success" id="play-fullscreen-btn" onclick="enterFullscreenReading()" title="沉浸式阅读">
+                                        <i class="fas fa-play"></i> Play
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
+                                        <i class="fas fa-share-alt"></i> Share
+                                    </button>
+                                </div>
                             </div>
                             <div class="blog-post-meta">
                                 <span class="blog-date">
@@ -3319,6 +3831,8 @@
                 console.error('Error loading blog post:', error);
                 showError('Article Loading Failed', `Unable to load article "${fileName}"`, error.message, 'blogs');
             }
+            // 渲染后同步按钮和全屏状态
+            ensureFullscreenState();
         }
 
         // Show error message
@@ -3389,11 +3903,73 @@
         function handleResponsiveImages() {
             const images = document.querySelectorAll('.markdown-content img');
             images.forEach(img => {
+                // 检查图片是否已经被包装在 figure 中
+                if (img.parentElement.tagName === 'FIGURE') {
+                    return;
+                }
+                
+                // 新增：检测alt文本中的{width=xx%}语法
+                let altText = img.alt || '图片';
+                let widthMatch = altText.match(/\{\s*width\s*=\s*([0-9]{1,3})%\s*}/i);
+                let customWidth = null;
+                if (widthMatch) {
+                    customWidth = widthMatch[1] + '%';
+                    // 去掉alt中的{width=xx%}部分，避免caption显示
+                    altText = altText.replace(/\{\s*width\s*=\s*[0-9]{1,3}%\s*}/i, '').trim();
+                    img.alt = altText;
+                }
+                
+                // 创建 figure 元素
+                const figure = document.createElement('figure');
+                figure.className = 'image-container';
+                // 新增：让figure居中
+                figure.style.display = 'block';
+                figure.style.marginLeft = 'auto';
+                figure.style.marginRight = 'auto';
+                if (customWidth) {
+                    figure.style.width = customWidth;
+                    img.style.width = '100%'; // 图片撑满figure
+                } else {
+                    figure.style.width = '100%';
+                    img.style.width = '100%';
+                }
+                
+                // 创建 figcaption 元素用于显示标题
+                const figcaption = document.createElement('figcaption');
+                figcaption.className = 'image-caption';
+                // 先还原altText中的__DOLLAR__为$
+                altText = altText.replace(/__DOLLAR__/g, '$');
+                // 检查altText是否包含$...$公式
+                if (/\$[^$]+\$/.test(altText)) {
+                    figcaption.innerHTML = renderInlineMath(altText);
+                } else {
+                    figcaption.textContent = altText;
+                }
+                
+                // 将图片和标题包装在 figure 中
+                img.parentNode.insertBefore(figure, img);
+                figure.appendChild(img);
+                figure.appendChild(figcaption);
+                
+                // 添加响应式样式
                 img.classList.add('img-fluid');
                 img.style.maxWidth = '100%';
                 img.style.height = 'auto';
                 img.style.borderRadius = '8px';
                 img.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+                
+                // 为图片添加点击全屏查看功能
+                img.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openImageModal(this.src, this.alt);
+                });
+                
+                // 为整个图片容器添加点击事件（防止点击标题时触发）
+                figure.addEventListener('click', function(e) {
+                    if (e.target === img) {
+                        openImageModal(img.src, img.alt);
+                    }
+                });
             });
         }
 
@@ -3474,6 +4050,103 @@
         function closeQRModal() {
             const modal = document.getElementById('qr-modal');
             modal.classList.remove('show');
+        }
+
+        // 图片全屏查看相关变量
+        let currentImageZoom = 1;
+        let currentImageScale = 1;
+
+        // 打开图片全屏查看模态框
+        function openImageModal(imageSrc, imageAlt) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            const modalInfo = document.getElementById('modal-image-info');
+            
+            // 设置图片源和标题
+            modalImage.src = imageSrc;
+            modalImage.alt = imageAlt;
+            modalInfo.textContent = imageAlt || '图片';
+            
+            // 重置缩放
+            currentImageZoom = 1;
+            currentImageScale = 1;
+            modalImage.style.transform = 'scale(1)';
+            
+            // 显示模态框
+            modal.classList.add('show');
+            
+            // 阻止页面滚动
+            document.body.style.overflow = 'hidden';
+            
+            // 添加键盘事件监听
+            document.addEventListener('keydown', handleImageModalKeydown);
+        }
+
+        // 关闭图片全屏查看模态框
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            
+            // 恢复页面滚动
+            document.body.style.overflow = '';
+            
+            // 移除键盘事件监听
+            document.removeEventListener('keydown', handleImageModalKeydown);
+        }
+
+        // 处理图片模态框的键盘事件
+        function handleImageModalKeydown(e) {
+            switch(e.key) {
+                case 'Escape':
+                    closeImageModal();
+                    break;
+                case '+':
+                case '=':
+                    e.preventDefault();
+                    zoomImage('in');
+                    break;
+                case '-':
+                    e.preventDefault();
+                    zoomImage('out');
+                    break;
+                case '0':
+                    e.preventDefault();
+                    resetImageZoom();
+                    break;
+            }
+        }
+
+        // 图片缩放功能
+        function zoomImage(direction) {
+            const modalImage = document.getElementById('modal-image');
+            const zoomInBtn = document.querySelector('.zoom-btn[onclick="zoomImage(\'in\')"]');
+            const zoomOutBtn = document.querySelector('.zoom-btn[onclick="zoomImage(\'out\')"]');
+            
+            if (direction === 'in') {
+                currentImageScale = Math.min(currentImageScale * 1.2, 5);
+            } else if (direction === 'out') {
+                currentImageScale = Math.max(currentImageScale / 1.2, 0.1);
+            }
+            
+            modalImage.style.transform = `scale(${currentImageScale})`;
+            
+            // 更新按钮状态
+            zoomInBtn.disabled = currentImageScale >= 5;
+            zoomOutBtn.disabled = currentImageScale <= 0.1;
+        }
+
+        // 重置图片缩放
+        function resetImageZoom() {
+            const modalImage = document.getElementById('modal-image');
+            const zoomInBtn = document.querySelector('.zoom-btn[onclick="zoomImage(\'in\')"]');
+            const zoomOutBtn = document.querySelector('.zoom-btn[onclick="zoomImage(\'out\')"]');
+            
+            currentImageScale = 1;
+            modalImage.style.transform = 'scale(1)';
+            
+            // 重置按钮状态
+            zoomInBtn.disabled = false;
+            zoomOutBtn.disabled = false;
         }
 
         // Performance optimization: Preload critical resources
@@ -3606,6 +4279,95 @@
                 script.onload = resolve;
                 script.onerror = reject;
                 document.head.appendChild(script);
+            });
+        }
+
+        // 全屏沉浸式阅读模式
+        function enterFullscreenReading() {
+            document.body.classList.add('fullscreen-reading');
+            document.getElementById('sidebar').style.display = 'none';
+            document.getElementById('toc-container').style.display = 'none';
+            document.getElementById('toc-fab').style.display = 'none';
+            document.querySelector('.theme-toggle-fixed').style.display = 'none';
+            syncFullscreenButton();
+            document.addEventListener('keydown', escFullscreenHandler);
+        }
+        function exitFullscreenReading() {
+            document.body.classList.remove('fullscreen-reading');
+            document.getElementById('sidebar').style.display = '';
+            document.getElementById('toc-container').style.display = '';
+            document.getElementById('toc-fab').style.display = '';
+            document.querySelector('.theme-toggle-fixed').style.display = '';
+            syncFullscreenButton();
+            document.removeEventListener('keydown', escFullscreenHandler);
+        }
+        // 同步全屏按钮状态
+        function syncFullscreenButton() {
+            const playBtn = document.getElementById('play-fullscreen-btn');
+            if (!playBtn) return;
+            if (document.body.classList.contains('fullscreen-reading')) {
+                playBtn.innerHTML = '<i class="fas fa-times"></i> Exit Fullscreen';
+                playBtn.classList.remove('btn-outline-success');
+                playBtn.classList.add('btn-danger');
+                playBtn.onclick = exitFullscreenReading;
+                playBtn.title = 'Exit immersive reading';
+            } else {
+                playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                playBtn.classList.remove('btn-danger');
+                playBtn.classList.add('btn-outline-success');
+                playBtn.onclick = enterFullscreenReading;
+                playBtn.title = 'Immersive reading';
+            }
+        }
+        function escFullscreenHandler(e) {
+            if (e.key === 'Escape') {
+                exitFullscreenReading();
+            }
+        }
+
+        // 保证全屏状态和布局同步
+        function ensureFullscreenState() {
+            if (document.body.classList.contains('fullscreen-reading')) {
+                // 隐藏sidebar、TOC、主题按钮
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.style.display = 'none';
+                const tocContainer = document.getElementById('toc-container');
+                if (tocContainer) tocContainer.style.display = 'none';
+                const tocFab = document.getElementById('toc-fab');
+                if (tocFab) tocFab.style.display = 'none';
+                const themeToggle = document.querySelector('.theme-toggle-fixed');
+                if (themeToggle) themeToggle.style.display = 'none';
+            } else {
+                // 恢复显示
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.style.display = '';
+                const tocContainer = document.getElementById('toc-container');
+                if (tocContainer) tocContainer.style.display = '';
+                const tocFab = document.getElementById('toc-fab');
+                if (tocFab) tocFab.style.display = '';
+                const themeToggle = document.querySelector('.theme-toggle-fixed');
+                if (themeToggle) themeToggle.style.display = '';
+            }
+            // 同步按钮
+            syncFullscreenButton();
+        }
+
+        // 在marked解析后还原图片alt中的占位符
+        function restoreImgAltMathPlaceholders(htmlContent) {
+            return htmlContent.replace(/(<img [^>]*alt=")([^"]*)("[^>]*>)/g, function(match, p1, alt, p3) {
+                let newAlt = alt.replace(/__DOLLAR__/g, '$');
+                return p1 + newAlt + p3;
+            });
+        }
+
+        // 工具函数：渲染行内公式（用于图片标题）
+        function renderInlineMath(text) {
+            return text.replace(/\$([^$]+)\$/g, function(match, formula) {
+                try {
+                    return katex.renderToString(formula, {throwOnError: false, displayMode: false});
+                } catch {
+                    return match;
+                }
             });
         }
     </script>
