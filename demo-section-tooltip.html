@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>章节引用Tooltip演示</title>
+    <style>
+        body {
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .demo-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; text-align: center; }
+        .section-number { color: #3498db; font-weight: 600; margin-right: 0.5em; }
+        a { color: #3498db; text-decoration: none; border-bottom: 1px dashed #3498db; padding: 2px 4px; }
+        a:hover { background: rgba(52,152,219,0.1); }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px dashed #ddd; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1>📖 章节引用Tooltip演示</h1>
+        
+        <div class="test-section">
+            <h2 id="sec1"><span class="section-number">1</span>引言</h2>
+            <p>介绍基本概念和研究背景。</p>
+        </div>
+
+        <div class="test-section">
+            <h2 id="sec2"><span class="section-number">2</span>方法论</h2>
+            <p>详述研究方法和实验设计。</p>
+        </div>
+
+        <div class="test-section">
+            <h2 id="sec3"><span class="section-number">3</span>实验结果与分析</h2>
+            <p>展示实验数据和深入分析。</p>
+        </div>
+
+        <div class="test-section">
+            <h2 id="sec4"><span class="section-number">4</span>结论与未来工作</h2>
+            <p>总结研究成果并提出未来方向。</p>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa;">
+            <h3>🧪 测试引用链接</h3>
+            <p>如<a href="#sec1">第1章</a>所述，基本概念很重要。<a href="#sec2">方法论</a>提供了详细步骤。</p>
+            <p><a href="#sec3">实验部分</a>展示了结果，<a href="#sec4">结论</a>中进行了总结。</p>
+            <p><strong>💡 将鼠标悬停在蓝色链接上查看tooltip效果！</strong></p>
+        </div>
+    </div>
+
+    <script>
+        function showTooltip(event, text) {
+            let tooltip = document.getElementById('demo-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'demo-tooltip';
+                tooltip.style.cssText = `
+                    position: fixed; background: rgba(45,55,72,0.95); color: white;
+                    padding: 12px 16px; border-radius: 8px; font-size: 14px; z-index: 10000;
+                    backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
+                    pointer-events: none; opacity: 0; transform: translateY(10px);
+                    transition: all 0.25s ease; font-weight: 500;
+                `;
+                document.body.appendChild(tooltip);
+            }
+            tooltip.innerHTML = text;
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width/2 - 100) + 'px';
+            tooltip.style.top = (rect.top - 50) + 'px';
+            tooltip.style.opacity = '1';
+            tooltip.style.transform = 'translateY(0)';
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('demo-tooltip');
+            if (tooltip) {
+                tooltip.style.opacity = '0';
+                tooltip.style.transform = 'translateY(10px)';
+            }
+        }
+
+        document.addEventListener('mouseover', function(e) {
+            if (e.target.tagName === 'A' && e.target.href.includes('#sec')) {
+                const id = e.target.getAttribute('href').slice(1);
+                const target = document.getElementById(id);
+                if (target) {
+                    const num = target.querySelector('.section-number').textContent.trim();
+                    const title = target.textContent.replace(num, '').trim();
+                    showTooltip(e, `<span style="color:#74b9ff;font-weight:600;">${num}</span> ${title}`);
+                }
+            }
+        });
+
+        document.addEventListener('mouseout', function(e) {
+            if (e.target.tagName === 'A' && e.target.href.includes('#sec')) {
+                hideTooltip();
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -7,19 +7,24 @@ excerpt: "尽管NTK极限下得到了很漂亮的深度神经网络的近似，�
 visible: true
 ---
 
-## 论文来源
+# 论文来源
 Greg Yang 大神的 Tensor Program 系列第四篇，其它的系列作品有时间和需求时后续再进行更新补充。
 
-## 前言
-![图1: US cities and states的Word2Vec 嵌入的PCA](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506241301504.png?imageSlim)
+# 前言
 
-在NTK极限下，预训练学到的特征和随机初始化没什么区别(见图1的实验)。而特征学习本身在深度学习中很有影响力，这对于NTK理论用于神经网络实际分析时是很致命的。而这篇文章则发现可以通过修改标准的参数化达到过参数化模型也可以进行特征学习的目的。
+```figure
+![US cities and states的Word2Vec 嵌入的PCA](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506241301504.png?imageSlim)
+```
 
-### abc-Parametrizations
+在NTK极限下，预训练学到的特征和随机初始化没什么区别(见<a href="#fig1">图1</a>的实验)。而特征学习本身在深度学习中很有影响力，这对于NTK理论用于神经网络实际分析时是很致命的。而这篇文章则发现可以通过修改标准的参数化达到过参数化模型也可以进行特征学习的目的。
+
+## abc-Parametrizations
 考虑一个 $L$-隐藏层的感知机：权重矩阵 $W^1\in\mathbb{R}^{n\times d}$ 且 $W^2,\ldots,W^L\in\mathbb{R}^{n\times n}$，且非线性项 $\phi:\mathbb{R}\rightarrow \mathbb{R}$，使得神经网络在输入 $\xi\in\mathbb{R}^d$上为 $h^1(\xi)=W^1\xi\in\mathbb{R}^n$，且
-$$
-x^l(\xi)=\phi(h^l(\xi))\in\mathbb{R}^n, h^{l+1}(\xi)=W^{l+1}x^l(\xi)\in\mathbb{R}^n,\text{ for } l=1,\ldots,L-1,
-$$
+
+```equation
+$$x^l(\xi)=\phi(h^l(\xi))\in\mathbb{R}^n, h^{l+1}(\xi)=W^{l+1}x^l(\xi)\in\mathbb{R}^n,\text{ for } l=1,\ldots,L-1$$
+```
+
 且网络的输出 (也称为 $logits(s)$) 是 $f(\xi)=W^{L+1}x^L(\xi)$ 对于 $W^{L+1}\in\mathbb{R}^{1\times n}$。一个 abc-parametrization 由系列数字 $\{a_l,b_l\}_l\cup \{c\}$ 使得：
 
 (a) 我们参数化每个参数为 $W^l=n^{-a_l}w^l$ 对于实际的可训练参数 $w^l$
@@ -29,29 +34,33 @@ $$
 **例**：
 NTK 参数化 (NTP) 有着 $a_1=0$且 $a_l=1/2$对于$l\geq 2$；$b_l=0$ 对所有的 $l$；$c=0$。 当深度 $L=1$，平均场参数化 (MFP) 有 $a_1=0$， $a_2=1$；$b_l=0$ 对所有的 $l$；$c=-1$。标准参数化 (SP) 是 Pytorch的默认设定，有着 $a_l=0$ 对所有的 $l$；$b_1=0$ 且 $b_l=1/2$ 对所有的 $l\geq 2$；$c=0$。然而，我们会看到 $c$ 在SP中太小了。我们可以定义 abc-parametrization 并将我们的结果推广到任意神经网络结构 (附录 C)，但我们将在正文中主要聚焦 MLPs。
 
-### 动力学二分
+## 动力学二分
 对任意 abc-parametrization，若 $c$ 太小了，SGD可能会导致预激活或logits爆炸；我们说这个参数化是*不稳定*的。实际上这就变成了数值问题，如果 $c$ 太大 (即学习率太小)，那么由网络计算得到的函数在有限的时间内没有改变；我们称这个参数化是*平凡*的。我们证明了我们称为 *Dynamical Dichotomy theorem*:
 
 > Any nontrivial stable abc-parametrization 都有一个无穷宽的极限。这个极限要么 1) 允许嵌入 $x^L(\xi)$ 非平凡演化或是 2) 通过函数空间的核梯度下降描述，但并不能同时进行描述。
 
 我们称前一种情况为 *feature learning limit* 后一种为 *kernel limit*。对于单隐藏层的MLPs，前一种会在MFP发生，而后一种则在NTP中发生。这个二分意味着一些函数动力学，如NTK动力学的高阶推广，都不是有效的无限宽极限。此外，任意特征学习极限的神经网络函数 $f$ 在初始化时必须等于$0$。
 
-### 标准参数化(SP)不会学习特征
-我们表明 SP (或NTP) 只能以 $O(1/width)$ (或$O(1)$) 的学习率 (即，$c=1$或$c=0$)，来避免爆炸，并取得核限制。相反的，我们提出有着 $\Theta(1)$ 最大学习率的参数化方式，能够最大程度上得到 feature learning：其允许每个参数都最大化的更新却不至于爆炸。我们称之为 *最大更新参数化 (Maximal Update Parametrization, MUP或$\mu P$)*。其通过 $a_1=-1/2,a_{L+1}=1/2$给出，且 $a_l=0$对所有的 $2\leq l\leq L$成立；$b_l=1/2$对所有的$l$成立；$c=0$。在单隐藏层的MLP，这就对应于MFP。这里的"feature learning limits"都指的是$\mu P$ limits。我们在**下图**中展示了实验验证的最大学习率在2 个隐藏层的 relu MLP 的最大学习率的预测，在CIFAR 10上使用平方损失进行训练。我们在每个子图中绘制出准确率随着学习率的变化情况。每个曲线代表着MLP有着特定的宽度。每个曲线的最右边代表着最大的学习率。对角线的子图代表着学习率随着网络宽度正确缩放了。即SP的的最大学习率是 1/width，而$\mu P$则是常数。
+## 标准参数化(SP)不会学习特征
+我们表明 SP (或NTP) 只能以 $O(1/width)$ (或$O(1)$) 的学习率 (即，$c=1$或$c=0$)，来避免爆炸，并取得核限制。相反的，我们提出有着 $\Theta(1)$ 最大学习率的参数化方式，能够最大程度上得到 feature learning：其允许每个参数都最大化的更新却不至于爆炸。我们称之为 *最大更新参数化 (Maximal Update Parametrization, MUP或$\mu P$)*。其通过 $a_1=-1/2,a_{L+1}=1/2$给出，且 $a_l=0$对所有的 $2\leq l\leq L$成立；$b_l=1/2$对所有的$l$成立；$c=0$。在单隐藏层的MLP，这就对应于MFP。这里的"feature learning limits"都指的是$\mu P$ limits。我们在<a href="#fig2">图2</a>中展示了实验验证的最大学习率在2 个隐藏层的 relu MLP 的最大学习率的预测，在CIFAR 10上使用平方损失进行训练。我们在每个子图中绘制出准确率随着学习率的变化情况。每个曲线代表着MLP有着特定的宽度。每个曲线的最右边代表着最大的学习率。对角线的子图代表着学习率随着网络宽度正确缩放了。即SP的的最大学习率是 1/width，而$\mu P$则是常数。
 
-![$\mu$P和SP最大学习率验证{width=50%}](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506241535691.png?imageSlim)
+```figure
+![$\mu$P和SP最大学习率验证](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506241535691.png?imageSlim){width=50%}
+```
 
-### Key Theoretical Idea: Tensor Programs
+## Key Theoretical Idea: Tensor Programs
 这个方法的主要 insight 是：
 > 当宽度很大的时候，在训练**任何时间**，每个激活向量有大致的iid坐标，使用 *Tensor Programs* 可以递归计算坐标分布，进而理解神经网络的演化。
 
-![一图看懂 NNGP, NTK, Feature Learning Limit {width=50%}](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506241646056.png?imageSlim)
+```figure
+![一图看懂 NNGP, NTK, Feature Learning Limit](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506241646056.png?imageSlim){width=50%}
+```
 
-从上图可以知道，Neural Network-Gaussian Process (NNGP) 可以认为是第一次前向传播的随机初始化模型的极限；而NTK可以认为是第一次反向传播的极限；计算极限的机制是，1) 将相关神经网络的计算写成矩阵乘法与坐标非线性的原则性组合，称为 *Tensor Program* 2) 通过 *Master Theorem* 来递归的计算每个向量的坐标分布。在本文中，我们完全遵循相同的方法，在 1) 中我们直接写下整个 SGD 的训练而非只是第一步，更一般的来说，
+从<a href="#fig3">图3</a>可以知道，Neural Network-Gaussian Process (NNGP) 可以认为是第一次前向传播的随机初始化模型的极限；而NTK可以认为是第一次反向传播的极限；计算极限的机制是，1) 将相关神经网络的计算写成矩阵乘法与坐标非线性的原则性组合，称为 *Tensor Program* 2) 通过 *Master Theorem* 来递归的计算每个向量的坐标分布。在本文中，我们完全遵循相同的方法，在 1) 中我们直接写下整个 SGD 的训练而非只是第一步，更一般的来说，
 
 > 为了导出**任意**神经计算的无穷宽极限，1) 将其表达为 *Tensor Program* 2) 机械的应用 *Master Theorem*
 
-### 本文的贡献
+## 本文的贡献
 1. 形式化了神经网络参数化的自然空间 (abc-parametrizations)
 2. 证明了 *Dynamical Dichotomy*: 任意 nontrivial 的稳定 abc-parametrization 都有 feature learning 或 kernel limits，但不会同时出现。
 3. 证明了 NTK和SP都有 kernel limits，并提出了 *Maximal Update Parametrization ($\mu P$)*，其允许在适当意义上进行最大的特征学习。
@@ -61,23 +70,291 @@ NTK 参数化 (NTP) 有着 $a_1=0$且 $a_l=1/2$对于$l\geq 2$；$b_l=0$ 对所�
 > **Tensor Programs Series**
 > 这篇文章是自包含的，独立于前三篇TP工作，是首个系列工作的一个回报，这篇文章也是TP系列工作的最原始的动机。
 
+# 相关工作
+## Comparison with Mean Field Limits
+对于单层的MLP，平均场极限等价于$\mu P$极限，一些工作还为更深的MLPs提出了不同版本的平均场框架。然而，他们并没有考虑典型的$\mathcal{N}(0,1/n)$随机初始化，其具有中心极限效应，而不是大数定律效应。
 
+## 离散时间与连续时间的梯度下降
+以前的工作在讨论神经网络训练动力学时，同时考虑了连续时间和大宽度，而在本文中只需大宽度限制，梯度下降保持离散时间。之前的连续时间的工作都可以通过添加限制得到，然而这种连续时间的限制是不自然的，如*实践方面* 1) 步长通常尽可能大以加速训练 2) 任务如强化学习就不好说是连续时间 3) 还有很多重要的超参数，如 batch size都被藏在了这个极限中。*理论方面*，连续时间极限会导致 1) 适定性 2) 所得 ODE/PDE 的存在性和唯一性的问题，尽管它们有时可以被证明成立，但它们是连续时间限制的产物，因为离散时间演化的相应问题是微不足道的，因此与真实网络的行为无关。
 
+## 技术假设
+之前的 neural tangent or mean field limits 假设许多正则条件，例如 1) 0th, 1st, and/or 2nd order smoothness on the nonlinearity or other related functions 2) the support boundedness, subgaussianity, and.or PDF smoothness of initialization distributions. 这些都很不自然，且很难去检验。在我们的工作中，唯一的用来得到无穷宽极限的假设是非线性项 $\phi$ 有着多项式有界的二阶导数，并且损失函数对于预测而言具有连续导数。特别的，当神经网络是一个单隐藏层的情况时，会得到离散时间版本的 mean field limit，我们涵盖了标准的高斯初始化；实际上，我们允许任何重尾初始化，它可以被写成伪 Lipschitz函数下的高斯的像，其有着 nonsmooth PDFs 和奇异分布。**这么宽松的假设是源于 Tensor Programs Master Theorem。**
 
+## 训练时间
+许多先前的工作导出了收敛到无穷宽极限的显式时间依赖性，使得更大的宽度可以允许网络更长时间地保持接近极限。在本文中，我们的结果只涉及与宽度无关的训练时间，因为我们的主要目标是研究极限本身及其特征学习能力。此外，最近的证据表明，给定固定的计算预算，在更短的时间内训练更大的模型总是更好的，这验证了我们的极限模式的实际相关性。此外，证明 *Tensor Programs Master Theorem* 的定量版本是有可能的，通过该版本，人们可以允许训练时间随着宽度而增加。
 
+## 参数化的分类
+在NTK中，参数几乎不动，而平均场中，参数变化很大。由于这个原因，前者被称为 *"lazy training"*，而后者被称为 *"active training"*，它们通过logit的乘法比例因子进行非严格分类(类似于本文中的$n^{-a_{L+1}}$)。虽然这些术语没有正式定义，但它们直观对应于我们论文中的kernel and feature learning regimes。从另一个角度来看，NTK和平均场极限可以被认为是平均场演化方程的短时间和长时间尺度范围。上述工作都没有尝试对神经网络的自然参数化进行正式分类。相对的，另一个工作研究了 a toy class of neural networks 由于初始化尺度 $\alpha$ 带来的隐式正则。他们将 $\alpha\rightarrow \infty$极限定义为"kernel regime"，把$\alpha\rightarrow 0$极限定义为"rich regime"。他们表明，前者隐式极小化了$\ell_2$风险，而后者极小化了$\ell_1$风险。他们声称宽度允许 toy model 更自然进入 kernel regime，但正如我们所看到的， kernel and feature learing regimes 在标准MLP的大宽度限制下都是允许的。和本文工作比较接近的是研究了 $L=1$ 情况下稳定 abc-parametrizations 空间的二维子空间。他们提出了一个稳定性概念，类似于本文中稳定性和非平凡性的组合，它们表明了神经正切核合适随时间演化，神经正切核被适当地推广到了任何参数化，并扮演者类似于本文特征核的角色。然而，为了简化证明，他们假设不同权重矩阵的梯度是使用不同的输入来估计的，这是一个非常不自然的条件。相反，我们的结果是应用于任意深度MLP的通常SGD算法，在所有上述工作和大多数现有文献中，与我们在这里的重点相反，没有太多关注神经网络在正确参数化中的特征学习论能力。注意到还有一个特例证明了在平均场极限下，而非NTK极限下，可以学到输入分布的低维线性结构，从而导致与环境维度无关的泛化边界。
 
+## 其它相关工作
+有工作提了toy model 来研究大的学习率如何在 $\Omega(\log(width))$ 的时间内走出 kernel regime。由于我们的二分结果只涉及到$O(1)$的时间训练，所以不存在矛盾。标准参数化还会导致不稳定的训练动力学，然后，在NTK参数化中注入常数，如 $\alpha/\sqrt{n}$ 而不是$1/\sqrt{n}$，并在生成的核中调整$\alpha$。经验表明，更宽的网络通过线性迁移学习实现更好的下游性能，即使在原始预训练任务上几乎没有差异。在这项工作中，我们固定了输入维度$d$，的那页可以考虑随着宽度$n$来改变$d$。在围绕NTK的文献中，参数化往往存在细微差异，导致结论的细微差异，而本文的abc框架封装了所有这样的参数化，并且可以通过等式很容易判断两个表面上不同的参数化。
 
+# Feature Learning vs Kernel behavior
+在本节中，我们给出了诱导特征学习与核行为的训练过程的特征；我们将在下面详细阐述我们所说的这两种行为的含义。首先我们通过回顾众所周知的浅层神经网络的切核和平均场极限来激发这一讨论。
 
+## Motivating Examples: Neural Tangent Kernel and Mean Field Limits
+为了简单起见，定义一个浅层网络 $f(\xi)$ 输入/输出维度为 1
 
+```equation
+$$f(\xi)=Vx(x)\in\mathbb{R},x(\xi)=\phi(h(\xi))\in\mathbb{R}^n,h(\xi)=U\xi \in\mathbb{R}^n.$$
+```
 
+如<a href="#eq1">公式(1)</a>的定义，我们参数化权重 $V=n^{-a_v}v\in\mathbb{R}^{1\times n}$ 且 $U=n^{-a_u}u\in\mathbb{R}^{n\times 1}$，其中宽度$n$应当趋于$\infty$，且$v,u$应当是实际可训练的参数。我们将采样 $v_\alpha\sim \mathcal{N}(0,n^{-2b_v}),u_\alpha\sim\mathcal{N}(0,n^{-2b_u})$对于$\alpha\in[n]$。学习率是$\eta n^{-c}$对于一些独立于$n$的$\eta$。
 
+例如，在 *Neural Tangent Parametrization (简写为 NTP)* 中 $a_u=b_v=b_u=0,a_v=1/2,c=0$。而 *Mean Field Parametrization (MFP)* 则对应于 $a_v=1,a_u=b_u=b_v=0,c=-1$；然而，马上要解释的是我们将使用等价的形式 $a_u=-1/2,a_v=b_u=b_v=1/2,c=0$在这一节，因此 $c=0$ 对于NTP和MFP。我们注意到，GP极限，即仅训练无穷宽，随机初始化的网络的最后一层，是NTK极限的特例，其中第一层没有被训练。我们下面讨论的关于NTK极限的一切都适当的专门针对GP极限。
 
+给定一个输入 $\xi$，$f$的梯度可以被写成：
+$$
+dx(\xi)=V,dh(\xi)=dx(\xi)\odot \phi'(h(\xi)),dv(\xi)=n^{-a_v}x(\xi),du(\xi)=n^{-a_u}dh(\xi)\xi
+$$
+其中 $d\bullet(\xi)$ 是$\nabla_\bullet f(\xi)$ 的简写 (然而，在 Deriving Feature Learning Inifinite-Width Limit 这一节以后，全部都代表 $n\nabla_\bullet f(\xi)$)。对于损失函数 $\mathcal{L}:\mathbb{R}\times \mathbb{R}\rightarrow \mathbb{R}$，$(\xi,y)$对上面的损失梯度给定为 $\mathcal{L}'(f(\xi),y)[dv(\xi),du(\xi)]$(其中$L'$代表第一个参数的导数)。
 
+注意到通过改变$a_v,b_v$以改变梯度$dv$的强度可以保持函数$f$不变，保持$a_v+b_v$为常数；对于$du$也是类似的。因此，$f$的轨迹保持固定，若对任意的$\theta\in\mathbb{R}$，我们设置 $a_u\leftarrow a_u+\theta,a_v\leftarrow a_v+\theta,b_u\leftarrow b_u-\theta,b_v\leftarrow b_v-\theta,c\leftarrow c-2\theta$ (参见<a href="#eq5">公式(5)</a>) 当 $\theta=-1/2$时，这解释了为什么上述的两个MFP的形式时等价的。然后，对于NTP和MFP来说，我们将会考虑$f$在随机梯度下降下，学习率为$\eta=1$、batch size为1的动力学训练，其中网络在时刻$t$在对 $(\xi_t,y_t)$ 上面进行训练，从$t=0$开始训练。 这种简单性旨在说明我们下面的观点。
 
+### Notation and Setup
+以下，当我们说一个(随机)向量 $v\in\mathbb{R}^n$有*coordinate size* $O(n^a)$ (写作 $v=O(n^a)$)，意味着 $\sqrt{\left\|v\right\|^2/n}=O(n^a)$ 对于大的 $n$ 有很高的概率成立。直观的说，这意味着每个坐标都有着 $O(n^a)$ 的典型波动。如果 $O(n^a)$ 被替换成 $\Theta(n^a)$或 $\Omega(n^a)$也是类似的。
 
+令 $f_t,h_t,x_t,U_t,V_t,dx_t,dh_t,dv_t,du_t$ 表示对应于时刻$t$的值，对于$t=0$则对应于随机初始化。我们还记 $x_t=x_t(\xi_t)$，即应用函数 $x_t$到第$t$个输入$\xi_t$；类似的，对于$f_t,h_t,dx_t,dh_t,dv_t,du_t$。这些符号将从不会独自出现来表示对应的函数，因此是不会造成困惑的。SGD有效的更新了$U$,$V$，通过
+$$
+U_{t+1}=U_t-\chi_t n^{-a_u} du_t,V_{t+1}=V_t-\chi_t n^{a_v} dv_t,
+$$
+其中 $\chi_t \stackrel{\text { def }}{=} \mathcal{L}'(f_t,y_t)$。最终，令$\Delta\bullet_t\stackrel{\text{def}}{=}\bullet_t-\bullet_0$，对任意 $\bullet\in\{f,h,x,U,V,dx,dv,du\}$. 举个例子，在一步 SGD更新后，我们对任意 $\xi\in\mathbb{R}$，
+```equation
+$$
+\begin{aligned} \Delta h_{1}(\xi) & =h_{1}(\xi)-h_{0}(\xi)=-n^{-a_{u}} \chi_{0} \xi d u_{0}=-n^{-2 a_{u}} \chi_{0} \xi_{0} \xi d h_{0} \\ & =-n^{-2 a_{u}} \chi_{0} \xi_{0} \xi d x_{0} \odot \phi^{\prime}\left(h_{0}\right)\end{aligned}
+$$
+```
+
+```equation
+$$ \begin{aligned} \Delta f_{1}(\xi) & =V_{0} \Delta x_{1}(\xi)+\Delta V_{1} x_{1}(\xi)=V_{0} \Delta x_{1}(\xi)-n^{-a_{v}} d v_{0}^{\top} x_{1}(\xi) \\ & =V_{0} \Delta x_{1}(\xi)-n^{-2 a_{v}} x_{0}^{\top} x_{1}(\xi)\end{aligned} $$
+```
+
+## 主要观察
+让我们在<a href="#eq2">公式(2)</a>列出NTK和MF limits的一些特性，然后在深度MLP的一般设置中讨论它们，我们将保持我们讨论的直观，以传达关键思想。
+
+### Feature Evolution
+对于一般的$\xi\in\mathbb{R}$，其嵌入向量 $x_0(\xi)$ 有着 $\Theta(1)$ 大小的坐标，在 NTP 和 MFP中。然而，对于任何 $t\geq 1$ 独立于 $n$，$\Delta x_t(\xi)$ 一般有着坐标大小 $\Theta(1/\sqrt{n})$ 在NTP，但是 $\Theta(1)$ 在MFP。
+
+*$t=1$的例子*：通过<a href="#eq3">公式(3)</a>，我们有
+$$
+\Delta h_1(\xi)=n^{-2a_u}\chi_0\xi_0\xi dx_0\odot \phi'(h_0).
+$$
+对于 NTP 插入$a_u=0$。观测到 $\xi_0,\xi,\chi_0=\Theta(1)$，因此
+$$
+\Delta h_1(\xi)=\Theta(1)\cdot dx_0 \odot \phi'(h_0).
+$$
+
+此外，$\phi'(h_0)=\Theta(1)$因为$h_0=\Theta(1)$，因此
+$$
+\Delta h_1(\xi)=\Theta(1)\cdot dx_0\odot \Theta(1).
+$$
+最后，$dx_0=V_0=\Theta(1/\sqrt{n})$ 在NTP中。总的来说，有着
+$$ \begin{aligned} \Delta h_{1}(\xi) & =\Theta(1 / \sqrt{n}) \\ \Longrightarrow \Delta x_{1}(\xi) \approx \phi^{\prime}\left(h_{0}(\xi)\right) \odot \Delta h_{1}(\xi) & =\Theta(1 / \sqrt{n}) \rightarrow 0, \quad \text { as } n \rightarrow \infty .\end{aligned} $$
+
+从另一方面来说，在 MFP中，唯一不同的事情是 $a_u=-1/2$且 $dx_0=\Theta(1/n)$，有着
+$$ \Delta h_{1}(\xi)=\Theta(n) \cdot \Theta(1 / n) \odot \Theta(1)=\Theta(1) \Longrightarrow \Delta x_{1}(\xi)=\Theta(1) $$
+
+### Feature Kernel Evolution
+因此*特征核* $F_t(\xi,\zeta)\stackrel{\text{def}}{=}x_t(\xi)^\top x_t(\zeta)/n$ 不会改变NTK极限，但不在MFL里，即对于任意固定的$t\geq 1$，
+$$
+\lim_{n\rightarrow \infty} F_t(\xi,\zeta)=\lim_{n\rightarrow \infty} F_0(\xi,\zeta)\quad\text{in NTP, but}\\
+\lim_{n\rightarrow \infty} F_t(\xi,\zeta)\neq\lim_{n\rightarrow \infty} F_0(\xi,\zeta)\quad\text{in MFP, in general}.
+$$
+实际上，不管参数化方式是什么，我们都可以得到
+$$ F_{t}(\xi, \zeta)=\frac{1}{n}\left[x_{0}(\xi)^{\top} x_{0}(\zeta)+\Delta x_{t}(\xi)^{\top} x_{0}(\zeta)+x_{0}(\xi)^{\top} \Delta x_{t}(\zeta)+\Delta x_{t}(\xi)^{\top} \Delta x_{t}(\zeta)\right] .$$
+在 NTP, 由于 $\Delta x_t(\xi)=\Theta(1/\sqrt{n})$ 如上述所述,
+$$ \frac{1}{n} \Delta x_{t}(\xi)^{\top} x_{0}(\zeta)=\frac{1}{n} \sum_{\alpha=1}^{n} \Delta x_{t}(\xi)_{\alpha} x_{0}(\zeta)_{\alpha}=\frac{1}{n} \sum_{\alpha=1}^{n} O\left(n^{-1 / 2}\right)=O\left(n^{-1 / 2}\right) ,$$
+类似的，其他项包括 $\Delta x_t$ 将会随着 $n\rightarrow \infty$ 而消失. 但在 MFP中, $\Delta x_t(\xi)=\Theta(1)$ 将会通过 $x_0(\zeta)$ 进行矫正，使得 $\frac{1}{n}\sum_{\alpha=1}^n \Theta(1)=\Theta(1)$.
+
+### 预训练和迁移学习
+以上关于特征核 $K$ 的简单事实意味着 NTK 极限并不能执行线性迁移学习。通过线性迁移学习，我们指的是流形的迁移学习风格，其中丢失预训练的线性分类器层，并在固定的特征之上训练新的分类器层。事实上这是一个线性问题，因此仅取决于特征的内核。如果这个内核与初始化时的内核相同，那么预训练阶段对这个"迁移"学习的结果没有影响。
+
+事实上，更复杂的推理表明，即使对整个网络而不仅仅是分类器层进行微调，NTK极限中的预训练也不比迁移学习的初始化好。如果我们用新的深度神经网络替换线性分类器层，这仍然是正确的。
+
+在一些其它的设置中，如元学习的一些设置，如本文中的少样本学习任务，预训练网络的最后一层不会被丢弃，这叫做*适应*。那么NTK极限不会自动淡化迁移学习。然而，正如将在我们的实验中看到的，NTK极限仍然远远不如特征学习极限，这里的MFL就是例子。
+
+### Kernel Gradient Descent in Function Space
+在NTP中，随着 $n\rightarrow \infty,\left<\nabla_{U,V} f_0(\xi),\nabla_{U,V}f_0(\zeta)\right>$ 收敛到固定值 $K(\xi,\zeta)$ 使得 $K$ 成为一个核。然后，在这个极限下，如果学习率是$\eta$，函数$f$ 通过核梯度下降进行演化 $f_{t+1}(\xi)=f_t(\xi)-\eta K(\xi,\xi_t)\chi_t$。然而，这不应当是MFL。举个例子，如果$\phi$是单位映射，那么直觉上说 $f_{t+1}(\xi)-f_t(\xi)$ 应当是对$\eta$是二次的，而不是线性的，因为两层是一起更新的。
+
+## abc-Parametrizations and Dynamical Dichotomy
+在这一节，我们将范围扩大到更深MLPs的abc-parametrizations，定义为<a href="#eq1">公式(1)</a>，并有他们的无穷宽极限。<a href="#table1">表1</a>总结了不同参数化方法的特性对比。
+
+```assumption 平滑性假设
+我们在这一节的主要结果将会假设$\phi$要么是$tanh$，要么是一个 $relu$ 的光滑版本，称为$\sigma$-gelu，对于充分小的$\sigma>0$。
+```
+
+注意到这一假设只是在 abc-paramitrizations 中需要。为了导出无限宽限制，可以用弱得多的假设。我们相信我们在这里的结果将适用于一般的非线性，但使其精确超出了我们的范围。
+
+### Symmetries of abc-Parametrizations
+综上所述，如果我们在固定$f$的同时，可以任意缩放参数梯度 $\nabla_{w_l}f$，如果我们在固定$a_l+b_l$的同时变化$a_l,b_l$：$\nabla_{w^l}f$ 通过 $n^{-\theta}$ 缩放，如果 $a_l\leftarrow a_l+\theta,b_l\leftarrow b_l-\theta$。换句话说，以这种方式改变$a_,b_l$有效的给$w^l$一个逐层的学习率。如果我们以学习率$\eta n^{-c}$应用于梯度，那么$W^l$的改变缩放为$\eta n^{-c-2\theta}$。因此，如果$c\leftarrow c-2\theta$，那么$W^l$不受$a_,b_l$影响。综上所述，
+```equation
+$$
+\forall \theta\in \mathbb{R}: f_t(\xi) \text{ 对所有的 } t,\xi \text{ 保持固定，若我们设置 } a_l \leftarrow a_l+\theta, b_l \leftarrow b_l-\theta, c \leftarrow c-2\theta.
+$$
+```
+
+### Stable abc-Parametrizations
+我们将只考虑 abc-parametrization 例如，当$n\rightarrow \infty$， 1) 预激活 $\{h^l\}_l$ 以及激活 $\{x^l\}_l$ 有着 $\Theta(1)$ 大小，在初始化的情况下， 2) 这些大小和 logits $f(\xi)$ 都保持 $O(1)$ 在整个SGD过程中。否则，它们倾向于随着$n$变成$\infty$，最终超越浮点范围。事实上，这是现代深度学习中常见的一个尖锐而真实的问题，其中 float16 是训练大模型所必须的。我们称这样的参数化是稳定的，因此不稳定的参数化没有实际意义。
+
+```table 不同参数化下神经网络特性对比
+
+|| Definition | SP (w/ LR $\frac{1}{n}$) | NTP | MFP ($L=1$) | $\mu\mathrm{P}$ (ours) |
+|---|------------|-------------------------|-----|-------------|----------------------|
+| $a_l$ | $W^l=n^{-a_l}w^l$ | 0 | $\begin{cases}0 & l=1 \\ 1/2 & l \geq 2\end{cases}$ | $\begin{cases}0 & l=1 \\ 1 & l=2\end{cases}$ | $\begin{cases}-1/2 & l=1 \\ 0 & 2 \leq l \leq L \\ 1/2 & l=L+1\end{cases}$ |
+|$b_l$| $w_{\alpha\beta}^l \sim \mathcal{N}(0, n^{-2b_l})$ | $\begin{cases}0 & l=1 \\ 1/2 & l \geq 2\end{cases}$ | 0 | 0 | 1/2 |
+|$c$| $LR=\eta n^{-c}$ | 1 | 0 | -1 | 0 |
+|$r$| Definition 3.2 | 1/2 | 1/2 | 0 | 0 |
+| | $2a_{L+1}+c$ | 1 | 1 | 1 | 1 |
+| | $a_{L+1}+b_{L+1}+r$ | 1 | 1 | 1 | 1 |
+| | Nontrivial? | ✓ | ✓ | ✓ | ✓ |
+| | Stable? | ✓ | ✓ | ✓ | ✓ |
+| | Feature Learning? |  |  | ✓ | ✓ |
+| | Kernel Regime? | ✓ | ✓ |  |  |
+
+```
+
+事实证明，稳定的 abc-parametrizations 可以由 $\{a_l,b_l\}\cup \{c\}$的一组不等式来刻画。为了简洁的呈现这些不等式，可以定义
+
+```definition r
+对任意 abc-parametrization，我们记以下的量为$r$
+$$
+r\stackrel{\text{def}}{=}\min (a_{L+1}+b_{L+1},2a_{L+1}+c)+c-1+\min_{l=1}^L [2a_l+\mathbb{I}(l=1)].
+$$
+```
+举个例子，在NTP中，$r=1/2$，尽管在MFP中($L=1,r=0$)。直观来说，$r$是使得 $\Delta x_t^L(\xi)=\Theta(n^{-r})$的指数。因此，为了避免激活函数膨胀，我们希望$r\geq 0$；为了进行特征学习，我们想要$r=0$。
+
+```theorem 稳定性
+一个 abc-parametrization 是稳定的当且仅当以下所有都是对的：
+```
+
+1. (pre)activations $x_0^l,h_0^l$ 在初始化时是 $\Theta(1)$ 且 logits $f_0$ 是 $O(1)$ 
+```equation
+$$
+a_1+b_1=0;a_l+b_l=1/2,\forall l\in [2,L]; a_{L+1}+b_{L+1}\geq 1/2.
+$$
+```
+2. 特征不会爆炸，即 $\Delta x_t^l=O(1)$ 对所有的 $l$ 成立
+```equation
+$$
+r\geq 0
+$$
+```
+3. logits 在训练过程中不会爆炸，即 $\Delta W_t^{L+1}x_t^L,W_0^{L+1}\Delta x_t^L=O(1)$
+```equation
+$$
+2a_{L+1}+c\geq 1; a_{L+1}+b_{L+1}+r\geq 1.
+$$
+```
 
 ---
-## 参考文献
+
+### Nontrivial abc-Parametrizations
+通过稳定的 abc-parametrizations，在无穷宽极限下 $f$ 在整个训练过程中不发生改变。我们说这样的参数化是 trival 的。我们的二分法结果只适用于 nontrival 的稳定 abc-parametrizations。
+
+Nontrival abc-parametrizations 可以通过方程在$\{a+l,b_l\}\cup \{c\}$的解耦合来描述（几何上，它们对应于 stable abc-parametrizations 多面体两个面的并集）。
+
+```theorem nontrivial stable abc-parametrization
+A stable abc-parametrizations is nontrivial iff $a_{L+1}+b_{L+1}+r=1$ or $2a_{L+1}+c=1$.
+```
+
+### Feature Learning
+以下，为了简单起见，我们说 *training routine* 是同时指代学习率$\eta n^{-c}$，训练序列 $\{(\xi_t,y_t)\}_{t\geq 0}$，以及损失函数 $\mathcal{L}(f(\xi),y)$ 再模型$f(\xi)$的预测连续可微。如上所述，我们使用$\bullet_t$来表示目标$\bullet$在$t$步SGD后的值。
+
+```definition feature learning
+我们说 abc-parametrization 是 *feature learning* (即通过 feature kernel 演化)如果，随着 $n\rightarrow \infty$，$\Delta x_t^L(\xi)$ 有着 $\Omega(1)$ 大小($\frac{1}{n} (x_t^L(\xi)^\top x_t^L(\zeta)-x_0^L(\xi))$) 对某些训练路径，时间 $t\geq 1$和输入$\xi$。
+```
+
+MFP 在单隐藏层的例子中，是一个特征学习参数化例子。
+
+直观来说，特征核的演化实现了特征学习，但是已知的是，可能在有些时候虽然发生了特征学习，但是却没有发生特征核的演化，例如得到了一些旋转后的特征。如果是这样，那么就线性迁移学习而言，预训练最终没有好处。
+
+```theorem nontrivial stable abc-parametrization admits feature learning
+iff it evolves the feature kernel iff $r=0$.
+```
+
+### Kernel Regime 
+尽管这里定义的特征学习是通过查看输入$\xi$的嵌入来定义的，我们也可以查看由神经网络标识的*函数*的动力学。
+
+```definition abc-parametrization in kernel regime
+我们称一个 abc-parametrization 在 *kernel regime* 若存在一个半正定核 $K$ 使得对于任意训练过程，时间$t\geq 0$和输入$\xi$，在$n\rightarrow\infty$的极限下，
+```
+```equation
+$$
+f_{t+1}(\xi)=f_t(\xi)-\eta K(\xi,\xi_t)\mathcal{L}'(f_t(\xi_t),y_t),\forall t\geq 0.
+$$
+```
+换句话说，SGD退化为核梯度下降，在大的$n$极限下。
+
+---
+
+```theorem nontrivial stable abc-parametrization in kernel regime
+iff $r>0$. NTP 是一个典型的例子，其中 $r=1/2$ 且 $K$ 由NTK 给出。
+```
+
+### Dynamical Dichotomy
+由<a href="#eq7">公式(7)</a>，一个 stable abc-parametrization 要么 $r=0$要么 $r>0$：
+
+```corollary 动态二分
+一个 nontrivial 的stable abc-parametrization 要么在 *feature learning* 要么在 *kernel regime*，但不会同时在二者同时出现。
+```
+
+注意到 *kernel regime* 没有被定义为 *lack of feature learning*，因此<a href="#cor1">推论 1</a>成立。例如，如果$\phi$ 是线性的，那么这个二分法就不成立，因为一个单隐藏层线性网络其中只有第一层被训练，将会同时在 feature learning 和 kernel regime。
+
+动态二分法的一个有趣结果是
+
+```corollary nontrivial stable feature learning abc-parametrization 性质
+任何 *nontrivial stable* 特征学习 *abc-parametrization* 必须有 $\lim_{n\rightarrow} f_0(\xi)=0$对所有的$\xi$，其中极限是几乎确定的。
+```
+<a href="#thm3">定理 3</a>，<a href="#thm4">定理 4</a>，<a href="#cor1">推论 1</a> 会得到后续更一般的 **Theorem H.13**，其额外表明：1) 在第 $l$ 层进行特征学习同样会应用到层 $l,\ldots,L$ 2) 在任意 feature learning parametrization 下， $f_t$ 在大的$n$极限下变成确定的，因此与贝叶斯观点都不相容(与NNGP极限相反)。
+
+浅层感知机的动态二分通过 NTK(<a href="#thm4">定理 4</a>)和MFL(<a href="#thm3">定理 3</a>)来揭示。我们在<a href="#fig4">图 4</a> 表达了一个简化的图景。
+
+```figure
+![abc参数化的夸张图示：非平凡稳定参数构成高维多面体。其部分边界上的参数可实现特征学习，其余则处于核机制。$\mu\mathrm{P}$位于前者顶点，而NTP属于后者。](https://picgo-1317104440.cos.ap-nanjing.myqcloud.com/202506262345114.png?imageSlim){width=50%}
+```
+
+```remark 函数空间图景
+ kernel regime 极限仅存在于 *function space picture*，即 $f$ 在任何时刻的演化仅由函数值 $\{\lim f_t(\zeta)\}_\zeta,\eta,\mathcal{L},(\xi_t,y_t)$ 本身所决定。直观的说，对于 feature learning limit，这不可能是真的，因此，至少非正式的，动态二分法也是关于圈定训练演化函数空间图景的充分性的一种二分法：我们可以构造两种设定其中$\{\lim f_t(\zeta)\}_\zeta,\eta,\mathcal{L}$和$(\xi_t,y_t)$都一样，但是$f_{t+1}$不同。 1) 第一种设定是 $t=0$，其中 $\lim f_t(\zeta)=0$对任意输入$\zeta$。这里一个典型的SGD将会改变 $f$。 2) 在第二种设定中，假设$\phi$是 relu。设计系列输入使得以很大的学习率进行MLP的训练将会使得所有的 relu 神经元都在 0 区域饱和。那么 $f$ 是处处为0，SGD步不会改变这一点。
+```
+
+```remark 不是所有的动力学都是无穷宽极限
+因此，非线性函数空间动力学不能是某些 abc-parametrization 的有效的无穷宽极限。通过 *非线性性*，我们说 $f_{t+1}(\xi)-f_t(\xi)$ 在 $\mathcal{L}'(f_t(\xi_t),y_t)$ 是非线性的。例如，任意 <a href="#eq9">公式 (9)</a> 的自然高阶推广就不是一个有效的极限。
+```
+
+### Pretraining and Transfer Learning
+在所有的浅层例子中，<a href="#cor1">推论 1</a> 认为任意 kernel regime parametrization (包括NTP) 在无穷宽极限下使得预训练和迁移学习是平凡的。
+
+通过计算标准参数化(standard parametrization, SP)的$r$，我们可以很容易看到，他不能在不变的不稳定的前提下得到特征学习。然而，在之后的章节，我们会手动分析在SP下的MLP的训练动力学来给出为什么是这种情况的直觉。反过来，我们提出了SP的简单修改，Maximal Update Parametrization (MUP或是$\mu P$)，其允许特征学习，事实上，在适当意义上*最大*限度这样做。本着教学精神，我们将专注于关键的见解，强调正确的启发式，而非停留在形式层面。
+
+# Standard Parametrization
+在这一节，我们给出为什么神经网络的梯度下降在 standard parametrization (SP) 将会在1步后导致logits爆炸，如果学习率是 $\omega(1/n)$，其中 $n$ 是宽度。此外，我们将看为什么使用学习率 $)(1/n)$，SP在 kernel regime。我们首先考虑最简单的例子，然后在这一节末尾给出一般的结果。
+
+为了揭示神经网络的一般原则，考虑一个网络中间$n\times n$矩阵的行为是很重要的。因此，最简单的一个例子是一个两层隐藏层的线性MLP，即 <a href="#eq1">公式 (1)</a> 有着 $L=2$ 且 $\phi=id$。因此标准的参数化通过以下给出：
+$$
+a_l=0 \forall l, b_1=0,b_l=1/2 \forall l\geq 2.
+$$
+
+我们考虑1步在单个数据对$(\xi,y)$上有着学习率$n^{-c}$的SGD。那么我们可以明确的抑制对$\xi$的显示以来，并记
+```equation
+$$
+f=V\bar{h},\bar{h}=Wh,h=U\xi,
+$$
+```
+其中$U_{\alpha\beta}\sim \mathcal{N}(0,1)$和$W_{\alpha\beta},V_{\alpha\beta}\sim \mathcal{N}(0,1/n)$ 都是可训练参数。如<a href="#sec4"></a>，
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 参考文献
 ```bib
 @InProceedings{pmlr-v139-yang21c,
   title = 	 {Tensor Programs IV: Feature Learning in Infinite-Width Neural Networks},
@@ -92,7 +369,7 @@ NTK 参数化 (NTP) 有着 $a_1=0$且 $a_l=1/2$对于$l\geq 2$；$b_l=0$ 对所�
   publisher =    {PMLR},
   pdf = 	 {http://proceedings.mlr.press/v139/yang21c/yang21c.pdf},
   url = 	 {https://proceedings.mlr.press/v139/yang21c.html},
-  abstract = 	 {As its width tends to infinity, a deep neural network's behavior under gradient descent can become simplified and predictable (e.g. given by the Neural Tangent Kernel (NTK)), if it is parametrized appropriately (e.g. the NTK parametrization). However, we show that the standard and NTK parametrizations of a neural network do not admit infinite-width limits that can *learn* features, which is crucial for pretraining and transfer learning such as with BERT. We propose simple modifications to the standard parametrization to allow for feature learning in the limit. Using the *Tensor Programs* technique, we derive explicit formulas for such limits. On Word2Vec and few-shot learning on Omniglot via MAML, two canonical tasks that rely crucially on feature learning, we compute these limits exactly. We find that they outperform both NTK baselines and finite-width networks, with the latter approaching the infinite-width feature learning performance as width increases.}
+  abstract = 	 {As its width tends to infinity, a deep neural network's behavior under gradient descent can become simplified and predictable (e.g. given by the Neural Tangent Kernel (NTK)), if it is parametrized appropriately (e.g. the NTK parametrization). However, we show that the standard and NTK parametrizations of a neural network do not admit infinite-width limits that can *learn* features, which is crucial for pretraining and transfer learning such as with BERT. We propose simple modifications to the standard parametrization to allow for feature learning in the limit. Using the *Tensor Programs* technique, we derive explicit formulas for such limits. On Word2Vec and few-shot learning on Omniglot via MAML, two canonical tasks that rely crucially on feature learning, we computed these limits exactly. We find that they outperform both NTK baselines and finite-width networks, with the latter approaching the infinite-width feature learning performance as width increases.}
 }
 ```
 

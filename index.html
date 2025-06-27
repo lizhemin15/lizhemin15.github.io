@@ -469,13 +469,583 @@
              background-color: #f1f8ff;
          }
 
+         /* Table container styles */
+         .table-container {
+             position: relative;
+             margin: 20px 0;
+             border: 1px solid #e1e4e8;
+             border-radius: 8px;
+             padding: 20px;
+             background: #fafbfc;
+             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+         }
+
+         .table-container::before {
+             content: attr(data-table-title);
+             position: absolute;
+             top: -12px;
+             left: 50%;
+             transform: translateX(-50%);
+             background: var(--accent-color);
+             color: white;
+             padding: 4px 12px;
+             border-radius: 12px;
+             font-size: 16px;
+             font-weight: 600;
+             line-height: 1;
+             white-space: nowrap;
+             max-width: calc(100% - 30px);
+             overflow: hidden;
+             text-overflow: ellipsis;
+         }
+
+         /* Table tooltip styles */
+         .table-tooltip {
+             position: fixed;
+             background: rgba(45, 55, 72, 0.95);
+             color: white;
+             padding: 15px;
+             border-radius: 8px;
+             font-size: 14px;
+             z-index: 10000;
+             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+             backdrop-filter: blur(10px);
+             -webkit-backdrop-filter: blur(10px);
+             border: 1px solid rgba(255,255,255,0.1);
+             max-width: 600px;
+             min-width: 200px;
+             pointer-events: none;
+             opacity: 0;
+             transform: translateY(10px);
+             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+             word-wrap: break-word;
+             overflow-wrap: break-word;
+         }
+
+         .table-tooltip.show {
+             opacity: 1;
+             transform: translateY(0);
+         }
+
+         /* Dark mode support for table tooltip */
+         [data-theme="dark"] .table-tooltip {
+             background: rgba(26, 32, 44, 0.95);
+             border: 1px solid rgba(255,255,255,0.2);
+         }
+
+         /* Figure container styles */
+         .figure-container {
+             margin: 20px 0;
+             text-align: center;
+         }
+
+         .image-container {
+             display: block;
+             margin: 0 auto;
+             text-align: center;
+         }
+
+         .image-caption {
+             text-align: center;
+             margin-top: 12px;
+             font-size: 0.85em;
+             color: #666;
+             font-weight: 500;
+             line-height: 1.5;
+             white-space: normal;
+             word-wrap: break-word;
+             overflow-wrap: break-word;
+             min-height: fit-content;
+         }
+
+         [data-theme="dark"] .image-caption {
+             color: #a0aec0;
+         }
+
+         /* Figure tooltip styles */
+         .figure-tooltip {
+             position: fixed;
+             background: transparent;
+             color: white;
+             padding: 0;
+             border-radius: 12px;
+             font-size: 16px;
+             z-index: 10000;
+             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+             backdrop-filter: blur(5px);
+             -webkit-backdrop-filter: blur(5px);
+             border: 2px solid rgba(255,255,255,0.2);
+             pointer-events: none;
+             opacity: 0;
+             transform: translateY(15px) scale(0.95);
+             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+             overflow: hidden;
+         }
+
+         .figure-tooltip.show {
+             opacity: 1;
+             transform: translateY(0) scale(1);
+         }
+
+         .figure-tooltip img {
+             width: 100%;
+             height: 100%;
+             object-fit: cover;
+             border-radius: 10px;
+             display: block;
+             box-shadow: none;
+         }
+
+         /* Dark mode support for figure tooltip */
+         [data-theme="dark"] .figure-tooltip {
+             background: rgba(26, 32, 44, 0.95);
+             border: 1px solid rgba(255,255,255,0.2);
+         }
+
+         /* Academic content tooltip styles */
+         .academic-tooltip {
+             position: fixed;
+             background: rgba(45, 55, 72, 0.98);
+             color: white;
+             padding: 20px;
+             border-radius: 12px;
+             font-size: 14px;
+             z-index: 10000;
+             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+             backdrop-filter: blur(15px);
+             -webkit-backdrop-filter: blur(15px);
+             border: 2px solid rgba(255,255,255,0.15);
+             max-width: 500px;
+             min-width: 280px;
+             pointer-events: none;
+             opacity: 0;
+             transform: translateY(15px) scale(0.95);
+             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+             word-wrap: break-word;
+             overflow-wrap: break-word;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+             line-height: 1.6;
+         }
+
+         .academic-tooltip.show {
+             opacity: 1;
+             transform: translateY(0) scale(1);
+         }
+
+         .academic-tooltip .tooltip-title {
+             font-weight: bold;
+             font-size: 16px;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(255,255,255,0.2);
+             display: block;
+         }
+
+         .academic-tooltip .tooltip-content {
+             font-size: 14px;
+             line-height: 1.7;
+         }
+
+         /* Different colors for different academic content types */
+         .academic-tooltip.theorem-tooltip .tooltip-title {
+             color: #4fd1c7;
+         }
+
+         .academic-tooltip.definition-tooltip .tooltip-title {
+             color: #68d391;
+         }
+
+         .academic-tooltip.corollary-tooltip .tooltip-title {
+             color: #f6ad55;
+         }
+
+         .academic-tooltip.lemma-tooltip .tooltip-title {
+             color: #fc8181;
+         }
+
+         .academic-tooltip.assumption-tooltip .tooltip-title {
+             color: #f1c40f;
+         }
+
+         .academic-tooltip.proposition-tooltip .tooltip-title {
+             color: #9f7aea;
+         }
+
+         .academic-tooltip.remark-tooltip .tooltip-title {
+             color: #ed8936;
+         }
+
+         .academic-tooltip.example-tooltip .tooltip-title {
+             color: #38b2ac;
+         }
+
+                 /* Dark mode support for academic tooltip */
+        [data-theme="dark"] .academic-tooltip {
+            background: rgba(26, 32, 44, 0.98);
+            border: 2px solid rgba(255,255,255,0.25);
+        }
+
+        /* Section tooltip styles */
+        .section-tooltip {
+            position: fixed;
+            background: rgba(45, 55, 72, 0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 400px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            word-wrap: break-word;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .section-tooltip.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .section-tooltip .section-number {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-right: 0.5em;
+        }
+
+        .section-tooltip .section-title {
+            color: #ffffff;
+        }
+
+        /* Dark mode support for section tooltip */
+        [data-theme="dark"] .section-tooltip {
+            background: rgba(26, 32, 44, 0.95);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        [data-theme="dark"] .section-tooltip .section-number {
+            color: #74b9ff;
+        }
+
+         [data-theme="dark"] .table-container {
+             background: #2d3748;
+             border-color: #4a5568;
+         }
+
+         /* Theorem container styles */
+         .theorem-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid var(--accent-color);
+             background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .theorem-container::before {
+             content: attr(data-theorem-title);
+             display: block;
+             font-weight: bold;
+             color: var(--accent-color);
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+         }
+
+         .theorem-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for theorem container */
+         [data-theme="dark"] .theorem-container {
+             background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.15));
+             border-left-color: var(--accent-color);
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .theorem-container::before {
+             color: #4fd1c7;
+         }
+
+         /* Assumption container styles */
+         .assumption-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid #f39c12;
+             background: linear-gradient(135deg, rgba(243, 156, 18, 0.05), rgba(243, 156, 18, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .assumption-container::before {
+             content: attr(data-assumption-title);
+             display: block;
+             font-weight: bold;
+             color: #f39c12;
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(243, 156, 18, 0.3);
+         }
+
+         .assumption-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for assumption container */
+         [data-theme="dark"] .assumption-container {
+             background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(243, 156, 18, 0.15));
+             border-left-color: #f39c12;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .assumption-container::before {
+             color: #f1c40f;
+         }
+
+         /* Definition container styles */
+         .definition-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid #27ae60;
+             background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(39, 174, 96, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .definition-container::before {
+             content: attr(data-definition-title);
+             display: block;
+             font-weight: bold;
+             color: #27ae60;
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(39, 174, 96, 0.3);
+         }
+
+         .definition-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for definition container */
+         [data-theme="dark"] .definition-container {
+             background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.15));
+             border-left-color: #27ae60;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .definition-container::before {
+             color: #2ecc71;
+         }
+
+         /* Corollary container styles */
+         .corollary-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid #9b59b6;
+             background: linear-gradient(135deg, rgba(155, 89, 182, 0.05), rgba(155, 89, 182, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .corollary-container::before {
+             content: attr(data-corollary-title);
+             display: block;
+             font-weight: bold;
+             color: #9b59b6;
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(155, 89, 182, 0.3);
+         }
+
+         .corollary-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for corollary container */
+         [data-theme="dark"] .corollary-container {
+             background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(155, 89, 182, 0.15));
+             border-left-color: #9b59b6;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .corollary-container::before {
+             color: #bb7dd8;
+         }
+
+         /* Lemma container styles */
+         .lemma-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid #e74c3c;
+             background: linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(231, 76, 60, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .lemma-container::before {
+             content: attr(data-lemma-title);
+             display: block;
+             font-weight: bold;
+             color: #e74c3c;
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(231, 76, 60, 0.3);
+         }
+
+         .lemma-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for lemma container */
+         [data-theme="dark"] .lemma-container {
+             background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.15));
+             border-left-color: #e74c3c;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .lemma-container::before {
+             color: #ec7063;
+         }
+
+         /* Remark container styles */
+         .remark-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid #17a2b8;
+             background: linear-gradient(135deg, rgba(23, 162, 184, 0.05), rgba(23, 162, 184, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .remark-container::before {
+             content: attr(data-remark-title);
+             display: block;
+             font-weight: bold;
+             color: #17a2b8;
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(23, 162, 184, 0.3);
+         }
+
+         .remark-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for remark container */
+         [data-theme="dark"] .remark-container {
+             background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.15));
+             border-left-color: #17a2b8;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .remark-container::before {
+             color: #5bc0de;
+         }
+
+         /* Table scroll wrapper for responsive tables */
+         .table-scroll-wrapper {
+             overflow-x: auto;
+             margin: 0 -20px;
+             padding: 0 20px;
+         }
+
+         .table-scroll-wrapper table {
+             min-width: 600px;
+             white-space: nowrap;
+         }
+
+         .table-scroll-wrapper table td,
+         .table-scroll-wrapper table th {
+             white-space: nowrap;
+             min-width: 120px;
+         }
+
+         /* Math formulas in tables - allow proper rendering */
+         .table-scroll-wrapper .math-container {
+             white-space: normal;
+         }
+
+         /* Display mode math in tables */
+         .table-scroll-wrapper .math-container.katex-display {
+             display: inline-block;
+             vertical-align: middle;
+             white-space: normal;
+         }
+
+         /* Allow multiline math formulas to render properly */
+         .table-scroll-wrapper .katex-display .katex-html {
+             white-space: normal;
+             overflow: visible;
+         }
+
+         /* Scrollbar styling for table wrapper */
+         .table-scroll-wrapper::-webkit-scrollbar {
+             height: 8px;
+         }
+
+         .table-scroll-wrapper::-webkit-scrollbar-track {
+             background: #f1f1f1;
+             border-radius: 4px;
+         }
+
+         .table-scroll-wrapper::-webkit-scrollbar-thumb {
+             background: #c1c1c1;
+             border-radius: 4px;
+         }
+
+         .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+             background: #a8a8a8;
+         }
+
+         [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-track {
+             background: #4a5568;
+         }
+
+         [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-thumb {
+             background: #718096;
+         }
+
+         [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+             background: #a0aec0;
+         }
+
          /* Math formula styles */
          .katex {
              font-size: 1.1em;
          }
 
          .katex-display {
-             margin: 20px 0;
+             margin: 12px 0;
              text-align: center;
              display: block;
              overflow: hidden;
@@ -485,7 +1055,7 @@
          .math-container.katex-display {
              display: block;
              text-align: center;
-             margin: 20px 0;
+             margin: 12px 0;
              overflow: hidden;
          }
 
@@ -524,6 +1094,59 @@
 
          .math-container:hover .math-source {
              display: block;
+         }
+
+         /* Formula tooltip styles */
+         .formula-tooltip {
+             position: fixed;
+             background: rgba(45, 55, 72, 0.95);
+             color: white;
+             padding: 15px;
+             border-radius: 8px;
+             font-size: 14px;
+             z-index: 10000;
+             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+             backdrop-filter: blur(10px);
+             -webkit-backdrop-filter: blur(10px);
+             border: 1px solid rgba(255,255,255,0.1);
+             max-width: 600px;
+             min-width: 200px;
+             pointer-events: none;
+             opacity: 0;
+             transform: translateY(10px);
+             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+             word-wrap: break-word;
+             overflow-wrap: break-word;
+         }
+
+         .formula-tooltip.show {
+             opacity: 1;
+             transform: translateY(0);
+         }
+
+         .formula-tooltip .katex {
+             font-size: 1.2em;
+             color: white;
+         }
+
+         .formula-tooltip .katex-display {
+             margin: 0;
+             text-align: center;
+             white-space: normal;
+             overflow: visible;
+         }
+
+         .formula-tooltip .katex-html {
+             white-space: normal;
+             overflow: visible;
+             word-wrap: break-word;
+             overflow-wrap: break-word;
+         }
+
+         /* Dark mode support for tooltip */
+         [data-theme="dark"] .formula-tooltip {
+             background: rgba(26, 32, 44, 0.95);
+             border: 1px solid rgba(255,255,255,0.2);
          }
 
         .markdown-content ul, .markdown-content ol {
@@ -1668,6 +2291,91 @@
             50% { transform: translateY(-10px) rotate(5deg); }
         }
 
+        @keyframes highlight-corollary {
+            0% { 
+                background-color: transparent;
+                box-shadow: none;
+            }
+            30% { 
+                background-color: rgba(155, 89, 182, 0.15);
+                box-shadow: 0 0 20px rgba(155, 89, 182, 0.3);
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: transparent;
+                box-shadow: none;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes highlight-theorem {
+            0% { 
+                background-color: transparent;
+                box-shadow: none;
+            }
+            30% { 
+                background-color: rgba(231, 76, 60, 0.15);
+                box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: transparent;
+                box-shadow: none;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes highlight-definition {
+            0% { 
+                background-color: transparent;
+                box-shadow: none;
+            }
+            30% { 
+                background-color: rgba(39, 174, 96, 0.15);
+                box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: transparent;
+                box-shadow: none;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes highlight-lemma {
+            0% { 
+                background-color: transparent;
+                box-shadow: none;
+            }
+            30% { 
+                background-color: rgba(243, 156, 18, 0.15);
+                box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: transparent;
+                box-shadow: none;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes highlight-assumption {
+            0% { 
+                background-color: transparent;
+                box-shadow: none;
+            }
+            30% { 
+                background-color: rgba(52, 152, 219, 0.15);
+                box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: transparent;
+                box-shadow: none;
+                transform: scale(1);
+            }
+        }
+
         /* Enhanced mobile experience */
         @media (max-width: 768px) {
             .theme-toggle-fixed {
@@ -1908,11 +2616,354 @@
 
         /* 彻底隐藏KaTeX公式滚动条 */
         .katex, .katex-html, .katex-display, .math-container.katex-display {
-            overflow: visible !important;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         .katex::-webkit-scrollbar, .katex-html::-webkit-scrollbar, .katex-display::-webkit-scrollbar, .math-container.katex-display::-webkit-scrollbar {
             display: none;
+        }
+
+        /* 公式引用链接样式 */
+        .markdown-content a[href^="#eq"] {
+            color: #3498db;
+            text-decoration: none;
+            border-bottom: 1px dotted #3498db;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#eq"]:hover {
+            color: #2980b9;
+            border-bottom: 1px solid #2980b9;
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .markdown-content a[href^="#eq"]:active {
+            transform: scale(0.98);
+        }
+
+        /* 公式编号样式 */
+        .math-container.katex-display {
+            position: relative;
+        }
+
+        .math-container.katex-display::after {
+            content: attr(data-equation-number);
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.9em;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* 暗色模式下的公式引用链接样式 */
+        [data-theme="dark"] .markdown-content a[href^="#eq"] {
+            color: #5dade2;
+            border-bottom: 1px dotted #5dade2;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#eq"]:hover {
+            color: #3498db;
+            border-bottom: 1px solid #3498db;
+            background-color: rgba(93, 173, 226, 0.2);
+        }
+
+        /* 图片引用链接样式 */
+        .markdown-content a[href^="#fig"] {
+            color: #27ae60;
+            text-decoration: none;
+            border-bottom: 1px dotted #27ae60;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#fig"]:hover {
+            color: #219a52;
+            border-bottom: 1px solid #219a52;
+            background-color: rgba(39, 174, 96, 0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .markdown-content a[href^="#fig"]:active {
+            transform: scale(0.98);
+        }
+
+        /* 暗色模式下的图片引用链接样式 */
+        [data-theme="dark"] .markdown-content a[href^="#fig"] {
+            color: #58d68d;
+            border-bottom: 1px dotted #58d68d;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#fig"]:hover {
+            color: #27ae60;
+            border-bottom: 1px solid #27ae60;
+            background-color: rgba(88, 214, 141, 0.2);
+        }
+
+        /* Corollary links styles */
+        .markdown-content a[href^="#cor"] {
+            color: #9b59b6;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #9b59b6;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#cor"]:hover {
+            color: #8e44ad;
+            border-bottom: 1px solid #8e44ad;
+            background-color: rgba(155, 89, 182, 0.1);
+        }
+
+        .markdown-content a[href^="#cor"]:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#cor"] {
+            color: #bb86fc;
+            border-bottom: 1px dashed #bb86fc;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#cor"]:hover {
+            color: #d1c4e9;
+            border-bottom: 1px solid #d1c4e9;
+            background-color: rgba(187, 134, 252, 0.2);
+        }
+
+        /* Theorem links styles */
+        .markdown-content a[href^="#thm"] {
+            color: #e74c3c;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #e74c3c;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#thm"]:hover {
+            color: #c0392b;
+            border-bottom: 1px solid #c0392b;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .markdown-content a[href^="#thm"]:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#thm"] {
+            color: #ff6b6b;
+            border-bottom: 1px dashed #ff6b6b;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#thm"]:hover {
+            color: #ff8e8e;
+            border-bottom: 1px solid #ff8e8e;
+            background-color: rgba(255, 107, 107, 0.2);
+        }
+
+        /* Definition links styles */
+        .markdown-content a[href^="#def"] {
+            color: #27ae60;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #27ae60;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#def"]:hover {
+            color: #229954;
+            border-bottom: 1px solid #229954;
+            background-color: rgba(39, 174, 96, 0.1);
+        }
+
+        .markdown-content a[href^="#def"]:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#def"] {
+            color: #58d68d;
+            border-bottom: 1px dashed #58d68d;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#def"]:hover {
+            color: #7dcea0;
+            border-bottom: 1px solid #7dcea0;
+            background-color: rgba(88, 214, 141, 0.2);
+        }
+
+        /* Lemma links styles */
+        .markdown-content a[href^="#lem"] {
+            color: #f39c12;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #f39c12;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#lem"]:hover {
+            color: #e67e22;
+            border-bottom: 1px solid #e67e22;
+            background-color: rgba(243, 156, 18, 0.1);
+        }
+
+        .markdown-content a[href^="#lem"]:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#lem"] {
+            color: #ffc107;
+            border-bottom: 1px dashed #ffc107;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#lem"]:hover {
+            color: #ffcd38;
+            border-bottom: 1px solid #ffcd38;
+            background-color: rgba(255, 193, 7, 0.2);
+        }
+
+        /* Assumption links styles */
+        .markdown-content a[href^="#asmp"] {
+            color: #3498db;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #3498db;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#asmp"]:hover {
+            color: #2980b9;
+            border-bottom: 1px solid #2980b9;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .markdown-content a[href^="#asmp"]:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#asmp"] {
+            color: #74b9ff;
+            border-bottom: 1px dashed #74b9ff;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#asmp"]:hover {
+            color: #a29bfe;
+            border-bottom: 1px solid #a29bfe;
+            background-color: rgba(116, 185, 255, 0.2);
+        }
+
+        /* Section number styles */
+        .section-number {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-right: 0.5em;
+            position: relative;
+        }
+
+        .section-number::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color), transparent);
+            border-radius: 1px;
+        }
+
+        /* Heading section styles */
+        h1[data-section-id] {
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2[data-section-id] {
+            border-left: 4px solid var(--accent-color);
+            padding-left: 1rem;
+            margin-left: -1rem;
+        }
+
+        h3[data-section-id] {
+            position: relative;
+        }
+
+        h3[data-section-id]::before {
+            content: "";
+            position: absolute;
+            left: -0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 1.2em;
+            background: var(--accent-color);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+
+        /* Section links styles */
+        .markdown-content a[href^="#sec"] {
+            color: var(--accent-color);
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed var(--accent-color);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#sec"]:hover {
+            color: var(--success-color);
+            border-bottom: 1px solid var(--success-color);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .markdown-content a[href^="#sec"]:active {
+            transform: scale(0.98);
+        }
+
+        /* Dark mode support for section styles */
+        [data-theme="dark"] .section-number {
+            color: #64b5f6;
+        }
+
+        [data-theme="dark"] .section-number::after {
+            background: linear-gradient(90deg, #64b5f6, transparent);
+        }
+
+        [data-theme="dark"] h1[data-section-id] {
+            border-bottom-color: #64b5f6;
+        }
+
+        [data-theme="dark"] h2[data-section-id] {
+            border-left-color: #64b5f6;
+        }
+
+        [data-theme="dark"] h3[data-section-id]::before {
+            background: #64b5f6;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#sec"] {
+            color: #64b5f6;
+            border-bottom: 1px dashed #64b5f6;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#sec"]:hover {
+            color: #90caf9;
+            border-bottom: 1px solid #90caf9;
+            background-color: rgba(100, 181, 246, 0.2);
         }
 
         /* 图片容器和标题样式 */
@@ -1948,7 +2999,11 @@
             font-weight: 500;
             text-align: center;
             margin: 0;
-            line-height: 1.4;
+            line-height: 1.5;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            min-height: fit-content;
         }
 
         /* 暗色模式下的图片样式 */
@@ -1994,6 +3049,342 @@
         }
         .fullscreen-reading #exit-fullscreen-btn {
             display: block !important;
+        }
+
+        .fullscreen-reading .theme-toggle-fixed {
+            display: none !important;
+        }
+
+        /* 幻灯片模式样式 */
+        .slides-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .slides-mode.active {
+            display: flex;
+        }
+
+        .slide-container {
+            width: 98vw;
+            height: 95vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide-container.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .slide-container h1 {
+            font-size: 4.2rem;
+            color: #2c3e50;
+            margin-bottom: 50px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+            padding-bottom: 30px;
+        }
+
+        .slide-container h2 {
+            font-size: 3.5rem;
+            color: #34495e;
+            margin: 40px 0 30px 0;
+            border-left: 8px solid #3498db;
+            padding-left: 30px;
+        }
+
+        .slide-container h3 {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            margin: 35px 0 25px 0;
+        }
+
+        .slide-container p {
+            font-size: 2rem;
+            line-height: 1.8;
+            margin: 25px 0;
+            color: #2c3e50;
+        }
+
+        .slide-container ul, .slide-container ol {
+            font-size: 1.8rem;
+            line-height: 1.7;
+            margin: 25px 0;
+        }
+
+        .slide-container li {
+            margin: 15px 0;
+        }
+
+        .slide-container code {
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            color: #e74c3c;
+            font-size: 1.7rem;
+        }
+
+        .slide-container pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 40px;
+            border-radius: 15px;
+            overflow-x: auto;
+            margin: 30px 0;
+            font-size: 1.6rem;
+        }
+
+        .slide-container pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+
+        .slide-container blockquote {
+            border-left: 6px solid #3498db;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            padding: 30px;
+            margin: 30px 0;
+            font-style: italic;
+            border-radius: 0 15px 15px 0;
+            font-size: 1.8rem;
+        }
+
+        .slide-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+            margin: 30px auto;
+            display: block;
+        }
+
+        .slide-navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            z-index: 3001;
+        }
+
+        .slide-nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .slide-nav-btn:hover {
+            background: white;
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+        }
+
+        .slide-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .slide-counter {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 25px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c3e50;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .slide-exit-btn {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e74c3c;
+            z-index: 3001;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+        }
+
+        .slide-exit-btn:hover {
+            background: white;
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+        }
+
+        .slide-title {
+            position: fixed;
+            top: 40px;
+            left: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 30px;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #2c3e50;
+            z-index: 3001;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            max-width: 70vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .slide-transition {
+            animation: slideTransition 0.5s ease-in-out;
+        }
+
+        @keyframes slideTransition {
+            0% {
+                transform: translateX(100%) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .slide-transition-reverse {
+            animation: slideTransitionReverse 0.5s ease-in-out;
+        }
+
+        @keyframes slideTransitionReverse {
+            0% {
+                transform: translateX(-100%) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 幻灯片模式下的暗色主题 */
+        .slides-mode[data-theme="dark"] {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .slides-mode[data-theme="dark"] .slide-container {
+            background: #2d3748;
+            color: #e8e8e8;
+        }
+
+        .slides-mode[data-theme="dark"] .slide-container h1,
+        .slides-mode[data-theme="dark"] .slide-container h2,
+        .slides-mode[data-theme="dark"] .slide-container h3 {
+            color: #e8e8e8;
+        }
+
+        .slides-mode[data-theme="dark"] .slide-container p {
+            color: #e8e8e8;
+        }
+
+        .slides-mode[data-theme="dark"] .slide-container code {
+            background: #4a5568;
+            color: #f7fafc;
+        }
+
+        .slides-mode[data-theme="dark"] .slide-container pre {
+            background: #1a202c;
+            color: #e8e8e8;
+        }
+
+        .slides-mode[data-theme="dark"] .slide-container blockquote {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            color: #e8e8e8;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .slide-container {
+                width: 99vw;
+                height: 95vh;
+                padding: 30px;
+            }
+
+            .slide-container h1 {
+                font-size: 3rem;
+            }
+
+            .slide-container h2 {
+                font-size: 2.5rem;
+            }
+
+            .slide-container h3 {
+                font-size: 2rem;
+            }
+
+            .slide-container p {
+                font-size: 1.5rem;
+            }
+
+            .slide-navigation {
+                bottom: 25px;
+                gap: 20px;
+            }
+
+            .slide-nav-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .slide-exit-btn {
+                top: 25px;
+                right: 25px;
+                width: 50px;
+                height: 50px;
+            }
+
+            .slide-title {
+                top: 25px;
+                left: 25px;
+                padding: 15px 20px;
+                font-size: 1.1rem;
+                max-width: 75vw;
+            }
         }
     </style>
 </head>
@@ -2074,6 +3465,28 @@
             
             <img id="modal-image" src="" alt="全屏图片">
             <div class="image-modal-info" id="modal-image-info"></div>
+        </div>
+    </div>
+
+    <!-- 幻灯片模式 -->
+    <div class="slides-mode" id="slides-mode">
+        <div class="slide-title" id="slide-title"></div>
+        <button class="slide-exit-btn" onclick="exitSlidesMode()" title="退出幻灯片模式">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="slide-container" id="slide-container">
+            <!-- 幻灯片内容将在这里动态生成 -->
+        </div>
+        
+        <div class="slide-navigation">
+            <button class="slide-nav-btn" onclick="previousSlide()" id="prev-btn" title="上一张 (←)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="slide-counter" id="slide-counter">1 / 1</div>
+            <button class="slide-nav-btn" onclick="nextSlide()" id="next-btn" title="下一张 (→)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
@@ -2378,6 +3791,12 @@
             window.addEventListener('beforeunload', function() {
                 scrollPositionManager.saveScrollPosition();
             });
+            
+            // 监听全屏状态变化
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
         });
 
         // Theme management functions
@@ -2556,9 +3975,17 @@
                 }
                 
                 // Render single article
-                const { content: preprocessedContent, mathBlocks } = preprocessMathFormulas(post.content);
+                const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
                 let htmlContent = marked.parse(preprocessedContent);
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
+                htmlContent = renderTables(htmlContent, tableBlocks);
+                htmlContent = renderFigures(htmlContent, figureBlocks);
+                htmlContent = renderTheorems(htmlContent, theoremBlocks);
+                htmlContent = renderAssumptions(htmlContent, assumptionBlocks);
+                htmlContent = renderDefinitions(htmlContent, definitionBlocks);
+                htmlContent = renderCorollaries(htmlContent, corollaryBlocks);
+                htmlContent = renderLemmas(htmlContent, lemmaBlocks);
+                htmlContent = renderRemarks(htmlContent, remarkBlocks);
                 
                 const date = formatDate(post.date);
                 const tags = post.tags && Array.isArray(post.tags) 
@@ -2573,8 +4000,11 @@
                                     <i class="fas fa-arrow-left"></i> Back to Blog List
                                 </button>
                                 <div style="display: flex; gap: 10px;">
-                                    <button class="btn btn-outline-success" id="play-fullscreen-btn" onclick="enterFullscreenReading()" title="沉浸式阅读">
-                                        <i class="fas fa-play"></i> Play
+                                    <button class="btn btn-outline-info" id="slides-btn" onclick="enterSlidesMode()" title="幻灯片模式">
+                                        <i class="fas fa-film"></i> Slides
+                                    </button>
+                                    <button class="btn btn-outline-success" id="play-fullscreen-btn" onclick="enterFullscreenReading()" title="全屏阅读">
+                                        <i class="fas fa-expand"></i> FullScreen
                                     </button>
                                     <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
                                         <i class="fas fa-share-alt"></i> Share
@@ -2606,6 +4036,9 @@
                 // Add math formula copy function
                 addMathCopyFunction();
                 
+                // Add formula tooltip functionality
+                addFormulaTooltip();
+                
                 // Add target="_blank" for external links
                 contentDiv.querySelectorAll('a[href^="http"]').forEach(link => {
                     link.setAttribute('target', '_blank');
@@ -2618,11 +4051,20 @@
                 // Generate table of contents
                 generateTableOfContents();
                 
+                // 重新设置公式链接处理（内容更新后）
+                setupFormulaLinks();
+                
+                // 设置章节引用链接处理（调用两次确保覆盖所有情况）
+                setupSectionLinks();
+                
+                // 自动填充空的链接标签
+                autoFillEmptyLinks();
+                
                 // Update page title
                 const pageTitle = document.getElementById('page-title');
-                if (pageTitle && post.title) {
-                    pageTitle.textContent = `${post.title} - ${siteConfig.site.title}`;
-                    document.title = `${post.title} - ${siteConfig.site.title}`;
+                if (pageTitle && siteConfig.site?.title) {
+                    pageTitle.textContent = siteConfig.site.title;
+                    document.title = siteConfig.site.title;
                 }
                 
                 // Scroll to top
@@ -2634,12 +4076,17 @@
                     scrollPositionManager.smartRestore();
                 }, 300);
                 
+                // 同步幻灯片按钮状态
+                syncSlidesButton();
             } catch (error) {
                 console.error('Error loading blog post:', error);
                 showError('Article Loading Failed', `Unable to load article "${fileName}"`, error.message, 'blogs');
             }
             // 渲染后同步按钮和全屏状态
             ensureFullscreenState();
+            
+            // 同步幻灯片按钮状态
+            syncSlidesButton();
         }
 
         // Navigate to blogs list
@@ -2872,13 +4319,220 @@
             const mathBlocks = [];
             let blockIndex = 0;
             let inlineIndex = 0;
+            let equationIndex = 0; // 新增：equation编号计数器
+            let tableIndex = 0; // 新增：table编号计数器
+            let figureIndex = 0; // 新增：figure编号计数器
+            let theoremIndex = 0; // 新增：theorem编号计数器
+            let assumptionIndex = 0; // 新增：assumption编号计数器
+            let definitionIndex = 0; // 新增：definition编号计数器
+            let corollaryIndex = 0; // 新增：corollary编号计数器
+            let lemmaIndex = 0; // 新增：lemma编号计数器
+            let remarkIndex = 0; // 新增：remark编号计数器
+            
+            console.log('开始处理数学公式...');
+            
             // 新增：图片alt中的$替换为__DOLLAR__
             content = content.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, url) {
                 let newAlt = alt.replace(/\$/g, '__DOLLAR__');
                 return `![${newAlt}](${url})`;
             });
-            // 处理块级公式
+            
+            // 处理theorem代码块 - 在数学公式处理之前先保存原始内容
+            const theoremBlocks = [];
+            
+            content = content.replace(/```theorem(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, theoremContent) {
+                console.log('处理theorem代码块占位符...');
+                theoremIndex++;
+                const theoremId = `thm${theoremIndex}`;
+                const theoremTitle = title ? 
+                    `Theorem ${theoremIndex}: ${title.trim()}` : 
+                    `Theorem ${theoremIndex}`;
+                
+                const placeholder = `[[[THEOREM_PLACEHOLDER_${theoremIndex}]]]`;
+                
+                // 保存原始的定理内容（包含原始的数学公式）
+                theoremBlocks.push({
+                    placeholder: placeholder,
+                    theoremId: theoremId,
+                    theoremTitle: theoremTitle,
+                    theoremContent: theoremContent.trim(),
+                    originalContent: theoremContent.trim() // 保存原始内容
+                });
+                
+                console.log(`创建theorem占位符: ${theoremId}, 编号=${theoremIndex}, 标题=${theoremTitle}`);
+                console.log('原始定理内容:', theoremContent.substring(0, 100) + '...');
+                return placeholder;
+            });
+            
+            // 处理assumption代码块
+            const assumptionBlocks = [];
+            
+            content = content.replace(/```assumption(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, assumptionContent) {
+                console.log('处理assumption代码块占位符...');
+                assumptionIndex++;
+                const assumptionId = `asmp${assumptionIndex}`;
+                const assumptionTitle = title ? 
+                    `Assumption ${assumptionIndex}: ${title.trim()}` : 
+                    `Assumption ${assumptionIndex}`;
+                
+                const placeholder = `[[[ASSUMPTION_PLACEHOLDER_${assumptionIndex}]]]`;
+                
+                assumptionBlocks.push({
+                    placeholder: placeholder,
+                    assumptionId: assumptionId,
+                    assumptionTitle: assumptionTitle,
+                    assumptionContent: assumptionContent.trim(),
+                    originalContent: assumptionContent.trim()
+                });
+                
+                console.log(`创建assumption占位符: ${assumptionId}, 编号=${assumptionIndex}, 标题=${assumptionTitle}`);
+                return placeholder;
+            });
+
+            // 处理definition代码块
+            const definitionBlocks = [];
+            
+            content = content.replace(/```definition(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, definitionContent) {
+                console.log('处理definition代码块占位符...');
+                definitionIndex++;
+                const definitionId = `def${definitionIndex}`;
+                const definitionTitle = title ? 
+                    `Definition ${definitionIndex}: ${title.trim()}` : 
+                    `Definition ${definitionIndex}`;
+                
+                const placeholder = `[[[DEFINITION_PLACEHOLDER_${definitionIndex}]]]`;
+                
+                definitionBlocks.push({
+                    placeholder: placeholder,
+                    definitionId: definitionId,
+                    definitionTitle: definitionTitle,
+                    definitionContent: definitionContent.trim(),
+                    originalContent: definitionContent.trim()
+                });
+                
+                console.log(`创建definition占位符: ${definitionId}, 编号=${definitionIndex}, 标题=${definitionTitle}`);
+                return placeholder;
+            });
+
+            // 处理corollary代码块
+            const corollaryBlocks = [];
+            
+            content = content.replace(/```corollary(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, corollaryContent) {
+                console.log('处理corollary代码块占位符...');
+                corollaryIndex++;
+                const corollaryId = `cor${corollaryIndex}`;
+                const corollaryTitle = title ? 
+                    `Corollary ${corollaryIndex}: ${title.trim()}` : 
+                    `Corollary ${corollaryIndex}`;
+                
+                const placeholder = `[[[COROLLARY_PLACEHOLDER_${corollaryIndex}]]]`;
+                
+                corollaryBlocks.push({
+                    placeholder: placeholder,
+                    corollaryId: corollaryId,
+                    corollaryTitle: corollaryTitle,
+                    corollaryContent: corollaryContent.trim(),
+                    originalContent: corollaryContent.trim()
+                });
+                
+                console.log(`创建corollary占位符: ${corollaryId}, 编号=${corollaryIndex}, 标题=${corollaryTitle}`);
+                return placeholder;
+            });
+
+            // 处理lemma代码块
+            const lemmaBlocks = [];
+            
+            content = content.replace(/```lemma(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, lemmaContent) {
+                console.log('处理lemma代码块占位符...');
+                lemmaIndex++;
+                const lemmaId = `lem${lemmaIndex}`;
+                const lemmaTitle = title ? 
+                    `Lemma ${lemmaIndex}: ${title.trim()}` : 
+                    `Lemma ${lemmaIndex}`;
+                
+                const placeholder = `[[[LEMMA_PLACEHOLDER_${lemmaIndex}]]]`;
+                
+                lemmaBlocks.push({
+                    placeholder: placeholder,
+                    lemmaId: lemmaId,
+                    lemmaTitle: lemmaTitle,
+                    lemmaContent: lemmaContent.trim(),
+                    originalContent: lemmaContent.trim()
+                });
+                
+                console.log(`创建lemma占位符: ${lemmaId}, 编号=${lemmaIndex}, 标题=${lemmaTitle}`);
+                return placeholder;
+            });
+
+            // 处理remark代码块
+            const remarkBlocks = [];
+            
+            content = content.replace(/```remark(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, remarkContent) {
+                console.log('处理remark代码块占位符...');
+                remarkIndex++;
+                const remarkId = `rem${remarkIndex}`;
+                const remarkTitle = title ? 
+                    `Remark ${remarkIndex}: ${title.trim()}` : 
+                    `Remark ${remarkIndex}`;
+                
+                const placeholder = `[[[REMARK_PLACEHOLDER_${remarkIndex}]]]`;
+                
+                remarkBlocks.push({
+                    placeholder: placeholder,
+                    remarkId: remarkId,
+                    remarkTitle: remarkTitle,
+                    remarkContent: remarkContent.trim(),
+                    originalContent: remarkContent.trim()
+                });
+                
+                console.log(`创建remark占位符: ${remarkId}, 编号=${remarkIndex}, 标题=${remarkTitle}`);
+                return placeholder;
+            });
+            
+            // 首先提取所有表格的原始内容（在处理任何公式之前）
+            const originalTableContents = [];
+            const tempContent = content.replace(/```table(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, tableContent) {
+
+                originalTableContents.push({
+                    fullMatch: match,
+                    title: title,
+                    content: tableContent.trim()
+                });
+                return match; // 暂时保持不变
+            });
+            
+            // 新增：处理equation代码块，直接替换成HTML div格式
+            content = content.replace(/```equation\s*\n([\s\S]*?)\n```/g, function(match, formula) {
+                console.log('找到equation代码块:', formula.substring(0, 50) + '...');
+                equationIndex++;
+                const equationId = `eq${equationIndex}`;
+                // 给公式末尾添加编号（在$$符号内部）
+                const numberedFormula = formula.trim().replace(/\$\$([\s\S]*?)\$\$/, function(match, content) {
+                    return `$$${content} \\quad \\color{red}{(${equationIndex})}$$`;
+                });
+                const divHtml = `<div id="${equationId}" class="math-container katex-display" style="display: block; text-align: center; margin: 12px 0; width: 100%;">${numberedFormula}</div>`;
+                console.log(`创建equation div: ${equationId}, 编号=${equationIndex}`);
+                return divHtml;
+            });
+            
+            // 处理带有HTML锚点的块级公式 - 修复正则表达式
+            content = content.replace(/<div id="([^"]+)"[^>]*>\s*\$\$([\s\S]*?)\$\$\s*<\/div>/g, function(match, id, formula) {
+                console.log('找到带ID的公式:', id, formula.substring(0, 50) + '...');
+                const placeholder = `[[[MATH_BLOCK_${blockIndex}]]]`;
+                mathBlocks.push({
+                    placeholder: placeholder,
+                    formula: formula.trim(),
+                    isBlock: true,
+                    original: match,
+                    id: id
+                });
+                blockIndex++;
+                return placeholder;
+            });
+            
+            // 处理普通的块级公式
             content = content.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+                console.log('找到普通公式:', formula.substring(0, 50) + '...');
                 const placeholder = `[[[MATH_BLOCK_${blockIndex}]]]`;
                 mathBlocks.push({
                     placeholder: placeholder,
@@ -2889,8 +4543,9 @@
                 blockIndex++;
                 return placeholder;
             });
-            // 处理行内公式
-            content = content.replace(/(?<!\$)\$([^$\n]+?)\$(?!\$)/g, function(match, formula) {
+            
+            // 处理行内公式 - 修复：允许换行符，支持多行公式
+            content = content.replace(/(?<!\$)\$([^$]*?)\$(?!\$)/g, function(match, formula) {
                 const placeholder = `[[[MATH_INLINE_${inlineIndex}]]]`;
                 mathBlocks.push({
                     placeholder: placeholder,
@@ -2901,7 +4556,71 @@
                 inlineIndex++;
                 return placeholder;
             });
-            return { content, mathBlocks };
+            
+            // 新增：处理table代码块 - 使用之前保存的原始内容
+            const tableBlocks = [];
+            
+            content = content.replace(/```table(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, tableContent) {
+                console.log('处理table代码块占位符...');
+                tableIndex++;
+                const tableId = `table${tableIndex}`;
+                const tableTitle = title ? 
+                    `Table ${tableIndex}: ${title.trim()}` : 
+                    `Table ${tableIndex}: Data Comparison`;
+                
+                const placeholder = `[[[TABLE_PLACEHOLDER_${tableIndex}]]]`;
+                
+                // 使用之前保存的原始表格内容
+                const originalTable = originalTableContents[tableIndex - 1];
+                
+                tableBlocks.push({
+                    placeholder: placeholder,
+                    tableId: tableId,
+                    tableTitle: tableTitle,
+                    tableContent: originalTable ? originalTable.content : tableContent.trim()
+                });
+                
+                console.log(`创建table占位符: ${tableId}, 编号=${tableIndex}, 标题=${tableTitle}`);
+                console.log('原始表格内容:', originalTable ? originalTable.content.substring(0, 100) + '...' : '未找到');
+                return placeholder;
+            });
+
+            // 处理figure代码块
+            const figureBlocks = [];
+            
+            content = content.replace(/```figure(?:\s+(.*?))?\s*\n((?:(?!```)[\s\S])*?)\n```/g, function(match, title, figureContent) {
+                console.log('处理figure代码块占位符...'); 
+                console.log('完整匹配:', match);
+                console.log('标题:', title);
+                console.log('内容:', figureContent);
+                figureIndex++;
+                const figureId = `fig${figureIndex}`;
+                const figureTitle = title ? 
+                    `Figure ${figureIndex}: ${title.trim()}` : 
+                    `Figure ${figureIndex}`;
+                
+                const placeholder = `[[[FIGURE_PLACEHOLDER_${figureIndex}]]]`;
+                
+                figureBlocks.push({
+                    placeholder: placeholder,
+                    figureId: figureId,
+                    figureTitle: figureTitle,
+                    figureContent: figureContent.trim()
+                });
+                
+                console.log(`创建figure占位符: ${figureId}, 编号=${figureIndex}, 标题=${figureTitle}`);
+                console.log('原始图片内容:', figureContent.substring(0, 100) + '...');
+                return placeholder;
+            });
+
+            console.log('数学公式处理完成，共找到', mathBlocks.length, '个公式');
+            mathBlocks.forEach((block, index) => {
+                if (block.id) {
+                    console.log(`公式${index}: ID=${block.id}`);
+                }
+            });
+            
+            return { content, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, lemmaBlocks, remarkBlocks, tableIndex, figureIndex, theoremIndex, assumptionIndex, definitionIndex, corollaryIndex, lemmaIndex, remarkIndex };
         }
 
         // 工具函数：转义正则特殊字符
@@ -2910,23 +4629,687 @@
         }
 
         function renderMathFormulas(htmlContent, mathBlocks) {
-            mathBlocks.forEach(function(mathBlock) {
+            console.log('开始渲染数学公式，共', mathBlocks.length, '个');
+            
+            mathBlocks.forEach(function(mathBlock, index) {
                 try {
+                    console.log(`渲染公式${index}:`, mathBlock.id ? `ID=${mathBlock.id}` : '无ID');
+                    
                     const rendered = katex.renderToString(mathBlock.formula, { 
                         throwOnError: false,
                         displayMode: mathBlock.isBlock,
                         fleqn: false,
                         leqno: false
                     });
-                    const mathHtml = mathBlock.isBlock 
-                        ? `<div class="math-container katex-display" style="display: block; text-align: center; margin: 20px 0; width: 100%;">${rendered}<span class="math-source">${mathBlock.original}</span></div>`
-                        : `<span class="math-container">${rendered}<span class="math-source">${mathBlock.original}</span></span>&#8203;`;
+                    
+                    let mathHtml;
+                    if (mathBlock.isBlock) {
+                        if (mathBlock.id) {
+                            // 保留锚点的块级公式
+                            mathHtml = `<div id="${mathBlock.id}" class="math-container katex-display" style="display: block; text-align: center; margin: 12px 0; width: 100%;">${rendered}<span class="math-source">${mathBlock.original}</span></div>`;
+                            console.log(`创建带ID的公式: ${mathBlock.id}`);
+                        } else {
+                            // 普通块级公式
+                            mathHtml = `<div class="math-container katex-display" style="display: block; text-align: center; margin: 12px 0; width: 100%;">${rendered}<span class="math-source">${mathBlock.original}</span></div>`;
+                        }
+                    } else {
+                        // 行内公式
+                        mathHtml = `<span class="math-container">${rendered}<span class="math-source">${mathBlock.original}</span></span>&#8203;`;
+                    }
+                    
                     // 用全字匹配替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathHtml);
+                    console.log(`公式${index}渲染完成: ${mathBlock.placeholder} -> ${mathHtml.substring(0, 50)}...`);
                 } catch (e) {
+                    console.error('渲染公式失败:', e);
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathBlock.original);
                 }
             });
+            
+            console.log('数学公式渲染完成');
+            return htmlContent;
+        }
+
+        // 专门处理表格内公式的函数
+        function processTableMathFormulas(content) {
+            const mathBlocks = [];
+            let inlineIndex = 0;
+            let blockIndex = 0;
+            
+            console.log('开始处理表格内数学公式...');
+            
+            // 处理行内公式 - 修复：允许换行符，支持多行公式
+            content = content.replace(/(?<!\$)\$([^$]*?)\$(?!\$)/g, function(match, formula) {
+                const placeholder = `[[[TABLE_MATH_INLINE_${inlineIndex}]]]`;
+                mathBlocks.push({
+                    placeholder: placeholder,
+                    formula: formula.trim(),
+                    isBlock: false,
+                    original: match
+                });
+                inlineIndex++;
+                return placeholder;
+            });
+            
+            // 处理块级公式
+            content = content.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+                const placeholder = `[[[TABLE_MATH_BLOCK_${blockIndex}]]]`;
+                mathBlocks.push({
+                    placeholder: placeholder,
+                    formula: formula.trim(),
+                    isBlock: true,
+                    original: match
+                });
+                blockIndex++;
+                return placeholder;
+            });
+            
+            console.log(`表格内公式处理完成，共找到 ${mathBlocks.length} 个公式`);
+            return { content, mathBlocks };
+        }
+        
+        function renderTableMathFormulas(htmlContent, mathBlocks) {
+            console.log('开始渲染表格内数学公式，共', mathBlocks.length, '个');
+            
+            mathBlocks.forEach(function(mathBlock, index) {
+                try {
+                    console.log(`渲染表格内公式${index}:`, mathBlock.formula.substring(0, 30) + '...');
+                    
+                    const rendered = katex.renderToString(mathBlock.formula, { 
+                        throwOnError: false,
+                        displayMode: mathBlock.isBlock,
+                        fleqn: false,
+                        leqno: false
+                    });
+                    
+                    let mathHtml;
+                    if (mathBlock.isBlock) {
+                        mathHtml = `<div class="math-container katex-display" style="display: block; text-align: center; margin: 6px 0;">${rendered}</div>`;
+                    } else {
+                        mathHtml = `<span class="math-container">${rendered}</span>`;
+                    }
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathHtml);
+                    console.log(`表格内公式${index}渲染完成`);
+                } catch (e) {
+                    console.error('渲染表格内公式失败:', e);
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathBlock.original);
+                }
+            });
+            
+            console.log('表格内数学公式渲染完成');
+            return htmlContent;
+        }
+        
+        // 后处理表格中的数学公式（直接在HTML中查找并替换）
+        function postProcessTableMath(htmlContent) {
+            console.log('开始后处理表格数学公式...');
+            
+            // 辅助函数：解码HTML实体并修复换行符
+            function decodeAndFixFormula(text) {
+                // 创建临时div来解码HTML实体
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = text;
+                let decoded = tempDiv.textContent || tempDiv.innerText;
+                
+                // 修复换行符问题：确保 \\ 被正确处理
+                if (decoded.includes('\\')) {
+                    // 确保连续的反斜杠被正确处理
+                    decoded = decoded.replace(/\\\s*\\\s*/g, '\\\\');
+                }
+                
+                return decoded;
+            }
+            
+            // 处理行内公式 $...$，注意这里要匹配可能包含换行的内容
+            htmlContent = htmlContent.replace(/\$([^$]*?)\$/g, function(match, formula) {
+                try {
+                    console.log('处理行内公式:', formula);
+                    // 解码HTML实体并修复换行符
+                    const decodedFormula = decodeAndFixFormula(formula.trim());
+                    
+                    // 如果公式包含cases等多行结构，使用displayMode
+                    const hasCases = decodedFormula.includes('\\begin{cases}');
+                    const hasLineBreaks = decodedFormula.includes('\\\\');
+                    const hasBeginEnv = decodedFormula.includes('\\begin{');
+                    const isMultiline = hasCases || hasLineBreaks || hasBeginEnv;
+                    
+                    const rendered = katex.renderToString(decodedFormula, { 
+                        throwOnError: false,
+                        displayMode: isMultiline,
+                        fleqn: false
+                    });
+                    
+                    if (isMultiline) {
+                        return `<div class="math-container katex-display" style="display: inline-block; text-align: center; margin: 2px 4px;">${rendered}</div>`;
+                    } else {
+                        return `<span class="math-container">${rendered}</span>`;
+                    }
+                } catch (e) {
+                    console.error('渲染行内公式失败:', e);
+                    return match;
+                }
+            });
+            
+            // 处理块级公式 $$...$$
+            htmlContent = htmlContent.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+                try {
+                    console.log('处理块级公式:', formula.substring(0, 50) + '...');
+                    // 解码HTML实体并修复换行符
+                    const decodedFormula = decodeAndFixFormula(formula.trim());
+                    
+                    const rendered = katex.renderToString(decodedFormula, { 
+                        throwOnError: false,
+                        displayMode: true
+                    });
+                    return `<div class="math-container katex-display" style="display: block; text-align: center; margin: 6px 0;">${rendered}</div>`;
+                } catch (e) {
+                    console.error('渲染块级公式失败:', e);
+                    return match;
+                }
+            });
+            
+            console.log('表格数学公式后处理完成');
+            return htmlContent;
+        }
+
+        // Table rendering function - 在数学公式渲染完成后处理表格
+        function renderTables(htmlContent, tableBlocks) {
+            if (!tableBlocks || tableBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染表格，共', tableBlocks.length, '个');
+            
+            tableBlocks.forEach(function(tableBlock, index) {
+                try {
+                    console.log(`渲染表格${index}:`, tableBlock.tableId);
+                    
+                    // 直接处理原始表格内容，包含公式
+                    let originalTableContent = tableBlock.tableContent;
+                    
+                    // 直接渲染markdown，然后后处理数学公式
+                    let renderedTable = marked.parse(originalTableContent);
+                    console.log('Markdown渲染后，开始处理数学公式...');
+                    
+                    // 辅助函数：解码HTML实体
+                    function decodeHtmlEntities(text) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = text;
+                        return tempDiv.textContent || tempDiv.innerText || '';
+                    }
+                    
+                    // 处理行内公式，支持多行内容
+                    renderedTable = renderedTable.replace(/\$([^$]*?)\$/g, function(match, formula) {
+                        try {
+                            console.log('原始公式:', JSON.stringify(formula));
+                            
+                            // 解码HTML实体
+                            let decodedFormula = decodeHtmlEntities(formula.trim());
+                            console.log('解码后公式:', JSON.stringify(decodedFormula));
+                            
+                            // 特别处理：修复可能被破坏的换行符
+                            // 在表格中，\\ 可能变成 \\\\，或者被转义成其他形式
+                            if (decodedFormula.includes('\\begin{cases}')) {
+                                // 确保换行符正确
+                                decodedFormula = decodedFormula.replace(/\\\s+/g, '\\\\'); // 修复空格问题
+                                decodedFormula = decodedFormula.replace(/\\\\\\\\/g, '\\\\'); // 修复双重转义
+                                console.log('cases公式修复后:', JSON.stringify(decodedFormula));
+                            }
+                            
+                            // 检查是否是多行公式
+                            const hasCases = decodedFormula.includes('\\begin{cases}');
+                            const hasLineBreaks = decodedFormula.includes('\\\\');
+                            const isMultiline = hasCases || hasLineBreaks;
+                            
+                            console.log('多行检测:', { hasCases, hasLineBreaks, isMultiline });
+                            
+                            const rendered = katex.renderToString(decodedFormula, { 
+                                throwOnError: false,
+                                displayMode: isMultiline
+                            });
+                            
+                            if (isMultiline) {
+                                return `<div class="math-container katex-display" style="display: inline-block; text-align: center; margin: 2px 4px;">${rendered}</div>`;
+                            } else {
+                                return `<span class="math-container">${rendered}</span>`;
+                            }
+                        } catch (e) {
+                            console.error('渲染行内公式失败:', e);
+                            return match;
+                        }
+                    });
+                    
+                    // 处理块级公式
+                    renderedTable = renderedTable.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+                        try {
+                            let decodedFormula = decodeHtmlEntities(formula.trim());
+                            
+                            const rendered = katex.renderToString(decodedFormula, { 
+                                throwOnError: false,
+                                displayMode: true
+                            });
+                            return `<div class="math-container katex-display" style="display: block; text-align: center; margin: 6px 0;">${rendered}</div>`;
+                        } catch (e) {
+                            console.error('渲染块级公式失败:', e);
+                            return match;
+                        }
+                    });
+                    
+                    // 创建带容器的表格HTML，添加滚动容器
+                    const tableHtml = `<div id="${tableBlock.tableId}" class="table-container" data-table-number="${tableBlock.tableId.replace('table', '')}" data-table-title="${tableBlock.tableTitle}">
+                        <div class="table-scroll-wrapper">
+                            ${renderedTable}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(tableBlock.placeholder), 'g'), tableHtml);
+                    
+                    console.log(`表格${index}渲染完成: ${tableBlock.tableId}`);
+                } catch (e) {
+                    console.error('渲染表格失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(tableBlock.placeholder), 'g'), tableBlock.tableContent);
+                }
+            });
+            
+            console.log('表格渲染完成');
+            return htmlContent;
+        }
+
+        // Figure rendering function - 类似表格渲染
+        function renderFigures(htmlContent, figureBlocks) {
+            if (!figureBlocks || figureBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染图片，共', figureBlocks.length, '个');
+            
+            figureBlocks.forEach(function(figureBlock, index) {
+                try {
+                    console.log(`渲染图片${index}:`, figureBlock.figureId);
+                    
+                    // 处理原始图片内容
+                    let originalFigureContent = figureBlock.figureContent;
+                    console.log(`原始图片内容: ${originalFigureContent}`);
+                    
+                    // 直接解析markdown图片语法：![alt](url) 或 ![alt](url){width=xx%}
+                    const imgMarkdownMatch = originalFigureContent.match(/!\[([^\]]*)\]\(([^)]+)\)(\{[^}]*\})?/);
+                    
+                    if (imgMarkdownMatch) {
+                        let imgAlt = imgMarkdownMatch[1] || '';
+                        const imgSrc = imgMarkdownMatch[2] || '';
+                        const imgOptions = imgMarkdownMatch[3] || '';
+                        
+                        console.log(`匹配到图片: src="${imgSrc.substring(0, 100)}..."`);
+                        console.log(`完整的alt文本长度: ${imgAlt.length}`);
+                        console.log(`完整的alt文本: "${imgAlt}"`);
+                        console.log(`options: "${imgOptions}"`);
+                        
+                        // 检测alt文本中的{width=xx%}语法 - 从alt中提取并移除
+                        let widthMatch = imgAlt.match(/\{.*?width\s*=\s*([0-9]{1,3})%.*?\}/i);
+                        let customWidth = null;
+                        if (widthMatch) {
+                            customWidth = widthMatch[1] + '%';
+                            console.log(`发现width设置在alt中: ${customWidth}, 原alt长度: ${imgAlt.length}`);
+                            console.log(`原alt内容: "${imgAlt}"`);
+                            // 从alt文本中移除width语法 - 使用更精确的匹配
+                            imgAlt = imgAlt.replace(/\{[^}]*?width\s*=\s*[0-9]{1,3}%[^}]*?\}/i, '').trim();
+                            console.log(`移除width后alt长度: ${imgAlt.length}, 内容: "${imgAlt}"`);
+                        } else {
+                            console.log(`alt文本中没有发现width设置`);
+                        }
+                        
+                        // 如果options中也有width，优先使用options中的
+                        if (imgOptions) {
+                            let optionsWidthMatch = imgOptions.match(/\{\s*width\s*=\s*([0-9]{1,3})%\s*\}/i);
+                            if (optionsWidthMatch) {
+                                customWidth = optionsWidthMatch[1] + '%';
+                            }
+                        }
+                        
+                        // 处理alt中的公式 - 先还原__DOLLAR__为$，然后渲染
+                        let processedAlt = imgAlt;
+                        console.log(`原始alt文本: ${processedAlt}`);
+                        
+                        // 先还原__DOLLAR__为$
+                        processedAlt = processedAlt.replace(/__DOLLAR__/g, '$');
+                        console.log(`还原$符号后的alt文本: ${processedAlt}`);
+                        
+                        if (/\$[^$]+\$/.test(processedAlt)) {
+                            console.log(`发现数学公式，开始渲染...`);
+                            processedAlt = processedAlt.replace(/\$([^$]+)\$/g, function(match, formula) {
+                                console.log(`正在处理公式: "${formula}"`);
+                                try {
+                                    const rendered = katex.renderToString(formula, {
+                                        throwOnError: false, 
+                                        displayMode: false,
+                                        strict: false,
+                                        trust: true
+                                    });
+                                    console.log(`数学公式渲染成功: ${formula} -> ${rendered.substring(0, 100)}...`);
+                                    return rendered;
+                                } catch (e) {
+                                    console.error(`数学公式渲染失败: ${formula}`, e);
+                                    console.log(`使用原始公式文本: ${match}`);
+                                    return match;
+                                }
+                            });
+                            console.log(`公式处理完成，最终alt文本: ${processedAlt.substring(0, 200)}...`);
+                        } else {
+                            console.log(`没有发现数学公式`);
+                        }
+                        
+                        // 创建带编号的图片HTML
+                        console.log(`准备创建figureHtml，figureTitle: ${figureBlock.figureTitle}`);
+                        console.log(`processedAlt: ${processedAlt ? processedAlt.substring(0, 200) + '...' : 'null'}`);
+                        
+                        const captionText = figureBlock.figureTitle + (processedAlt ? '：' + processedAlt : '');
+                        console.log(`最终caption文本: ${captionText.substring(0, 200)}...`);
+                        
+                        const figureHtml = `<div id="${figureBlock.figureId}" class="figure-container" data-figure-number="${figureBlock.figureId.replace('fig', '')}" data-figure-title="${figureBlock.figureTitle}">
+                            <figure class="image-container" style="width: ${customWidth || '100%'}; max-width: ${customWidth || '800px'}; margin: 0 auto;">
+                                <img src="${imgSrc}" alt="${imgAlt}" class="img-fluid" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);" onclick="openImageModal('${imgSrc}', '${imgAlt}')">
+                                <figcaption class="image-caption">
+                                    ${captionText}
+                                </figcaption>
+                            </figure>
+                        </div>`;
+                        
+                        // 替换占位符
+                        htmlContent = htmlContent.replace(new RegExp(escapeRegExp(figureBlock.placeholder), 'g'), figureHtml);
+                        
+                        console.log(`图片${index}渲染完成: ${figureBlock.figureId}`);
+                    } else {
+                        console.error('未找到markdown图片语法');
+                        htmlContent = htmlContent.replace(new RegExp(escapeRegExp(figureBlock.placeholder), 'g'), figureBlock.figureContent);
+                    }
+                } catch (e) {
+                    console.error('渲染图片失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(figureBlock.placeholder), 'g'), figureBlock.figureContent);
+                }
+            });
+            
+            console.log('图片渲染完成');
+            return htmlContent;
+        }
+
+        // Theorem rendering function
+        function renderTheorems(htmlContent, theoremBlocks) {
+            if (!theoremBlocks || theoremBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染定理，共', theoremBlocks.length, '个');
+            
+            theoremBlocks.forEach(function(theoremBlock, index) {
+                try {
+                    console.log(`渲染定理${index}:`, theoremBlock.theoremId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let theoremContent = theoremBlock.originalContent || theoremBlock.theoremContent;
+                    
+                    // 单独为定理内容处理数学公式
+                    const { content: processedContent, mathBlocks: theoremMathBlocks } = preprocessMathFormulas(theoremContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染定理内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, theoremMathBlocks);
+                    
+                    // 创建定理HTML结构
+                    const theoremHtml = `<div id="${theoremBlock.theoremId}" class="theorem-container" data-theorem-number="${theoremBlock.theoremId.replace('theorem', '')}" data-theorem-title="${theoremBlock.theoremTitle}">
+                        <div class="theorem-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(theoremBlock.placeholder), 'g'), theoremHtml);
+                    
+                    console.log(`定理${index}渲染完成: ${theoremBlock.theoremId}`);
+                } catch (e) {
+                    console.error('渲染定理失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(theoremBlock.placeholder), 'g'), theoremBlock.originalContent || theoremBlock.theoremContent);
+                }
+            });
+            
+            console.log('定理渲染完成');
+            return htmlContent;
+        }
+
+        // Assumption rendering function
+        function renderAssumptions(htmlContent, assumptionBlocks) {
+            if (!assumptionBlocks || assumptionBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染假设，共', assumptionBlocks.length, '个');
+            
+            assumptionBlocks.forEach(function(assumptionBlock, index) {
+                try {
+                    console.log(`渲染假设${index}:`, assumptionBlock.assumptionId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let assumptionContent = assumptionBlock.originalContent || assumptionBlock.assumptionContent;
+                    
+                    // 单独为假设内容处理数学公式
+                    const { content: processedContent, mathBlocks: assumptionMathBlocks } = preprocessMathFormulas(assumptionContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染假设内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, assumptionMathBlocks);
+                    
+                    // 创建假设HTML结构
+                    const assumptionHtml = `<div id="${assumptionBlock.assumptionId}" class="assumption-container" data-assumption-number="${assumptionBlock.assumptionId.replace('assumption', '')}" data-assumption-title="${assumptionBlock.assumptionTitle}">
+                        <div class="assumption-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(assumptionBlock.placeholder), 'g'), assumptionHtml);
+                    
+                    console.log(`假设${index}渲染完成: ${assumptionBlock.assumptionId}`);
+                } catch (e) {
+                    console.error('渲染假设失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(assumptionBlock.placeholder), 'g'), assumptionBlock.originalContent || assumptionBlock.assumptionContent);
+                }
+            });
+            
+            console.log('假设渲染完成');
+            return htmlContent;
+        }
+
+        // Definition rendering function
+        function renderDefinitions(htmlContent, definitionBlocks) {
+            if (!definitionBlocks || definitionBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染定义，共', definitionBlocks.length, '个');
+            
+            definitionBlocks.forEach(function(definitionBlock, index) {
+                try {
+                    console.log(`渲染定义${index}:`, definitionBlock.definitionId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let definitionContent = definitionBlock.originalContent || definitionBlock.definitionContent;
+                    
+                    // 单独为定义内容处理数学公式
+                    const { content: processedContent, mathBlocks: definitionMathBlocks } = preprocessMathFormulas(definitionContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染定义内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, definitionMathBlocks);
+                    
+                    // 创建定义HTML结构
+                    const definitionHtml = `<div id="${definitionBlock.definitionId}" class="definition-container" data-definition-number="${definitionBlock.definitionId.replace('definition', '')}" data-definition-title="${definitionBlock.definitionTitle}">
+                        <div class="definition-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(definitionBlock.placeholder), 'g'), definitionHtml);
+                    
+                    console.log(`定义${index}渲染完成: ${definitionBlock.definitionId}`);
+                } catch (e) {
+                    console.error('渲染定义失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(definitionBlock.placeholder), 'g'), definitionBlock.originalContent || definitionBlock.definitionContent);
+                }
+            });
+            
+            console.log('定义渲染完成');
+            return htmlContent;
+        }
+
+        // Corollary rendering function
+        function renderCorollaries(htmlContent, corollaryBlocks) {
+            if (!corollaryBlocks || corollaryBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染推论，共', corollaryBlocks.length, '个');
+            
+            corollaryBlocks.forEach(function(corollaryBlock, index) {
+                try {
+                    console.log(`渲染推论${index}:`, corollaryBlock.corollaryId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let corollaryContent = corollaryBlock.originalContent || corollaryBlock.corollaryContent;
+                    
+                    // 单独为推论内容处理数学公式
+                    const { content: processedContent, mathBlocks: corollaryMathBlocks } = preprocessMathFormulas(corollaryContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染推论内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, corollaryMathBlocks);
+                    
+                    // 创建推论HTML结构
+                    const corollaryHtml = `<div id="${corollaryBlock.corollaryId}" class="corollary-container" data-corollary-number="${corollaryBlock.corollaryId.replace('corollary', '')}" data-corollary-title="${corollaryBlock.corollaryTitle}">
+                        <div class="corollary-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(corollaryBlock.placeholder), 'g'), corollaryHtml);
+                    
+                    console.log(`推论${index}渲染完成: ${corollaryBlock.corollaryId}`);
+                } catch (e) {
+                    console.error('渲染推论失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(corollaryBlock.placeholder), 'g'), corollaryBlock.originalContent || corollaryBlock.corollaryContent);
+                }
+            });
+            
+            console.log('推论渲染完成');
+            return htmlContent;
+        }
+
+        // Lemma rendering function
+        function renderLemmas(htmlContent, lemmaBlocks) {
+            if (!lemmaBlocks || lemmaBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染引理，共', lemmaBlocks.length, '个');
+            
+            lemmaBlocks.forEach(function(lemmaBlock, index) {
+                try {
+                    console.log(`渲染引理${index}:`, lemmaBlock.lemmaId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let lemmaContent = lemmaBlock.originalContent || lemmaBlock.lemmaContent;
+                    
+                    // 单独为引理内容处理数学公式
+                    const { content: processedContent, mathBlocks: lemmaMathBlocks } = preprocessMathFormulas(lemmaContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染引理内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, lemmaMathBlocks);
+                    
+                    // 创建引理HTML结构
+                    const lemmaHtml = `<div id="${lemmaBlock.lemmaId}" class="lemma-container" data-lemma-number="${lemmaBlock.lemmaId.replace('lemma', '')}" data-lemma-title="${lemmaBlock.lemmaTitle}">
+                        <div class="lemma-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(lemmaBlock.placeholder), 'g'), lemmaHtml);
+                    
+                    console.log(`引理${index}渲染完成: ${lemmaBlock.lemmaId}`);
+                } catch (e) {
+                    console.error('渲染引理失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(lemmaBlock.placeholder), 'g'), lemmaBlock.originalContent || lemmaBlock.lemmaContent);
+                }
+            });
+            
+            console.log('引理渲染完成');
+            return htmlContent;
+        }
+
+        // Remark rendering function
+        function renderRemarks(htmlContent, remarkBlocks) {
+            if (!remarkBlocks || remarkBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染备注，共', remarkBlocks.length, '个');
+            
+            remarkBlocks.forEach(function(remarkBlock, index) {
+                try {
+                    console.log(`渲染备注${index}:`, remarkBlock.remarkId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let remarkContent = remarkBlock.originalContent || remarkBlock.remarkContent;
+                    
+                    // 单独为备注内容处理数学公式
+                    const { content: processedContent, mathBlocks: remarkMathBlocks } = preprocessMathFormulas(remarkContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染备注内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, remarkMathBlocks);
+                    
+                    // 创建备注HTML结构
+                    const remarkHtml = `<div id="${remarkBlock.remarkId}" class="remark-container" data-remark-number="${remarkBlock.remarkId.replace('remark', '')}" data-remark-title="${remarkBlock.remarkTitle}">
+                        <div class="remark-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(remarkBlock.placeholder), 'g'), remarkHtml);
+                    
+                    console.log(`备注${index}渲染完成: ${remarkBlock.remarkId}`);
+                } catch (e) {
+                    console.error('渲染备注失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(remarkBlock.placeholder), 'g'), remarkBlock.originalContent || remarkBlock.remarkContent);
+                }
+            });
+            
+            console.log('备注渲染完成');
             return htmlContent;
         }
 
@@ -3019,6 +5402,546 @@
             });
         }
 
+        // Formula tooltip functionality
+        function addFormulaTooltip() {
+            // Create tooltip element if it doesn't exist
+            let tooltip = document.getElementById('formula-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'formula-tooltip';
+                tooltip.className = 'formula-tooltip';
+                document.body.appendChild(tooltip);
+            }
+
+            // Create table tooltip element if it doesn't exist
+            let tableTooltip = document.getElementById('table-tooltip');
+            if (!tableTooltip) {
+                tableTooltip = document.createElement('div');
+                tableTooltip.id = 'table-tooltip';
+                tableTooltip.className = 'table-tooltip';
+                document.body.appendChild(tableTooltip);
+            }
+
+            // Create academic content tooltip element if it doesn't exist
+            let academicTooltip = document.getElementById('academic-tooltip');
+            if (!academicTooltip) {
+                academicTooltip = document.createElement('div');
+                academicTooltip.id = 'academic-tooltip';
+                academicTooltip.className = 'academic-tooltip';
+                document.body.appendChild(academicTooltip);
+            }
+
+            // Find all formula links (links that point to formula IDs)
+            const formulaLinks = document.querySelectorAll('a[href^="#eq"]');
+            
+            formulaLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                const formulaId = href.substring(1); // Remove the # symbol
+                
+                // Find the corresponding formula element
+                const formulaElement = document.getElementById(formulaId);
+                
+                if (formulaElement && formulaElement.classList.contains('math-container')) {
+                    // Add hover events
+                    link.addEventListener('mouseenter', function(e) {
+                        showFormulaTooltip(e, formulaElement);
+                    });
+                    
+                    link.addEventListener('mouseleave', function(e) {
+                        hideFormulaTooltip();
+                    });
+                    
+                    // Add visual indication that this link has tooltip
+                    link.style.cursor = 'help';
+                    link.setAttribute('title', '悬浮查看公式');
+                }
+            });
+
+            // Find all table links (links that point to table IDs)
+            const tableLinks = document.querySelectorAll('a[href^="#table"]');
+            
+            tableLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                const tableId = href.substring(1); // Remove the # symbol
+                
+                // Find the corresponding table element
+                const tableElement = document.getElementById(tableId);
+                
+                if (tableElement && tableElement.classList.contains('table-container')) {
+                    // Add hover events
+                    link.addEventListener('mouseenter', function(e) {
+                        showTableTooltip(e, tableElement);
+                    });
+                    
+                    link.addEventListener('mouseleave', function(e) {
+                        hideTableTooltip();
+                    });
+                    
+                    // Add visual indication that this link has tooltip
+                    link.style.cursor = 'help';
+                    link.setAttribute('title', '悬浮查看表格');
+                }
+            });
+
+            // Find all figure links (links that point to figure IDs)
+            const figureLinks = document.querySelectorAll('a[href^="#fig"]');
+            
+            figureLinks.forEach(function(link) {
+                const href = link.getAttribute('href');
+                const figureId = href.substring(1); // Remove the # symbol
+                
+                // Find the corresponding figure element
+                const figureElement = document.getElementById(figureId);
+                
+                if (figureElement && figureElement.classList.contains('figure-container')) {
+                    // Add hover events
+                    link.addEventListener('mouseenter', function(e) {
+                        showFigureTooltip(e, figureElement);
+                    });
+                    
+                    link.addEventListener('mouseleave', function(e) {
+                        hideFigureTooltip();
+                    });
+                    
+                    // Add visual indication that this link has tooltip
+                    link.style.cursor = 'help';
+                    link.setAttribute('title', '悬浮查看图片');
+                }
+            });
+
+
+
+            // Add generic academic content tooltip support
+            addGenericAcademicTooltips();
+        }
+
+        // Generic function to handle all academic content types
+        function addGenericAcademicTooltips() {
+            // Define all academic content types and their prefixes
+            const academicTypes = [
+                { prefix: '#cor', type: 'corollary', containerClass: 'corollary-container' },
+                { prefix: '#thm', type: 'theorem', containerClass: 'theorem-container' },
+                { prefix: '#def', type: 'definition', containerClass: 'definition-container' },
+                { prefix: '#lem', type: 'lemma', containerClass: 'lemma-container' },
+                { prefix: '#asmp', type: 'assumption', containerClass: 'assumption-container' },
+                { prefix: '#prop', type: 'proposition', containerClass: 'proposition-container' },
+                { prefix: '#rmk', type: 'remark', containerClass: 'remark-container' },
+                { prefix: '#exmp', type: 'example', containerClass: 'example-container' }
+            ];
+
+            academicTypes.forEach(({ prefix, type, containerClass }) => {
+                const links = document.querySelectorAll(`a[href^="${prefix}"]`);
+                
+                links.forEach(function(link) {
+                    const href = link.getAttribute('href');
+                    const elementId = href.substring(1); // Remove the # symbol
+                    
+                    // Find the corresponding element
+                    const element = document.getElementById(elementId);
+                    
+                    if (element && element.classList.contains(containerClass)) {
+                        // Add hover events for tooltip
+                        link.addEventListener('mouseenter', function(e) {
+                            showAcademicTooltip(e, element, type);
+                        });
+                        
+                        link.addEventListener('mouseleave', function(e) {
+                            hideAcademicTooltip();
+                        });
+                        
+                        // Update visual indication
+                        link.style.cursor = 'help';
+                        const currentTitle = link.getAttribute('title') || '';
+                        if (!currentTitle.includes('悬浮查看内容')) {
+                            link.setAttribute('title', `悬浮查看内容，${currentTitle || '点击跳转'}`);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Academic content tooltip functions
+        function showAcademicTooltip(event, element, type) {
+            const tooltip = document.getElementById('academic-tooltip');
+            if (!tooltip) return;
+
+            // Get the title and content
+            const title = element.getAttribute('data-' + type + '-title') || type.charAt(0).toUpperCase() + type.slice(1);
+            const content = element.querySelector('.' + type + '-content');
+            if (!content) return;
+
+            // Clone the content for the tooltip
+            const clonedContent = content.cloneNode(true);
+            
+            // Clear tooltip and add the title and content
+            tooltip.innerHTML = '';
+            tooltip.className = 'academic-tooltip ' + type + '-tooltip';
+            
+            const titleElement = document.createElement('div');
+            titleElement.className = 'tooltip-title';
+            titleElement.textContent = title;
+            tooltip.appendChild(titleElement);
+            
+            const contentElement = document.createElement('div');
+            contentElement.className = 'tooltip-content';
+            contentElement.appendChild(clonedContent);
+            tooltip.appendChild(contentElement);
+
+            // Use requestAnimationFrame to ensure DOM is updated before measuring
+            requestAnimationFrame(() => {
+                // Position the tooltip
+                const rect = event.target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                // Calculate position - prefer showing above the link
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 10;
+
+                // Adjust horizontal position if tooltip goes off screen
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                // Adjust vertical position if tooltip goes off screen
+                if (top < 10) {
+                    // Show below the link if there's not enough space above
+                    top = rect.bottom + 10;
+                    
+                    // If still off screen below, try to center vertically
+                    if (top + tooltipRect.height > window.innerHeight - 10) {
+                        top = Math.max(10, (window.innerHeight - tooltipRect.height) / 2);
+                    }
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                
+                // Show the tooltip
+                tooltip.classList.add('show');
+            });
+        }
+
+        function hideAcademicTooltip() {
+            const tooltip = document.getElementById('academic-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        function showFormulaTooltip(event, formulaElement) {
+            const tooltip = document.getElementById('formula-tooltip');
+            if (!tooltip) return;
+
+            // Get the formula content
+            const katexElement = formulaElement.querySelector('.katex');
+            if (!katexElement) return;
+
+            // Clone the formula content for the tooltip
+            const clonedFormula = katexElement.cloneNode(true);
+            
+            // Clear tooltip and add the formula
+            tooltip.innerHTML = '';
+            tooltip.appendChild(clonedFormula);
+
+            // Use requestAnimationFrame to ensure DOM is updated before measuring
+            requestAnimationFrame(() => {
+                // Position the tooltip
+                const rect = event.target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                // Calculate position - prefer showing above the link
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 10;
+
+                // Adjust horizontal position if tooltip goes off screen
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                // Adjust vertical position if tooltip goes off screen
+                if (top < 10) {
+                    // Show below the link if there's not enough space above
+                    top = rect.bottom + 10;
+                    
+                    // If still off screen below, try to center vertically
+                    if (top + tooltipRect.height > window.innerHeight - 10) {
+                        top = Math.max(10, (window.innerHeight - tooltipRect.height) / 2);
+                    }
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                
+                // Show the tooltip
+                tooltip.classList.add('show');
+            });
+        }
+
+        function hideFormulaTooltip() {
+            const tooltip = document.getElementById('formula-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        function showTableTooltip(event, tableElement) {
+            const tooltip = document.getElementById('table-tooltip');
+            if (!tooltip) return;
+
+            // Get the table content
+            const tableContent = tableElement.querySelector('table');
+            if (!tableContent) return;
+
+            // Clone the table content for the tooltip (but limit the size)
+            const clonedTable = tableContent.cloneNode(true);
+            
+            // Limit table size in tooltip
+            clonedTable.style.maxWidth = '500px';
+            clonedTable.style.fontSize = '12px';
+            
+            // Clear tooltip and add the table
+            tooltip.innerHTML = '';
+            tooltip.appendChild(clonedTable);
+
+            // Use requestAnimationFrame to ensure DOM is updated before measuring
+            requestAnimationFrame(() => {
+                // Position the tooltip
+                const rect = event.target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                // Calculate position - prefer showing above the link
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 10;
+
+                // Adjust horizontal position if tooltip goes off screen
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                // Adjust vertical position if tooltip goes off screen
+                if (top < 10) {
+                    // Show below the link if there's not enough space above
+                    top = rect.bottom + 10;
+                    
+                    // If still off screen below, try to center vertically
+                    if (top + tooltipRect.height > window.innerHeight - 10) {
+                        top = Math.max(10, (window.innerHeight - tooltipRect.height) / 2);
+                    }
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                
+                // Show the tooltip
+                tooltip.classList.add('show');
+            });
+        }
+
+        function hideTableTooltip() {
+            const tooltip = document.getElementById('table-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        function showFigureTooltip(event, figureElement) {
+            // Create figure tooltip element if it doesn't exist
+            let tooltip = document.getElementById('figure-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'figure-tooltip';
+                tooltip.className = 'figure-tooltip';
+                document.body.appendChild(tooltip);
+            }
+
+            // Get the figure content
+            const figureContent = figureElement.querySelector('figure');
+            if (!figureContent) return;
+
+            // Get the image directly
+            const originalImg = figureContent.querySelector('img');
+            if (!originalImg) return;
+            
+            // Create a new image element for the tooltip
+            const img = document.createElement('img');
+            img.src = originalImg.src;
+            img.alt = originalImg.alt;
+            
+            // Clear tooltip and add only the image (no caption)
+            tooltip.innerHTML = '';
+            tooltip.appendChild(img);
+            
+            // Wait for image to load to get its natural dimensions
+            img.onload = function() {
+                const naturalWidth = img.naturalWidth;
+                const naturalHeight = img.naturalHeight;
+                const aspectRatio = naturalWidth / naturalHeight;
+                
+                // Calculate optimal size within viewport constraints (larger for preview)
+                const maxWidth = Math.min(window.innerWidth * 0.85, 1000);
+                const maxHeight = Math.min(window.innerHeight * 0.85, 800);
+                
+                let width, height;
+                if (aspectRatio > maxWidth / maxHeight) {
+                    // Image is wider, constrain by width
+                    width = maxWidth;
+                    height = maxWidth / aspectRatio;
+                } else {
+                    // Image is taller, constrain by height
+                    height = maxHeight;
+                    width = maxHeight * aspectRatio;
+                }
+                
+                // Set tooltip size to exactly match image (no extra padding for black borders)
+                tooltip.style.width = width + 'px';
+                tooltip.style.height = height + 'px';
+                
+                // Make sure image fills the entire tooltip
+                img.style.width = width + 'px';
+                img.style.height = height + 'px';
+                img.style.objectFit = 'cover'; // Fill the entire space
+            };
+
+            // Use requestAnimationFrame to ensure DOM is updated before measuring
+            requestAnimationFrame(() => {
+                // Position the tooltip
+                const rect = event.target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                // Calculate position - prefer showing above the link
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 10;
+
+                // Adjust horizontal position if tooltip goes off screen
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                // Adjust vertical position if tooltip goes off screen
+                if (top < 10) {
+                    // Show below the link if there's not enough space above
+                    top = rect.bottom + 10;
+                    
+                    // If still off screen below, try to center vertically
+                    if (top + tooltipRect.height > window.innerHeight - 10) {
+                        top = Math.max(10, (window.innerHeight - tooltipRect.height) / 2);
+                    }
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                
+                // Show the tooltip
+                tooltip.classList.add('show');
+            });
+        }
+
+        function hideFigureTooltip() {
+            const tooltip = document.getElementById('figure-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        function showSectionTooltip(event, sectionId) {
+            console.log('showSectionTooltip called with:', sectionId);
+            
+            // Create section tooltip element if it doesn't exist
+            let tooltip = document.getElementById('section-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'section-tooltip';
+                tooltip.className = 'section-tooltip';
+                document.body.appendChild(tooltip);
+                console.log('Created new section tooltip element');
+            }
+
+            // Find the target section element
+            const sectionElement = document.getElementById(sectionId);
+            if (!sectionElement) {
+                console.log('Section element not found:', sectionId);
+                // 调试：显示所有可用的section ID
+                const allSectionIds = Array.from(document.querySelectorAll('[id^="sec"]')).map(el => el.id);
+                console.log('Available section IDs:', allSectionIds);
+                
+                // 调试：显示所有包含section的ID
+                const allIds = Array.from(document.querySelectorAll('[id]')).map(el => ({id: el.id, text: el.textContent.substring(0,50)}));
+                console.log('All elements with IDs:', allIds.filter(item => item.id.includes('sec') || item.text.includes('Feature Learning')));
+                
+                // 调试：显示所有标题及其ID  
+                const allHeadings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(h => ({
+                    tag: h.tagName,
+                    id: h.id,
+                    text: h.textContent.substring(0,50)
+                }));
+                console.log('All headings with IDs:', allHeadings);
+                return;
+            }
+            
+            console.log('Found section element:', sectionElement);
+
+            // Extract section number and title
+            const sectionNumberSpan = sectionElement.querySelector('.section-number');
+            const sectionNumber = sectionNumberSpan ? sectionNumberSpan.textContent.trim() : '';
+            
+            // Get the title text (excluding the section number)
+            let sectionTitle = sectionElement.textContent.trim();
+            if (sectionNumber) {
+                sectionTitle = sectionTitle.replace(sectionNumber, '').trim();
+            }
+
+            // Set tooltip content
+            tooltip.innerHTML = `
+                <span class="section-number">${sectionNumber}</span>
+                <span class="section-title">${sectionTitle}</span>
+            `;
+
+            // 先让tooltip可见但透明，以便获取正确的尺寸
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.opacity = '0';
+            tooltip.classList.add('show');
+
+            // Use requestAnimationFrame to ensure DOM is updated before measuring
+            requestAnimationFrame(() => {
+                const rect = event.target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                // Calculate position - prefer showing above the link
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 8;
+
+                // Adjust horizontal position if tooltip goes off screen
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                // Adjust vertical position if tooltip goes off screen
+                if (top < 10) {
+                    // Show below the link if there's not enough space above
+                    top = rect.bottom + 8;
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                
+                // 恢复可见性并显示动画
+                tooltip.style.visibility = 'visible';
+                tooltip.style.opacity = '';
+            });
+        }
+
+        function hideSectionTooltip() {
+            const tooltip = document.getElementById('section-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
         // Show Toast notification
         function showToast(message) {
             // Create toast element
@@ -3105,25 +6028,63 @@
                 return;
             }
             
-            // Generate unique IDs for headings
+            // Generate section numbers and unique IDs for headings
+            let sectionCounters = { h1: 0, h2: 0, h3: 0, h4: 0, h5: 0, h6: 0 };
+            
             headings.forEach((heading, index) => {
-                if (!heading.id) {
-                    const text = heading.textContent.trim();
-                    // Create URL-friendly ID
-                    let id = 'heading-' + index + '-' + text
-                        .toLowerCase()
-                        .replace(/[^\u4e00-\u9fa5a-z0-9\s]/g, '') // Keep Chinese, English, numbers and spaces
-                        .replace(/\s+/g, '-') // Replace spaces with hyphens
-                        .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
-                        .substring(0, 50); // Limit length
-                    
-                    // Ensure ID is not empty
-                    if (!id || id === 'heading-' + index + '-') {
-                        id = 'heading-' + index;
-                    }
-                    
-                    heading.id = id;
-                    console.log('Generated ID for heading:', text, '->', id);
+                const level = heading.tagName.toLowerCase();
+                
+                // Reset counters for lower levels when encountering a higher level
+                if (level === 'h1') {
+                    // 重置所有子级别计数器，然后增加h1计数器
+                    sectionCounters.h2 = sectionCounters.h3 = sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
+                    sectionCounters.h1++;
+                } else if (level === 'h2') {
+                    sectionCounters.h3 = sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
+                    sectionCounters.h2++;
+                } else if (level === 'h3') {
+                    sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
+                    sectionCounters.h3++;
+                } else if (level === 'h4') {
+                    sectionCounters.h5 = sectionCounters.h6 = 0;
+                    sectionCounters.h4++;
+                } else if (level === 'h5') {
+                    sectionCounters.h6 = 0;
+                    sectionCounters.h5++;
+                } else if (level === 'h6') {
+                    sectionCounters.h6++;
+                }
+                
+                // Generate section number
+                let sectionNumber = '';
+                if (level === 'h1') {
+                    sectionNumber = sectionCounters.h1.toString();
+                } else if (level === 'h2') {
+                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2;
+                } else if (level === 'h3') {
+                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3;
+                } else if (level === 'h4') {
+                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4;
+                } else if (level === 'h5') {
+                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4 + '.' + sectionCounters.h5;
+                } else if (level === 'h6') {
+                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4 + '.' + sectionCounters.h5 + '.' + sectionCounters.h6;
+                }
+                
+                // Generate section ID - 使用简单格式以匹配引用
+                const sectionId = 'sec' + sectionNumber.replace(/\./g, '-');
+                
+                // 强制使用我们的section ID，覆盖任何现有的ID
+                const oldId = heading.id;
+                heading.id = sectionId;
+                console.log('Generated ID for heading:', heading.textContent.trim(), 'old ID:', oldId, '-> new ID:', sectionId);
+                
+                // Add section number to heading if it doesn't already have one
+                const originalText = heading.textContent.trim();
+                if (!originalText.match(/^\d+(\.\d+)*\.?\s/)) {
+                    heading.innerHTML = `<span class="section-number">${sectionNumber}</span> ${heading.innerHTML}`;
+                    heading.setAttribute('data-section-number', sectionNumber);
+                    heading.setAttribute('data-section-id', sectionId);
                 }
             });
             
@@ -3289,13 +6250,15 @@
                 const markdownText = await response.text();
                 
                 // Preprocess math formulas (extract before Markdown parsing)
-                const { content: preprocessedMarkdown, mathBlocks } = preprocessMathFormulas(markdownText);
+                const { content: preprocessedMarkdown, mathBlocks, tableBlocks, figureBlocks } = preprocessMathFormulas(markdownText);
                 
                 // Parse Markdown
                 let htmlContent = marked.parse(preprocessedMarkdown);
                 
                 // Render math formulas (replace placeholders in HTML)
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
+                htmlContent = renderTables(htmlContent, tableBlocks);
+                htmlContent = renderFigures(htmlContent, figureBlocks);
                 
                 // Add fade-in animation class
                 contentDiv.innerHTML = `<div class="markdown-content content-fade-in">${htmlContent}</div>`;
@@ -3311,6 +6274,9 @@
                 // Add math formula copy function
                 addMathCopyFunction();
                 
+                // Add formula tooltip functionality
+                addFormulaTooltip();
+                
                 // Add target="_blank" for external links
                 contentDiv.querySelectorAll('a[href^="http"]').forEach(link => {
                     link.setAttribute('target', '_blank');
@@ -3322,6 +6288,9 @@
                 
                 // Generate table of contents
                 generateTableOfContents();
+                
+                // 自动填充空的链接标签
+                autoFillEmptyLinks();
                 
                 // Update page title
                 const pageTitle = document.getElementById('page-title');
@@ -3754,9 +6723,17 @@
                 }
                 
                 // Render single article
-                const { content: preprocessedContent, mathBlocks } = preprocessMathFormulas(post.content);
+                const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
                 let htmlContent = marked.parse(preprocessedContent);
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
+                htmlContent = renderTables(htmlContent, tableBlocks);
+                htmlContent = renderFigures(htmlContent, figureBlocks);
+                htmlContent = renderTheorems(htmlContent, theoremBlocks);
+                htmlContent = renderAssumptions(htmlContent, assumptionBlocks);
+                htmlContent = renderDefinitions(htmlContent, definitionBlocks);
+                htmlContent = renderCorollaries(htmlContent, corollaryBlocks);
+                htmlContent = renderLemmas(htmlContent, lemmaBlocks);
+                htmlContent = renderRemarks(htmlContent, remarkBlocks);
                 
                 const date = formatDate(post.date);
                 const tags = post.tags && Array.isArray(post.tags) 
@@ -3771,8 +6748,11 @@
                                     <i class="fas fa-arrow-left"></i> Back to Blog List
                                 </button>
                                 <div style="display: flex; gap: 10px;">
-                                    <button class="btn btn-outline-success" id="play-fullscreen-btn" onclick="enterFullscreenReading()" title="沉浸式阅读">
-                                        <i class="fas fa-play"></i> Play
+                                    <button class="btn btn-outline-info" id="slides-btn" onclick="enterSlidesMode()" title="幻灯片模式">
+                                        <i class="fas fa-film"></i> Slides
+                                    </button>
+                                    <button class="btn btn-outline-success" id="play-fullscreen-btn" onclick="enterFullscreenReading()" title="全屏阅读">
+                                        <i class="fas fa-expand"></i> FullScreen
                                     </button>
                                     <button class="btn btn-outline-primary" onclick="shareBlogPost('${post.fileName}', '${post.title}')" title="Share this article">
                                         <i class="fas fa-share-alt"></i> Share
@@ -3804,6 +6784,9 @@
                 // Add math formula copy function
                 addMathCopyFunction();
                 
+                // Add formula tooltip functionality
+                addFormulaTooltip();
+                
                 // Add target="_blank" for external links
                 contentDiv.querySelectorAll('a[href^="http"]').forEach(link => {
                     link.setAttribute('target', '_blank');
@@ -3815,6 +6798,9 @@
                 
                 // Generate table of contents
                 generateTableOfContents();
+                
+                // 自动填充空的链接标签
+                autoFillEmptyLinks();
                 
                 // Update page title
                 const pageTitle = document.getElementById('page-title');
@@ -3833,6 +6819,9 @@
             }
             // 渲染后同步按钮和全屏状态
             ensureFullscreenState();
+            
+            // 同步幻灯片按钮状态
+            syncSlidesButton();
         }
 
         // Show error message
@@ -4291,8 +7280,17 @@
             document.querySelector('.theme-toggle-fixed').style.display = 'none';
             syncFullscreenButton();
             document.addEventListener('keydown', escFullscreenHandler);
+            
+            // 延迟一下再进入全屏，确保全屏阅读模式已经完全显示
+            setTimeout(() => {
+                enterFullscreen();
+            }, 500);
         }
+        
         function exitFullscreenReading() {
+            // 先退出全屏
+            exitFullscreen();
+            
             document.body.classList.remove('fullscreen-reading');
             document.getElementById('sidebar').style.display = '';
             document.getElementById('toc-container').style.display = '';
@@ -4306,22 +7304,28 @@
             const playBtn = document.getElementById('play-fullscreen-btn');
             if (!playBtn) return;
             if (document.body.classList.contains('fullscreen-reading')) {
-                playBtn.innerHTML = '<i class="fas fa-times"></i> Exit Fullscreen';
+                playBtn.innerHTML = '<i class="fas fa-compress"></i> Exit';
                 playBtn.classList.remove('btn-outline-success');
                 playBtn.classList.add('btn-danger');
                 playBtn.onclick = exitFullscreenReading;
-                playBtn.title = 'Exit immersive reading';
+                playBtn.title = '退出全屏阅读';
             } else {
-                playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+                playBtn.innerHTML = '<i class="fas fa-expand"></i> FullScreen';
                 playBtn.classList.remove('btn-danger');
                 playBtn.classList.add('btn-outline-success');
                 playBtn.onclick = enterFullscreenReading;
-                playBtn.title = 'Immersive reading';
+                playBtn.title = '全屏阅读';
             }
         }
         function escFullscreenHandler(e) {
             if (e.key === 'Escape') {
-                exitFullscreenReading();
+                // 如果当前在幻灯片模式，退出幻灯片模式
+                if (slidesMode) {
+                    exitSlidesMode();
+                } else {
+                    // 否则退出全屏阅读模式
+                    exitFullscreenReading();
+                }
             }
         }
 
@@ -4350,6 +7354,7 @@
             }
             // 同步按钮
             syncFullscreenButton();
+            syncSlidesButton();
         }
 
         // 在marked解析后还原图片alt中的占位符
@@ -4370,6 +7375,673 @@
                 }
             });
         }
+
+        // 处理公式和表格引用链接，阻止默认跳转行为
+        function setupFormulaLinks() {
+            document.addEventListener('click', function(e) {
+                // 检查是否是公式引用链接
+                if (e.target.tagName === 'A' && e.target.getAttribute('href') && e.target.getAttribute('href').startsWith('#eq')) {
+                    e.preventDefault();
+                    const id = e.target.getAttribute('href').slice(1);
+                    const el = document.getElementById(id);
+                    if (el) {
+                        console.log('直接滚动到公式:', id);
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.style.background = 'rgba(52,152,219,0.08)';
+                        setTimeout(() => el.style.background = '', 800);
+                    } else {
+                        console.log('未找到公式元素:', id);
+                    }
+                }
+                // 检查是否是表格引用链接
+                if (e.target.tagName === 'A' && e.target.getAttribute('href') && e.target.getAttribute('href').startsWith('#table')) {
+                    e.preventDefault();
+                    const id = e.target.getAttribute('href').slice(1);
+                    const el = document.getElementById(id);
+                    if (el) {
+                        console.log('直接滚动到表格:', id);
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.style.background = 'rgba(52,152,219,0.08)';
+                        setTimeout(() => el.style.background = '', 800);
+                    } else {
+                        console.log('未找到表格元素:', id);
+                    }
+                }
+                // 检查是否是图片引用链接
+                if (e.target.tagName === 'A' && e.target.getAttribute('href') && e.target.getAttribute('href').startsWith('#figure')) {
+                    e.preventDefault();
+                    const id = e.target.getAttribute('href').slice(1);
+                    const el = document.getElementById(id);
+                    if (el) {
+                        console.log('直接滚动到图片:', id);
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.style.background = 'rgba(52,152,219,0.08)';
+                        setTimeout(() => el.style.background = '', 800);
+                    } else {
+                        console.log('未找到图片元素:', id);
+                    }
+                }
+            });
+        }
+
+        // 处理章节引用链接的全局事件处理器
+        let sectionLinksHandlerAdded = false;
+        
+        function setupSectionLinks() {
+            console.log('设置章节引用链接处理器');
+            
+            // 首先清理之前的事件监听器，避免重复绑定
+            const existingLinks = document.querySelectorAll('a[href^="#sec"]');
+            existingLinks.forEach(link => {
+                // 创建新的克隆节点来移除所有事件监听器
+                const newLink = link.cloneNode(true);
+                link.parentNode.replaceChild(newLink, link);
+            });
+            
+            // 移除原来的全局点击事件处理，现在在bindSectionLinkEvents中处理
+
+            // 为新的链接绑定所有事件（点击和tooltip）
+            function bindSectionLinkEvents() {
+                const sectionLinks = document.querySelectorAll('a[href^="#sec"]');
+                console.log('Found section links to bind:', sectionLinks.length);
+                
+                sectionLinks.forEach(link => {
+                    console.log('Binding events to link:', link.href);
+                    
+                    // 点击事件
+                    link.addEventListener('click', function(e) {
+                        console.log('检测到章节链接点击:', this.getAttribute('href'));
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const id = this.getAttribute('href').slice(1);
+                        console.log('查找章节ID:', id);
+                        
+                        const el = document.getElementById(id);
+                        if (el) {
+                            console.log('找到章节元素，准备滚动到:', id, el);
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            // 高亮章节标题
+                            el.style.background = 'rgba(52,152,219,0.08)';
+                            el.style.borderRadius = '6px';
+                            el.style.padding = '0.2em 0.5em';
+                            el.style.transition = 'all 0.3s ease';
+                            setTimeout(() => {
+                                el.style.background = '';
+                                el.style.borderRadius = '';
+                                el.style.padding = '';
+                            }, 1500);
+                        } else {
+                            console.log('未找到章节元素:', id);
+                        }
+                    });
+                    
+                    // Tooltip事件
+                    link.addEventListener('mouseenter', function(e) {
+                        const id = this.getAttribute('href').slice(1);
+                        console.log('mouseenter on section link:', id);
+                        showSectionTooltip(e, id);
+                    });
+                    
+                    link.addEventListener('mouseleave', function(e) {
+                        console.log('mouseleave on section link');
+                        hideSectionTooltip();
+                    });
+                });
+            }
+            
+            // 立即执行一次
+            bindSectionLinkEvents();
+            
+            // 清理工作完成，现在所有事件都在bindSectionLinkEvents中统一处理
+        }
+
+        // 自动填充空的链接标签
+        function autoFillEmptyLinks() {
+            console.log('开始自动填充空的链接标签');
+            
+            // 查找所有空的链接标签 <a href="#xxx"></a>
+            const emptyLinks = document.querySelectorAll('a[href^="#"]:empty');
+            console.log(`发现 ${emptyLinks.length} 个空链接标签`);
+            
+            if (emptyLinks.length === 0) {
+                return;
+            }
+            
+            // 建立章节和内容映射
+            const contentMap = buildContentMap();
+            
+            emptyLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#') return;
+                
+                const id = href.substring(1); // 移除 # 号
+                console.log(`处理空链接: ${href}`);
+                
+                // 查找对应的内容
+                const content = findContentForId(id, contentMap);
+                if (content) {
+                    link.textContent = content;
+                    console.log(`已填充链接 ${href} 内容: ${content}`);
+                } else {
+                    // 如果找不到内容，添加一个占位符
+                    link.innerHTML = `<span style="color: #dc3545; font-style: italic;"><!-- 链接 ${id} 待填充 --></span>`;
+                    console.warn(`未找到 ${href} 对应的内容`);
+                }
+            });
+        }
+        
+        // 建立内容映射表
+        function buildContentMap() {
+            const contentMap = new Map();
+            
+            // 1. 处理章节标题
+            const headers = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            let sectionNumbers = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+            
+            headers.forEach(header => {
+                const level = parseInt(header.tagName.charAt(1));
+                const title = header.textContent.trim();
+                
+                // 更新章节编号
+                sectionNumbers[level]++;
+                // 重置下级编号
+                for (let i = level + 1; i <= 6; i++) {
+                    sectionNumbers[i] = 0;
+                }
+                
+                // 生成章节编号
+                let sectionNumber = '';
+                if (level === 1) {
+                    sectionNumber = `Sec. ${sectionNumbers[1]}`;
+                    contentMap.set(`sec${sectionNumbers[1]}`, sectionNumber);
+                } else if (level === 2) {
+                    sectionNumber = `Sec. ${sectionNumbers[1]}.${sectionNumbers[2]}`;
+                    contentMap.set(`sec${sectionNumbers[1]}_${sectionNumbers[2]}`, sectionNumber);
+                } else if (level === 3) {
+                    sectionNumber = `Sec. ${sectionNumbers[1]}.${sectionNumbers[2]}.${sectionNumbers[3]}`;
+                    contentMap.set(`sec${sectionNumbers[1]}_${sectionNumbers[2]}_${sectionNumbers[3]}`, sectionNumber);
+                }
+                
+                // 也可以通过ID直接映射
+                if (header.id) {
+                    contentMap.set(header.id, sectionNumber || title);
+                }
+            });
+            
+            // 2. 处理图表和公式的编号
+            const specialMappings = {
+                'fig1': 'Fig. 1', 'fig2': 'Fig. 2', 'fig3': 'Fig. 3', 'fig4': 'Fig. 4', 'fig5': 'Fig. 5',
+                'fig6': 'Fig. 6', 'fig7': 'Fig. 7', 'fig8': 'Fig. 8', 'fig9': 'Fig. 9', 'fig10': 'Fig. 10',
+                'table1': 'Table 1', 'table2': 'Table 2', 'table3': 'Table 3', 'table4': 'Table 4', 'table5': 'Table 5',
+                'eq1': 'Eq. (1)', 'eq2': 'Eq. (2)', 'eq3': 'Eq. (3)', 'eq4': 'Eq. (4)', 'eq5': 'Eq. (5)',
+                'eq6': 'Eq. (6)', 'eq7': 'Eq. (7)', 'eq8': 'Eq. (8)', 'eq9': 'Eq. (9)', 'eq10': 'Eq. (10)',
+                'thm1': 'Theorem 1', 'thm2': 'Theorem 2', 'thm3': 'Theorem 3', 'thm4': 'Theorem 4', 'thm5': 'Theorem 5',
+                'cor1': 'Corollary 1', 'cor2': 'Corollary 2', 'cor3': 'Corollary 3', 'cor4': 'Corollary 4', 'cor5': 'Corollary 5',
+                'lemma1': 'Lemma 1', 'lemma2': 'Lemma 2', 'lemma3': 'Lemma 3',
+                'def1': 'Definition 1', 'def2': 'Definition 2', 'def3': 'Definition 3',
+                'assumption1': 'Assumption 1', 'assumption2': 'Assumption 2', 'assumption3': 'Assumption 3',
+                'remark1': 'Remark 1', 'remark2': 'Remark 2', 'remark3': 'Remark 3'
+            };
+            
+            Object.entries(specialMappings).forEach(([key, value]) => {
+                contentMap.set(key, value);
+            });
+            
+            // 3. 查找页面中实际存在的元素
+            document.querySelectorAll('[id]').forEach(element => {
+                const id = element.id;
+                if (!contentMap.has(id)) {
+                    // 尝试从元素内容推断
+                    let content = '';
+                    if (element.tagName.match(/^H[1-6]$/)) {
+                        content = element.textContent.trim();
+                    } else if (element.classList.contains('theorem')) {
+                        content = 'Theorem';
+                    } else if (element.classList.contains('figure')) {
+                        content = 'Figure';
+                    } else if (element.classList.contains('table')) {
+                        content = 'Table';
+                    }
+                    if (content) {
+                        contentMap.set(id, content);
+                    }
+                }
+            });
+            
+            console.log('内容映射表:', contentMap);
+            return contentMap;
+        }
+        
+        // 查找ID对应的内容
+        function findContentForId(id, contentMap) {
+            // 优先进行模糊匹配（确保数字和ID一致）
+            // 例如 sec4 对应 "Sec. 4"
+            if (id.match(/^sec(\d+)$/)) {
+                const num = id.match(/^sec(\d+)$/)[1];
+                return `Sec. ${num}`;
+            }
+            
+            // 例如 sec4_1 对应 "Sec. 4.1"
+            if (id.match(/^sec(\d+)_(\d+)$/)) {
+                const matches = id.match(/^sec(\d+)_(\d+)$/);
+                return `Sec. ${matches[1]}.${matches[2]}`;
+            }
+            
+            // 例如 sec4_1_2 对应 "Sec. 4.1.2"
+            if (id.match(/^sec(\d+)_(\d+)_(\d+)$/)) {
+                const matches = id.match(/^sec(\d+)_(\d+)_(\d+)$/);
+                return `Sec. ${matches[1]}.${matches[2]}.${matches[3]}`;
+            }
+            
+            // 然后检查直接映射
+            if (contentMap.has(id)) {
+                return contentMap.get(id);
+            }
+            
+            return null;
+        }
+
+        // 全局hash跳转修正，确保异步渲染后锚点跳转生效
+        function scrollToHashTarget() {
+            if (window.location.hash) {
+                const id = window.location.hash.slice(1);
+                console.log('尝试跳转到ID:', id);
+                const el = document.getElementById(id);
+                if (el) {
+                    console.log('找到目标元素:', el);
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.style.background = 'rgba(52,152,219,0.08)';
+                    setTimeout(() => el.style.background = '', 800);
+                } else {
+                    console.log('未找到ID为', id, '的元素');
+                    // 调试：显示页面上所有的ID
+                    const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
+                    console.log('页面上所有的ID:', allIds);
+                }
+            }
+        }
+        window.addEventListener('hashchange', scrollToHashTarget);
+        
+        // 初始化公式链接处理
+        setupFormulaLinks();
+        
+        // 初始化章节引用链接处理
+        setupSectionLinks();
+        
+        // 定时检测，直到锚点出现为止（最多尝试2秒）
+        (function ensureHashScroll() {
+            let tries = 0;
+            function tryScroll() {
+                if (window.location.hash) {
+                    const id = window.location.hash.slice(1);
+                    const el = document.getElementById(id);
+                    if (el) {
+                        console.log('定时检测找到目标元素:', id);
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.style.background = 'rgba(52,152,219,0.08)';
+                        setTimeout(() => el.style.background = '', 800);
+                        return;
+                    }
+                }
+                if (++tries < 20) setTimeout(tryScroll, 100);
+            }
+            tryScroll();
+        })();
+
+        // 幻灯片模式相关变量
+        let slides = [];
+        let currentSlideIndex = 0;
+        let slidesMode = false;
+
+        // 进入幻灯片模式
+        function enterSlidesMode() {
+            if (!currentBlogPost) {
+                showToast('幻灯片模式仅适用于博客文章');
+                return;
+            }
+
+            console.log('进入幻灯片模式');
+            slidesMode = true;
+            
+            // 生成幻灯片
+            generateSlides();
+            
+            // 显示幻灯片模式
+            const slidesModeElement = document.getElementById('slides-mode');
+            slidesModeElement.classList.add('active');
+            slidesModeElement.setAttribute('data-theme', currentTheme);
+            
+            // 设置标题
+            const slideTitle = document.getElementById('slide-title');
+            const blogTitle = document.querySelector('.blog-post-title');
+            if (blogTitle) {
+                slideTitle.textContent = blogTitle.textContent;
+            }
+            
+            // 显示第一张幻灯片
+            showSlide(0);
+            
+            // 添加键盘事件监听
+            document.addEventListener('keydown', handleSlidesKeydown);
+            
+            // 阻止页面滚动
+            document.body.style.overflow = 'hidden';
+            
+            // 同步按钮状态
+            syncSlidesButton();
+            
+            // 延迟一下再进入全屏，确保幻灯片模式已经完全显示
+            setTimeout(() => {
+                enterFullscreen();
+            }, 500);
+        }
+
+        // 退出幻灯片模式
+        function exitSlidesMode() {
+            console.log('退出幻灯片模式');
+            slidesMode = false;
+            
+            // 先退出全屏
+            exitFullscreen();
+            
+            // 隐藏幻灯片模式
+            const slidesModeElement = document.getElementById('slides-mode');
+            slidesModeElement.classList.remove('active');
+            
+            // 移除键盘事件监听
+            document.removeEventListener('keydown', handleSlidesKeydown);
+            
+            // 恢复页面滚动
+            document.body.style.overflow = '';
+            
+            // 重置幻灯片状态
+            slides = [];
+            currentSlideIndex = 0;
+            
+            // 同步按钮状态
+            syncSlidesButton();
+        }
+
+        // F11全屏功能
+        function enterFullscreen() {
+            try {
+                // 尝试使用F11键模拟
+                const f11Event = new KeyboardEvent('keydown', {
+                    key: 'F11',
+                    keyCode: 122,
+                    which: 122,
+                    bubbles: true,
+                    cancelable: true
+                });
+                document.dispatchEvent(f11Event);
+                
+                // 备用方案：使用Fullscreen API
+                setTimeout(() => {
+                    if (!document.fullscreenElement) {
+                        if (document.documentElement.requestFullscreen) {
+                            document.documentElement.requestFullscreen();
+                        } else if (document.documentElement.webkitRequestFullscreen) {
+                            document.documentElement.webkitRequestFullscreen();
+                        } else if (document.documentElement.msRequestFullscreen) {
+                            document.documentElement.msRequestFullscreen();
+                        }
+                    }
+                }, 100);
+                
+                console.log('已尝试进入全屏模式');
+            } catch (error) {
+                console.warn('进入全屏失败:', error);
+            }
+        }
+
+        function exitFullscreen() {
+            try {
+                // 尝试使用F11键模拟退出全屏
+                const f11Event = new KeyboardEvent('keydown', {
+                    key: 'F11',
+                    keyCode: 122,
+                    which: 122,
+                    bubbles: true,
+                    cancelable: true
+                });
+                document.dispatchEvent(f11Event);
+                
+                // 备用方案：使用Fullscreen API
+                setTimeout(() => {
+                    if (document.fullscreenElement) {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                    }
+                }, 100);
+                
+                console.log('已尝试退出全屏模式');
+            } catch (error) {
+                console.warn('退出全屏失败:', error);
+            }
+        }
+
+        // 处理幻灯片模式的键盘事件
+        function handleSlidesKeydown(e) {
+            if (!slidesMode) return;
+            
+            switch(e.key) {
+                case 'Escape':
+                    exitSlidesMode();
+                    break;
+                case 'F11':
+                    // F11键在幻灯片模式下不处理，避免冲突
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    previousSlide();
+                    break;
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    showSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    showSlide(slides.length - 1);
+                    break;
+            }
+        }
+
+        // 生成幻灯片
+        function generateSlides() {
+            const blogContent = document.querySelector('.blog-post-content');
+            if (!blogContent) {
+                console.error('未找到博客内容');
+                return;
+            }
+
+            // 克隆内容以避免修改原始内容
+            const contentClone = blogContent.cloneNode(true);
+            
+            // 移除不需要的元素
+            const elementsToRemove = contentClone.querySelectorAll('.copy-code-btn, .math-source');
+            elementsToRemove.forEach(el => el.remove());
+            
+            // 根据标题层级分割内容
+            slides = splitContentIntoSections(contentClone);
+            
+            console.log(`生成了 ${slides.length} 张幻灯片`);
+        }
+
+        // 根据标题层级分割内容
+        function splitContentIntoSections(content) {
+            const sections = [];
+            const headings = content.querySelectorAll('h1, h2, h3');
+            
+            if (headings.length === 0) {
+                // 如果没有标题，将整个内容作为一张幻灯片
+                sections.push({
+                    title: '内容概览',
+                    content: content.innerHTML
+                });
+                return sections;
+            }
+            
+            // 创建标题页
+            const titleHeading = content.querySelector('h1');
+            if (titleHeading) {
+                const titleSection = {
+                    title: titleHeading.textContent,
+                    content: `<h1>${titleHeading.textContent}</h1>`
+                };
+                sections.push(titleSection);
+            }
+            
+            // 根据标题层级分割内容
+            let currentSection = null;
+            let currentContent = [];
+            
+            // 遍历所有元素
+            Array.from(content.children).forEach(element => {
+                if (element.tagName.match(/^H[1-3]$/)) {
+                    // 保存当前部分
+                    if (currentSection && currentContent.length > 0) {
+                        currentSection.content = currentContent.join('');
+                        sections.push(currentSection);
+                    }
+                    
+                    // 开始新部分
+                    currentSection = {
+                        title: element.textContent,
+                        content: ''
+                    };
+                    currentContent = [element.outerHTML];
+                } else if (currentSection) {
+                    // 添加到当前部分
+                    currentContent.push(element.outerHTML);
+                }
+            });
+            
+            // 保存最后一个部分
+            if (currentSection && currentContent.length > 0) {
+                currentSection.content = currentContent.join('');
+                sections.push(currentSection);
+            }
+            
+            // 如果没有分割出内容，将整个内容作为一张幻灯片
+            if (sections.length === 0) {
+                sections.push({
+                    title: '内容概览',
+                    content: content.innerHTML
+                });
+            }
+            
+            return sections;
+        }
+
+        // 显示指定幻灯片
+        function showSlide(index) {
+            if (index < 0 || index >= slides.length) return;
+            
+            const slideContainer = document.getElementById('slide-container');
+            const slideCounter = document.getElementById('slide-counter');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            
+            // 更新当前幻灯片索引
+            currentSlideIndex = index;
+            
+            // 更新计数器
+            slideCounter.textContent = `${index + 1} / ${slides.length}`;
+            
+            // 更新按钮状态
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === slides.length - 1;
+            
+            // 添加过渡动画
+            slideContainer.classList.remove('active');
+            
+            setTimeout(() => {
+                // 更新内容
+                const slide = slides[index];
+                slideContainer.innerHTML = slide.content;
+                
+                // 重新激活
+                slideContainer.classList.add('active');
+                
+                // 添加过渡动画类
+                slideContainer.classList.add('slide-transition');
+                setTimeout(() => {
+                    slideContainer.classList.remove('slide-transition');
+                }, 500);
+            }, 250);
+        }
+
+        // 下一张幻灯片
+        function nextSlide() {
+            if (currentSlideIndex < slides.length - 1) {
+                showSlide(currentSlideIndex + 1);
+            }
+        }
+
+        // 上一张幻灯片
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                showSlide(currentSlideIndex - 1);
+            }
+        }
+
+        // 同步幻灯片按钮状态
+        function syncSlidesButton() {
+            const slidesBtn = document.getElementById('slides-btn');
+            if (!slidesBtn) return;
+            
+            if (slidesMode) {
+                slidesBtn.innerHTML = '<i class="fas fa-compress"></i> Exit';
+                slidesBtn.classList.remove('btn-outline-info');
+                slidesBtn.classList.add('btn-danger');
+                slidesBtn.onclick = exitSlidesMode;
+                slidesBtn.title = '退出幻灯片模式';
+            } else {
+                slidesBtn.innerHTML = '<i class="fas fa-film"></i> Slides';
+                slidesBtn.classList.remove('btn-danger');
+                slidesBtn.classList.add('btn-outline-info');
+                slidesBtn.onclick = enterSlidesMode;
+                slidesBtn.title = '幻灯片模式';
+            }
+        }
+
+        // 处理全屏状态变化
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement);
+            
+            console.log('全屏状态变化:', isFullscreen ? '进入全屏' : '退出全屏');
+            
+            // 如果退出全屏且当前在幻灯片模式，则退出幻灯片模式
+            if (!isFullscreen && slidesMode) {
+                console.log('检测到退出全屏，自动退出幻灯片模式');
+                exitSlidesMode();
+            }
+            
+            // 如果退出全屏且当前在全屏阅读模式，则退出全屏阅读模式
+            if (!isFullscreen && document.body.classList.contains('fullscreen-reading')) {
+                console.log('检测到退出全屏，自动退出全屏阅读模式');
+                exitFullscreenReading();
+            }
+        }
+
+
     </script>
 </body>
 </html>

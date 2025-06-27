@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tooltip测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .section-number {
+            color: #3498db;
+            font-weight: 600;
+            margin-right: 0.5em;
+        }
+        
+        a {
+            color: #3498db;
+            text-decoration: none;
+            border-bottom: 1px dashed #3498db;
+            padding: 2px 4px;
+        }
+        
+        a:hover {
+            background: rgba(52,152,219,0.1);
+        }
+        
+        .test-sections {
+            margin: 40px 0;
+        }
+        
+        .test-sections h2 {
+            margin: 30px 0 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+        }
+        
+        /* Section tooltip styles - 复制自main CSS */
+        .section-tooltip {
+            position: fixed;
+            background: rgba(45, 55, 72, 0.95);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 400px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            word-wrap: break-word;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .section-tooltip.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .section-tooltip .section-number {
+            color: #74b9ff;
+            font-weight: 600;
+            margin-right: 0.5em;
+        }
+
+        .section-tooltip .section-title {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>📖 Section Tooltip 测试页面</h1>
+    
+    <div class="test-sections">
+        <h2 id="sec1"><span class="section-number">1</span>引言与背景</h2>
+        <p>这是第一个章节的内容。</p>
+        
+        <h2 id="sec2"><span class="section-number">2</span>研究方法与实验设计</h2>
+        <p>这是第二个章节的内容。</p>
+        
+        <h2 id="sec3"><span class="section-number">3</span>实验结果与数据分析</h2>
+        <p>这是第三个章节的内容。</p>
+        
+        <h2 id="sec4"><span class="section-number">4</span>讨论与结论</h2>
+        <p>这是第四个章节的内容。</p>
+    </div>
+    
+    <div style="margin: 40px 0; padding: 20px; background: #f0f8ff; border-radius: 8px;">
+        <h3>🧪 测试引用链接</h3>
+        <p>如<a href="#sec1">第1章</a>所述，引言部分很重要。</p>
+        <p>详细的<a href="#sec2">研究方法</a>在第二章中有详细描述。</p>
+        <p>实验的<a href="#sec3">结果和分析</a>显示了有趣的发现。</p>
+        <p>最后的<a href="#sec4">讨论与结论</a>总结了主要发现。</p>
+        
+        <p><strong>💡 提示：将鼠标悬停在蓝色链接上应该会显示tooltip！</strong></p>
+        <p><strong>🔍 如果没有显示，请打开浏览器开发者工具查看控制台错误信息。</strong></p>
+    </div>
+
+    <script>
+        // Tooltip 函数
+        function showSectionTooltip(event, sectionId) {
+            console.log('showSectionTooltip called with:', sectionId);
+            
+            let tooltip = document.getElementById('section-tooltip');
+            if (!tooltip) {
+                tooltip = document.createElement('div');
+                tooltip.id = 'section-tooltip';
+                tooltip.className = 'section-tooltip';
+                document.body.appendChild(tooltip);
+                console.log('Created new section tooltip element');
+            }
+
+            const sectionElement = document.getElementById(sectionId);
+            if (!sectionElement) {
+                console.log('Section element not found:', sectionId);
+                return;
+            }
+            
+            console.log('Found section element:', sectionElement);
+
+            const sectionNumberSpan = sectionElement.querySelector('.section-number');
+            const sectionNumber = sectionNumberSpan ? sectionNumberSpan.textContent.trim() : '';
+            
+            let sectionTitle = sectionElement.textContent.trim();
+            if (sectionNumber) {
+                sectionTitle = sectionTitle.replace(sectionNumber, '').trim();
+            }
+
+            tooltip.innerHTML = `
+                <span class="section-number">${sectionNumber}</span>
+                <span class="section-title">${sectionTitle}</span>
+            `;
+
+            tooltip.style.visibility = 'hidden';
+            tooltip.style.opacity = '0';
+            tooltip.classList.add('show');
+
+            requestAnimationFrame(() => {
+                const rect = event.target.getBoundingClientRect();
+                const tooltipRect = tooltip.getBoundingClientRect();
+                
+                let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
+                let top = rect.top - tooltipRect.height - 8;
+
+                if (left < 10) left = 10;
+                if (left + tooltipRect.width > window.innerWidth - 10) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+
+                if (top < 10) {
+                    top = rect.bottom + 8;
+                }
+
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                
+                tooltip.style.visibility = 'visible';
+                tooltip.style.opacity = '';
+            });
+        }
+
+        function hideSectionTooltip() {
+            const tooltip = document.getElementById('section-tooltip');
+            if (tooltip) {
+                tooltip.classList.remove('show');
+            }
+        }
+
+        // 绑定事件
+        function bindEvents() {
+            const sectionLinks = document.querySelectorAll('a[href^="#sec"]');
+            console.log('Found section links:', sectionLinks.length);
+            
+            sectionLinks.forEach(link => {
+                console.log('Binding events to:', link.href);
+                
+                link.addEventListener('mouseenter', function(e) {
+                    const id = this.getAttribute('href').slice(1);
+                    console.log('mouseenter on section link:', id);
+                    showSectionTooltip(e, id);
+                });
+                
+                link.addEventListener('mouseleave', function(e) {
+                    console.log('mouseleave on section link');
+                    hideSectionTooltip();
+                });
+                
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const id = this.getAttribute('href').slice(1);
+                    const target = document.getElementById(id);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
+        }
+
+        // 页面加载后绑定事件
+        document.addEventListener('DOMContentLoaded', bindEvents);
+    </script>
+</body>
+</html> 

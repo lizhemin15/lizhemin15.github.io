@@ -4,7 +4,7 @@
 
 [7] **Zhemin Li**, Liyuan Ma, Hongxia Wang, Yaoyun Zeng, Xiaolong Han. Learning Input Encodings for Kernel-Optimal Implicit Neural Representations. *Proceedings of the International Conference on Machine Learning (ICML)*, pp. 1-12, Vancouver, Canada, July 2025. (CCF-A) [📋](https://openreview.net/pdf?id=Cx80t5FAQJ)  [🔗](https://github.com/lizhemin15/KAR)
 
-[6] Wenqiang Huang†, Yucheng Jin†, **Zhemin Li**†, et al. Auto-resolving atomic structure at van der Waals interfaces using a generative model. *Nature Communications*, vol. 16, no. 2927, 2025. († Co-first authors)  [📋](https://www.nature.com/articles/s41467-025-58160-3)  [🔗](https://github.com/dptech-corp/TED-Gen)
+[6] Wenqiang Huang†, Yucheng Jin†, **Zhemin Li**†, et al. Auto-resolving atomic structure at van der Waals interfaces using a generative model. *Nature Communications*, vol. 16, no. 2927, 2025. († Equal Contribution)  [📋](https://www.nature.com/articles/s41467-025-58160-3)  [🔗](https://github.com/dptech-corp/TED-Gen)
 
 ### 2023
 
