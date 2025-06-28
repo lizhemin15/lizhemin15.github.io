@@ -5,6 +5,7 @@ tags: ["Notes", "论文精读", "神经网络理论"]
 keywords: ["Feature Learning", "NTK", "Theory", "Infinite-width neural networks"]
 excerpt: "尽管NTK极限下得到了很漂亮的深度神经网络的近似，但是也同时失去了特征学习能力。这篇文章发现通过修改标准的参数化方式，就可以使得在无穷宽极限下进行特征学习，并使用 'Tensor Programs' 技术导出了这个极限的显式形式。Feature Learning 对于迁移学习非常重要，可以说，如果学不到特征，那么迁移学习都不存在可行性。"
 visible: true
+pinned: false
 ---
 
 # 论文来源
@@ -177,7 +178,7 @@ $$ \frac{1}{n} \Delta x_{t}(\xi)^{\top} x_{0}(\zeta)=\frac{1}{n} \sum_{\alpha=1}
 在NTP中，随着 $n\rightarrow \infty,\left<\nabla_{U,V} f_0(\xi),\nabla_{U,V}f_0(\zeta)\right>$ 收敛到固定值 $K(\xi,\zeta)$ 使得 $K$ 成为一个核。然后，在这个极限下，如果学习率是$\eta$，函数$f$ 通过核梯度下降进行演化 $f_{t+1}(\xi)=f_t(\xi)-\eta K(\xi,\xi_t)\chi_t$。然而，这不应当是MFL。举个例子，如果$\phi$是单位映射，那么直觉上说 $f_{t+1}(\xi)-f_t(\xi)$ 应当是对$\eta$是二次的，而不是线性的，因为两层是一起更新的。
 
 ## abc-Parametrizations and Dynamical Dichotomy
-在这一节，我们将范围扩大到更深MLPs的abc-parametrizations，定义为<a href="#eq1">公式(1)</a>，并有他们的无穷宽极限。<a href="#table1">表1</a>总结了不同参数化方法的特性对比。
+在这一节，我们将范围扩大到更深MLPs的abc-parametrizations，定义为<a href="#eq1">公式(1)</a>，并有他们的无穷宽极限。<a href="#tab1">表1</a>总结了不同参数化方法的特性对比。
 
 ```assumption 平滑性假设
 我们在这一节的主要结果将会假设$\phi$要么是$tanh$，要么是一个 $relu$ 的光滑版本，称为$\sigma$-gelu，对于充分小的$\sigma>0$。
@@ -340,7 +341,99 @@ $$
 f=V\bar{h},\bar{h}=Wh,h=U\xi,
 $$
 ```
-其中$U_{\alpha\beta}\sim \mathcal{N}(0,1)$和$W_{\alpha\beta},V_{\alpha\beta}\sim \mathcal{N}(0,1/n)$ 都是可训练参数。如<a href="#sec4"></a>，
+其中$U_{\alpha\beta}\sim \mathcal{N}(0,1)$和$W_{\alpha\beta},V_{\alpha\beta}\sim \mathcal{N}(0,1/n)$ 都是可训练参数。如<a href="#sec4"></a>，我们使用$\bullet_t$来表示量$\bullet$在SGD$t$步以后的量的大小。因为我们只关注 SGD 一步后的结果，我们简记记号 $\bullet=\bullet_0$。
+
+## 初始化
+由于 $U,W,V$ 是独立采样的，一个标准中心极限表明 $h,\bar{h},f$ 的各个分量可以大致认为是方差为 $\Theta(1)$ 的独立同分布的高斯变量。
+
+## 第一步梯度
+现在让我们考虑$f$在数据对$(\xi,y)$上的的梯度，通过下式给出
+```equation
+$$ 
+\begin{aligned} d \bar{h} & =V^{\top}, & d h & =W^{\top} d \bar{h}, \\ d V & =\bar{h}, & d W & =d \bar{h} h^{\top}=V^{\top} h^{\top},\end{aligned} \quad d U=d h \xi^{\top}.
+$$
+```
+为了简单起见，假设我们只以学习率$n^{-c}$更新$W$(且让$U,V$不变)；我们的结论将在更一般的训练了所有层的情况下保持不变。那么用$\chi$记为损失函数的导数$\mathcal{L}'(f,y)$，我们可以写成
+$$
+W_1=W-n^{-c}\chi dW.
+$$
+我们将会证明 $c\geq 1$ 或是 $f_1$ 在SGD步后宽度$n$会爆炸。
+
+## 一步 SGD 后
+在$t=1,h_1=h$由于我们没有更新$U$，但是
+```equation
+$$ \bar{h}_{1}=W_{1} h=\bar{h}-n^{-c} \chi d W h=\bar{h}-n^{-c} \chi \cdot V^{\top} h^{\top} h $$
+```
+
+```equation
+$$ f_{1}=V \bar{h}_{1}=f-n^{-c} \chi V V^{\top} h^{\top} h. $$
+```
+
+现在，由上述所提到的，$h$有着 iid 的 $\Theta(1)$ 大小，因此 $h^\top h=\Theta(n)\in\mathbb{R}$。类似的，$V\in\mathbb{R}^{1\times n}$有着高斯方差量级为 $\Theta(1/n)$，因此 $VV^\top \Theta(1)\in\mathbb{R}$。最后，对于典型的损失函数 $\mathcal{L}$ 像 MSE 或交叉熵，$\chi=\mathcal{L}'(f,y)$的阶数为$\Theta(1)$由于$f$在数量级$\Theta(1)$上进行波动。总的来说，
+$$
+f_1=f-\Theta(n^{1-c}).
+$$
+因此，对于 $f_1$ 保持 $O(1)$，我们必须有$c\geq 1$，即学习率为$O(1/n)$。
+
+## Kernel Regime and Lack of Feature Learning
+因此，如果希望 logits 值不爆炸，网络在大宽度极限下无法学习特征。实际上，这个只更新$W$的SGD的版本可视为以下极限，
+$$
+a_1=\theta,b_1=-\theta,a_2=0,b_2=1/2,a_3=\theta,b_3=-\theta+1/2,\theta\rightarrow \infty.
+$$
+在$c=1$时，这种参数化是稳定和nontrivial的，由<a href="#thm1"></a>,<a href="#thm2"></a> 可以检查得到。那么我们得到 $r=1/2> 0$，因此通过<a href="#cor1"></a>，这个参数化在 kernel regime 且没有得到特征学习。我们可以从 <a href="#eq12"></a> 得到：
+$$
+\bar{h}_1-\bar{h}=O(n^{1-c})V^\top =O(1)V^\top
+$$
+其中大小为 $O(n^{-1/2})$由于$V$的大小，因此就没有特征学习(至少在第一步)。最后，从<a href="eq13"></a> 由于$VV^\top\rightarrow 1$ 且 $n^{-c}h^\top h=n^{-1}h^\top h\rightarrow \|\xi\|^2$,我们得到
+$$
+f_1-f\rightarrow -\chi K(\xi,\xi)\stackrel{\text{def}}{=}-\chi \|\xi\|^2,
+$$
+即 $f$ 通过核梯度下降来演化。我们的推导仅仅展示了展示了SGD的第一步，但是同理可证SGD的所有步骤都能得到相同的结论。
+
+我们把更一般的情形总结如下，这从 <a href="#thm1"></a> 和 <a href="#cor1"></a> 可以自然得到。
+
+```theorem Kernel Regime
+一个$L$隐藏层的MLP在*标准参数化*下(<a href="tab1"></a>)可以在只允许 SGD 学习率为 $O(1/n)$，如果我们需要 $\lim_{n\rightarrow \infty}\mathbb{E} f_t(\xi)^2<\infty$ 对任意的训练路径，时间$t$，和输入$\xi$。在这种情形下，这在核regime，且没有特征学习。
+```
+
+
+# Maximal Update Parametrization
+正如之前的章节所示，标准的参数化在不使 logits 爆炸的前提下得到特征学习。这里我们提出对标准参数化进行简单的修改来使得在保持稳定性的同时可以 1) 能够 feature learning, 这只需要将 logits 除以 $\sqrt{n}$ 且使用 $\Theta(1)$ 的学习率即可，即，设置 $a_{L+1}=1/2,c=0$ 2) 允许每一层都有 feature learning,我们应当进一步设置 $a_1=-1/2,b_1=1/2$。我们将会看到这意味着我们在不导致logits或激活值爆炸的前提下，尽可能更新每个权重矩阵，因此，我们称之为 Maximal Update Parametrization (MUP, $\mu$ P)。
+
+## Dividing Logits by $\sqrt{n}$
+例如，在2层隐藏层的线性MLP例子中，网络将会计算
+```equation
+$$ f(\xi)=\frac{1}{\sqrt{n}} v \bar{h}(\xi), \quad \bar{h}(\xi)=W h(\xi), \quad h(\xi)=U \xi $$
+```
+其中 $U_{\alpha\beta}\sim\mathcal{N}(0,1)$和$W_{\alpha\beta},v_{\alpha\beta}\sim\mathcal{N}(0,1/n)$ 是训练参数。比起 <a href="#eq10"></a>，$h(\xi),\bar{h}(\xi)$保持一致；只有logits$f(\xi)$是缩放的。再一次，为了简化记号，我们简写$\bullet=\bullet_0$并抑制对$\xi$的显示依赖。这有两个后果
+
+### Logites at Initialization Converge to $0$
+由于$f$有着$\Theta(1/n)$的方差 （比起MLP在SP初始化的GP极限）
+
+### $\Theta(1)$ Learning Rate and Feature Learning
+尽管$f\rightarrow 0$，损失的导数 $\chi=\mathcal{L}'(f,y)$保持$\Theta(1)$若$y\neq 0$。当我们重新做 <a href="#eq12"></a> 的计算，我们得到
+```equation
+$$ \begin{aligned} \bar{h}_{1} & =\bar{h}-n^{-c-1 / 2} \chi v^{\top} h^{\top} h=\bar{h}-\Theta\left(n^{-c+1 / 2}\right) v^{\top} \\ f_{1} & =f-n^{-c-1} \chi v v^{\top} h^{\top} h=f-\Theta\left(n^{-c}\right) .\end{aligned} $$
+```
+由于 $v$ 有着大小 $\Theta(n^{-1/2})$，我们发现$\bar{h}$和$f$都改变$\Theta(1)$若$c=0$(即学习率是$\Theta(1)$)。这直接揭示了1步SGD以后的特征学习。对于更一般的MLPs，我们将会检查 $a_{L+1}=1/2,c=0$，并因此得到 <a href="#thm4"></a>。
+
+### Kernel Behavior or Lack Thereof
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

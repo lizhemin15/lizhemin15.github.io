@@ -5,6 +5,7 @@ tags: ["Personal", "GitHub Pages", "Cursor", "Welcome"]
 keywords: ["GitHub Pages", "Cursor IDE", "Personal Website", "Developer Tools"]
 excerpt: "Today marks the launch of my personal pages website, built entirely using Cursor IDE. Join me on this journey of sharing knowledge and experiences."
 visible: true
+pinned: true
 ---
 
 # Welcome to My Personal Pages - Built with Cursor

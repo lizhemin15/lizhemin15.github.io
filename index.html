@@ -499,39 +499,96 @@
              text-overflow: ellipsis;
          }
 
-         /* Table tooltip styles */
-         .table-tooltip {
-             position: fixed;
-             background: rgba(45, 55, 72, 0.95);
-             color: white;
-             padding: 15px;
-             border-radius: 8px;
-             font-size: 14px;
-             z-index: 10000;
-             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-             backdrop-filter: blur(10px);
-             -webkit-backdrop-filter: blur(10px);
-             border: 1px solid rgba(255,255,255,0.1);
-             max-width: 600px;
-             min-width: 200px;
-             pointer-events: none;
-             opacity: 0;
-             transform: translateY(10px);
-             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-             word-wrap: break-word;
-             overflow-wrap: break-word;
-         }
+                 /* Table tooltip styles */
+        .table-tooltip {
+            position: fixed;
+            background: rgba(45, 55, 72, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 600px;
+            min-width: 200px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Tooltip中的表格样式 */
+        .table-tooltip table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .table-tooltip table th,
+        .table-tooltip table td {
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            text-align: left;
+            color: white;
+        }
+
+        .table-tooltip table th {
+            background-color: rgba(255,255,255,0.1);
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .table-tooltip table tr:nth-child(even) {
+            background-color: rgba(255,255,255,0.03);
+        }
+
+        .table-tooltip table tr:hover {
+            background-color: rgba(255,255,255,0.08);
+        }
 
          .table-tooltip.show {
              opacity: 1;
              transform: translateY(0);
          }
 
-         /* Dark mode support for table tooltip */
-         [data-theme="dark"] .table-tooltip {
-             background: rgba(26, 32, 44, 0.95);
-             border: 1px solid rgba(255,255,255,0.2);
-         }
+                 /* Dark mode support for table tooltip */
+        [data-theme="dark"] .table-tooltip {
+            background: rgba(26, 32, 44, 0.95);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* 暗色模式下tooltip中的表格样式 */
+        [data-theme="dark"] .table-tooltip table {
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.02);
+        }
+
+        [data-theme="dark"] .table-tooltip table th,
+        [data-theme="dark"] .table-tooltip table td {
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #e8e8e8;
+        }
+
+        [data-theme="dark"] .table-tooltip table th {
+            background-color: rgba(255,255,255,0.05);
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        [data-theme="dark"] .table-tooltip table tr:nth-child(even) {
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        [data-theme="dark"] .table-tooltip table tr:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
 
          /* Figure container styles */
          .figure-container {
@@ -1149,6 +1206,141 @@
              border: 1px solid rgba(255,255,255,0.2);
          }
 
+         /* 博客引用预览样式 */
+         .blog-reference-link {
+             position: relative;
+             color: var(--accent-color);
+             text-decoration: none;
+             border-bottom: 1px dashed var(--accent-color);
+             transition: all 0.3s ease;
+         }
+
+         .blog-reference-link:hover {
+             color: var(--primary-color);
+             border-bottom-color: var(--primary-color);
+             text-decoration: none;
+         }
+
+         .blog-preview-tooltip {
+             position: fixed;
+             background: rgba(248, 249, 250, 0.95);
+             color: var(--text-color);
+             border: 1px solid var(--accent-color);
+             border-radius: 12px;
+             box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+             z-index: 10001;
+             width: 320px;
+             max-width: 90vw;
+             font-size: 0.9rem;
+             line-height: 1.5;
+             backdrop-filter: blur(16px);
+             -webkit-backdrop-filter: blur(16px);
+             display: none;
+             pointer-events: none;
+             opacity: 0;
+             transform: translateY(-10px);
+             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         }
+
+         .blog-preview-tooltip[style*="display: block"] {
+             opacity: 1;
+             transform: translateY(0);
+         }
+
+         .blog-preview-header {
+             padding: 16px 16px 12px 16px;
+             border-bottom: 1px solid rgba(52, 152, 219, 0.1);
+         }
+
+         .blog-preview-title {
+             font-size: 1.1rem;
+             font-weight: 600;
+             margin: 0 0 8px 0;
+             color: var(--primary-color);
+             line-height: 1.3;
+         }
+
+         .blog-preview-meta {
+             display: flex;
+             flex-wrap: wrap;
+             gap: 8px;
+             align-items: center;
+         }
+
+         .blog-preview-date {
+             color: var(--text-color);
+             opacity: 0.7;
+             font-size: 0.85rem;
+             display: flex;
+             align-items: center;
+             gap: 4px;
+         }
+
+         .preview-tag {
+             background: var(--accent-color);
+             color: white;
+             padding: 2px 8px;
+             border-radius: 12px;
+             font-size: 0.75rem;
+             font-weight: 500;
+         }
+
+         .blog-preview-content {
+             padding: 12px 16px;
+         }
+
+         .blog-preview-excerpt {
+             margin: 0;
+             color: var(--text-color);
+             opacity: 0.8;
+             line-height: 1.5;
+             font-size: 0.9rem;
+         }
+
+         .blog-preview-footer {
+             padding: 8px 16px 12px 16px;
+             text-align: center;
+             border-top: 1px solid rgba(52, 152, 219, 0.1);
+         }
+
+         .blog-preview-loading,
+         .blog-preview-error {
+             padding: 16px;
+             text-align: center;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             gap: 8px;
+             color: var(--text-color);
+         }
+
+         .blog-preview-error {
+             color: #dc3545;
+         }
+
+         .blog-preview-loading i {
+             animation: spin 1s linear infinite;
+         }
+
+         @keyframes spin {
+             from { transform: rotate(0deg); }
+             to { transform: rotate(360deg); }
+         }
+
+         /* 深色模式下的博客预览样式 */
+         [data-theme="dark"] .blog-preview-tooltip {
+             background: rgba(26, 32, 44, 0.95);
+             border-color: var(--dark-accent-color);
+         }
+
+         [data-theme="dark"] .blog-preview-header {
+             border-bottom-color: rgba(255, 255, 255, 0.1);
+         }
+
+         [data-theme="dark"] .blog-preview-footer {
+             border-top-color: rgba(255, 255, 255, 0.1);
+         }
+
         .markdown-content ul, .markdown-content ol {
             margin: 20px 0;
             padding-left: 30px;
@@ -1723,6 +1915,41 @@
              transform: translateX(5px);
          }
 
+         /* Pinned post styles */
+         .pinned-post {
+             border: 2px solid var(--warning-color);
+             background: linear-gradient(135deg, rgba(243, 156, 18, 0.05), rgba(243, 156, 18, 0.02));
+             position: relative;
+         }
+
+         .pinned-post::before {
+             background: linear-gradient(90deg, var(--warning-color), #ff9f43, #ffdb4a);
+         }
+
+         .pinned-icon {
+             color: var(--warning-color);
+             font-size: 1rem;
+             margin-left: 8px;
+             animation: pin-pulse 2s ease-in-out infinite;
+         }
+
+         @keyframes pin-pulse {
+             0%, 100% {
+                 transform: rotate(0deg) scale(1);
+                 opacity: 0.8;
+             }
+             50% {
+                 transform: rotate(15deg) scale(1.1);
+                 opacity: 1;
+             }
+         }
+
+         .pinned-post:hover {
+             transform: translateY(-8px) scale(1.025);
+             box-shadow: 0 12px 32px rgba(243, 156, 18, 0.25), 0 2px 8px rgba(0,0,0,0.08);
+             border-color: var(--warning-color);
+         }
+
          .search-results {
              background: rgba(52, 152, 219, 0.1);
              padding: 10px 15px;
@@ -2115,6 +2342,25 @@
 
         [data-theme="dark"] .blog-card:hover {
             box-shadow: 0 12px 32px rgba(15, 52, 96, 0.3), 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Dark theme pinned post styles */
+        [data-theme="dark"] .pinned-post {
+            border-color: #ff9f43;
+            background: linear-gradient(135deg, rgba(255, 159, 67, 0.08), rgba(255, 159, 67, 0.03));
+        }
+
+        [data-theme="dark"] .pinned-post::before {
+            background: linear-gradient(90deg, #ff9f43, #ffdb4a, #ffcc02);
+        }
+
+        [data-theme="dark"] .pinned-icon {
+            color: #ff9f43;
+        }
+
+        [data-theme="dark"] .pinned-post:hover {
+            box-shadow: 0 12px 32px rgba(255, 159, 67, 0.25), 0 2px 8px rgba(0,0,0,0.2);
+            border-color: #ff9f43;
         }
 
         [data-theme="dark"] .search-section {
@@ -3401,7 +3647,7 @@
     <aside class="sidebar" id="sidebar">
         <!-- Profile section -->
         <div class="profile-section">
-            <img id="profile-avatar" src="https://via.placeholder.com/150" alt="Profile Photo" class="profile-photo">
+            <img id="profile-avatar" src="src/idphoto.jpeg" alt="Profile Photo" class="profile-photo">
             <div id="profile-name" class="profile-name">Loading...</div>
             <div id="profile-title" class="profile-title">Loading...</div>
             <div id="social-links" class="social-links">
@@ -4060,6 +4306,9 @@
                 // 自动填充空的链接标签
                 autoFillEmptyLinks();
                 
+                // 设置博客引用预览功能
+                setupBlogReferencePreview();
+                
                 // Update page title
                 const pageTitle = document.getElementById('page-title');
                 if (pageTitle && siteConfig.site?.title) {
@@ -4563,7 +4812,7 @@
             content = content.replace(/```table(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, tableContent) {
                 console.log('处理table代码块占位符...');
                 tableIndex++;
-                const tableId = `table${tableIndex}`;
+                const tableId = `tab${tableIndex}`;
                 const tableTitle = title ? 
                     `Table ${tableIndex}: ${title.trim()}` : 
                     `Table ${tableIndex}: Data Comparison`;
@@ -4898,7 +5147,7 @@
                     });
                     
                     // 创建带容器的表格HTML，添加滚动容器
-                    const tableHtml = `<div id="${tableBlock.tableId}" class="table-container" data-table-number="${tableBlock.tableId.replace('table', '')}" data-table-title="${tableBlock.tableTitle}">
+                    const tableHtml = `<div id="${tableBlock.tableId}" class="table-container" data-table-number="${tableBlock.tableId.replace('tab', '')}" data-table-title="${tableBlock.tableTitle}">
                         <div class="table-scroll-wrapper">
                             ${renderedTable}
                         </div>
@@ -5458,16 +5707,16 @@
             });
 
             // Find all table links (links that point to table IDs)
-            const tableLinks = document.querySelectorAll('a[href^="#table"]');
+            const tableLinks = document.querySelectorAll('a[href^="#table"], a[href^="#tab"], a[href^="table"], a[href^="tab"]');
             
             tableLinks.forEach(function(link) {
                 const href = link.getAttribute('href');
-                const tableId = href.substring(1); // Remove the # symbol
+                const tableId = href.startsWith('#') ? href.substring(1) : href; // Remove the # symbol if present
                 
                 // Find the corresponding table element
                 const tableElement = document.getElementById(tableId);
                 
-                if (tableElement && tableElement.classList.contains('table-container')) {
+                if (tableElement && (tableElement.classList.contains('table-container') || tableElement.querySelector('table'))) {
                     // Add hover events
                     link.addEventListener('mouseenter', function(e) {
                         showTableTooltip(e, tableElement);
@@ -5942,6 +6191,76 @@
             }
         }
 
+        // 显示简单的tooltip（用于表格、公式、定理等引用）
+        function showSimpleTooltip(event, targetId) {
+            // 隐藏可能存在的其他tooltip
+            hideSectionTooltip();
+            hideFigureTooltip();
+            hideSimpleTooltip();
+            
+            // 根据targetId类型确定显示内容
+            let tooltipContent = '';
+            if (targetId.startsWith('tab')) {
+                const num = targetId.match(/\d+/)?.[0] || '';
+                tooltipContent = `Table ${num}`;
+            } else if (targetId.startsWith('eq')) {
+                const num = targetId.match(/\d+/)?.[0] || '';
+                tooltipContent = `Equation (${num})`;
+            } else if (targetId.startsWith('thm')) {
+                const num = targetId.match(/\d+/)?.[0] || '';
+                tooltipContent = `Theorem ${num}`;
+            } else if (targetId.startsWith('cor')) {
+                const num = targetId.match(/\d+/)?.[0] || '';
+                tooltipContent = `Corollary ${num}`;
+            } else if (targetId.startsWith('lemma')) {
+                const num = targetId.match(/\d+/)?.[0] || '';
+                tooltipContent = `Lemma ${num}`;
+            } else if (targetId.startsWith('def')) {
+                const num = targetId.match(/\d+/)?.[0] || '';
+                tooltipContent = `Definition ${num}`;
+            } else {
+                tooltipContent = targetId;
+            }
+            
+            // 创建tooltip元素
+            const tooltip = document.createElement('div');
+            tooltip.id = 'simple-tooltip';
+            tooltip.innerHTML = `<strong>${tooltipContent}</strong>`;
+            tooltip.style.cssText = `
+                position: fixed;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-size: 14px;
+                z-index: 1000;
+                pointer-events: none;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                max-width: 300px;
+                word-wrap: break-word;
+            `;
+            
+            // 设置位置
+            const rect = event.target.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+            tooltip.style.top = (rect.top - 35) + 'px';
+            tooltip.style.transform = 'translateX(-50%)';
+            
+            document.body.appendChild(tooltip);
+            
+            console.log('显示简单tooltip:', tooltipContent, 'for:', targetId);
+        }
+
+        // 隐藏简单tooltip
+        function hideSimpleTooltip() {
+            const existingTooltip = document.getElementById('simple-tooltip');
+            if (existingTooltip) {
+                existingTooltip.remove();
+            }
+        }
+
+
+
         // Show Toast notification
         function showToast(message) {
             // Create toast element
@@ -6028,63 +6347,77 @@
                 return;
             }
             
+            // 检查是否应该启用section编号（只对blog页面启用）
+            const shouldEnableSectionNumbering = currentSection === 'blogs' || currentBlogPost !== null;
+            
             // Generate section numbers and unique IDs for headings
             let sectionCounters = { h1: 0, h2: 0, h3: 0, h4: 0, h5: 0, h6: 0 };
             
             headings.forEach((heading, index) => {
                 const level = heading.tagName.toLowerCase();
                 
-                // Reset counters for lower levels when encountering a higher level
-                if (level === 'h1') {
-                    // 重置所有子级别计数器，然后增加h1计数器
-                    sectionCounters.h2 = sectionCounters.h3 = sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
-                    sectionCounters.h1++;
-                } else if (level === 'h2') {
-                    sectionCounters.h3 = sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
-                    sectionCounters.h2++;
-                } else if (level === 'h3') {
-                    sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
-                    sectionCounters.h3++;
-                } else if (level === 'h4') {
-                    sectionCounters.h5 = sectionCounters.h6 = 0;
-                    sectionCounters.h4++;
-                } else if (level === 'h5') {
-                    sectionCounters.h6 = 0;
-                    sectionCounters.h5++;
-                } else if (level === 'h6') {
-                    sectionCounters.h6++;
-                }
-                
-                // Generate section number
                 let sectionNumber = '';
-                if (level === 'h1') {
-                    sectionNumber = sectionCounters.h1.toString();
-                } else if (level === 'h2') {
-                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2;
-                } else if (level === 'h3') {
-                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3;
-                } else if (level === 'h4') {
-                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4;
-                } else if (level === 'h5') {
-                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4 + '.' + sectionCounters.h5;
-                } else if (level === 'h6') {
-                    sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4 + '.' + sectionCounters.h5 + '.' + sectionCounters.h6;
+                let sectionId = '';
+                
+                if (shouldEnableSectionNumbering) {
+                    // Reset counters for lower levels when encountering a higher level
+                    if (level === 'h1') {
+                        // 重置所有子级别计数器，然后增加h1计数器
+                        sectionCounters.h2 = sectionCounters.h3 = sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
+                        sectionCounters.h1++;
+                    } else if (level === 'h2') {
+                        sectionCounters.h3 = sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
+                        sectionCounters.h2++;
+                    } else if (level === 'h3') {
+                        sectionCounters.h4 = sectionCounters.h5 = sectionCounters.h6 = 0;
+                        sectionCounters.h3++;
+                    } else if (level === 'h4') {
+                        sectionCounters.h5 = sectionCounters.h6 = 0;
+                        sectionCounters.h4++;
+                    } else if (level === 'h5') {
+                        sectionCounters.h6 = 0;
+                        sectionCounters.h5++;
+                    } else if (level === 'h6') {
+                        sectionCounters.h6++;
+                    }
+                    
+                    // Generate section number
+                    if (level === 'h1') {
+                        sectionNumber = sectionCounters.h1.toString();
+                    } else if (level === 'h2') {
+                        sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2;
+                    } else if (level === 'h3') {
+                        sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3;
+                    } else if (level === 'h4') {
+                        sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4;
+                    } else if (level === 'h5') {
+                        sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4 + '.' + sectionCounters.h5;
+                    } else if (level === 'h6') {
+                        sectionNumber = sectionCounters.h1 + '.' + sectionCounters.h2 + '.' + sectionCounters.h3 + '.' + sectionCounters.h4 + '.' + sectionCounters.h5 + '.' + sectionCounters.h6;
+                    }
+                    
+                    // Generate section ID - 使用简单格式以匹配引用
+                    sectionId = 'sec' + sectionNumber.replace(/\./g, '-');
+                } else {
+                    // 对于非blog页面，生成简单的ID（基于原始内容或索引）
+                    const text = heading.textContent.trim().toLowerCase();
+                    sectionId = heading.id || text.replace(/[^a-z0-9\u4e00-\u9fff]/g, '') || `heading-${index}`;
                 }
                 
-                // Generate section ID - 使用简单格式以匹配引用
-                const sectionId = 'sec' + sectionNumber.replace(/\./g, '-');
-                
-                // 强制使用我们的section ID，覆盖任何现有的ID
+                // 设置标题ID
                 const oldId = heading.id;
                 heading.id = sectionId;
-                console.log('Generated ID for heading:', heading.textContent.trim(), 'old ID:', oldId, '-> new ID:', sectionId);
+                console.log('Generated ID for heading:', heading.textContent.trim(), 'old ID:', oldId, '-> new ID:', sectionId, 'numbering enabled:', shouldEnableSectionNumbering);
                 
-                // Add section number to heading if it doesn't already have one
-                const originalText = heading.textContent.trim();
-                if (!originalText.match(/^\d+(\.\d+)*\.?\s/)) {
-                    heading.innerHTML = `<span class="section-number">${sectionNumber}</span> ${heading.innerHTML}`;
-                    heading.setAttribute('data-section-number', sectionNumber);
-                    heading.setAttribute('data-section-id', sectionId);
+                // 只对blog页面添加section编号
+                if (shouldEnableSectionNumbering) {
+                    // Add section number to heading if it doesn't already have one
+                    const originalText = heading.textContent.trim();
+                    if (!originalText.match(/^\d+(\.\d+)*\.?\s/)) {
+                        heading.innerHTML = `<span class="section-number">${sectionNumber}</span> ${heading.innerHTML}`;
+                        heading.setAttribute('data-section-number', sectionNumber);
+                        heading.setAttribute('data-section-id', sectionId);
+                    }
                 }
             });
             
@@ -6217,6 +6550,11 @@
             const contentDiv = document.getElementById('content');
             currentSection = section;
             
+            // Reset currentBlogPost when switching to non-blog sections
+            if (section !== 'blogs') {
+                currentBlogPost = null;
+            }
+            
             // Show loading state with enhanced animation
             const loadingText = siteConfig?.pages?.loading_text || 'Loading content...';
             contentDiv.innerHTML = `
@@ -6292,6 +6630,9 @@
                 // 自动填充空的链接标签
                 autoFillEmptyLinks();
                 
+                // 设置博客引用预览功能
+                setupBlogReferencePreview();
+                
                 // Update page title
                 const pageTitle = document.getElementById('page-title');
                 if (pageTitle && siteConfig.site?.title) {
@@ -6366,9 +6707,10 @@
                     }
                 }
                 
-                // Sort by date in descending order (show newest first by default)
-                blogPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
+                // Apply initial sorting with pinned posts first
                 filteredPosts = [...blogPosts];
+                applySorting('date-desc'); // Use the sorting function that handles pinned posts
+                blogPosts = [...filteredPosts]; // Update the main array to maintain consistency
                 
                 console.log(`Successfully loaded ${blogPosts.length} visible blog posts`);
                 
@@ -6547,15 +6889,21 @@
                     ? post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')
                     : '';
                 
+                // Check if post is pinned
+                const isPinned = post.pinned === true || post.pinned === 'true';
+                const pinnedIndicator = isPinned ? '<i class="fas fa-thumbtack pinned-icon" title="置顶文章"></i>' : '';
+                const pinnedClass = isPinned ? 'pinned-post' : '';
+                
                 // Create URL for the blog post
                 const blogURL = `?blog=${encodeURIComponent(post.fileName)}`;
                 
                 return `
-                    <article class="blog-card" onclick="viewBlogPostWithScrollClear('${post.fileName}')">
+                    <article class="blog-card ${pinnedClass}" onclick="viewBlogPostWithScrollClear('${post.fileName}')">
                         <div class="blog-meta">
                             <span class="blog-date">
                                 <i class="fas fa-calendar"></i> ${date}
                             </span>
+                            ${pinnedIndicator}
                             ${tags}
                         </div>
                         <h3 class="blog-title">${post.title || 'Untitled'}</h3>
@@ -6664,23 +7012,30 @@
 
         // Apply sorting logic
         function applySorting(sortOrder) {
-            switch (sortOrder) {
-                case 'date-desc':
-                    filteredPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
-                    break;
-                case 'date-asc':
-                    filteredPosts.sort((a, b) => new Date(a.date || '1970-01-01') - new Date(b.date || '1970-01-01'));
-                    break;
-                case 'title-asc':
-                    filteredPosts.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'en-US'));
-                    break;
-                case 'title-desc':
-                    filteredPosts.sort((a, b) => (b.title || '').localeCompare(a.title || '', 'en-US'));
-                    break;
-                default:
-                    // Default to descending order by time
-                    filteredPosts.sort((a, b) => new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01'));
-            }
+            // Custom sorting with pinned posts first
+            filteredPosts.sort((a, b) => {
+                // First, check pinned status - pinned posts always come first
+                const aPinned = a.pinned === true || a.pinned === 'true';
+                const bPinned = b.pinned === true || b.pinned === 'true';
+                
+                if (aPinned && !bPinned) return -1;
+                if (!aPinned && bPinned) return 1;
+                
+                // If both are pinned or both are not pinned, apply regular sorting
+                switch (sortOrder) {
+                    case 'date-desc':
+                        return new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01');
+                    case 'date-asc':
+                        return new Date(a.date || '1970-01-01') - new Date(b.date || '1970-01-01');
+                    case 'title-asc':
+                        return (a.title || '').localeCompare(b.title || '', 'en-US');
+                    case 'title-desc':
+                        return (b.title || '').localeCompare(a.title || '', 'en-US');
+                    default:
+                        // Default to descending order by time
+                        return new Date(b.date || '1970-01-01') - new Date(a.date || '1970-01-01');
+                }
+            });
         }
 
         // View single blog post
@@ -6801,6 +7156,9 @@
                 
                 // 自动填充空的链接标签
                 autoFillEmptyLinks();
+                
+                // 设置博客引用预览功能
+                setupBlogReferencePreview();
                 
                 // Update page title
                 const pageTitle = document.getElementById('page-title');
@@ -7394,17 +7752,21 @@
                     }
                 }
                 // 检查是否是表格引用链接
-                if (e.target.tagName === 'A' && e.target.getAttribute('href') && e.target.getAttribute('href').startsWith('#table')) {
-                    e.preventDefault();
-                    const id = e.target.getAttribute('href').slice(1);
-                    const el = document.getElementById(id);
-                    if (el) {
-                        console.log('直接滚动到表格:', id);
-                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        el.style.background = 'rgba(52,152,219,0.08)';
-                        setTimeout(() => el.style.background = '', 800);
-                    } else {
-                        console.log('未找到表格元素:', id);
+                if (e.target.tagName === 'A' && e.target.getAttribute('href')) {
+                    const href = e.target.getAttribute('href');
+                    const isTableLink = href.startsWith('#table') || href.startsWith('#tab') || href.startsWith('table') || href.startsWith('tab');
+                    if (isTableLink) {
+                        e.preventDefault();
+                        const id = href.startsWith('#') ? href.slice(1) : href;
+                        const el = document.getElementById(id);
+                        if (el) {
+                            console.log('直接滚动到表格:', id);
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            el.style.background = 'rgba(52,152,219,0.08)';
+                            setTimeout(() => el.style.background = '', 800);
+                        } else {
+                            console.log('未找到表格元素:', id);
+                        }
                     }
                 }
                 // 检查是否是图片引用链接
@@ -7424,6 +7786,133 @@
             });
         }
 
+        // 统一的内部链接点击处理
+        function handleInternalLinkClick(e) {
+            console.log('=== 内部链接点击事件开始 ===');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const href = this.getAttribute('href');
+            const targetId = href.startsWith('#') ? href.substring(1) : href;
+            
+            console.log('检测到内部链接点击:', href, '-> target:', targetId);
+            console.log('点击的元素:', this);
+            
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                console.log('找到目标元素，准备滚动到:', targetId, targetElement);
+                console.log('目标元素位置:', targetElement.getBoundingClientRect());
+                
+                try {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    
+                    // 高亮目标元素
+                    targetElement.style.background = 'rgba(52,152,219,0.08)';
+                    targetElement.style.borderRadius = '6px';
+                    targetElement.style.padding = '0.2em 0.5em';
+                    targetElement.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        targetElement.style.background = '';
+                        targetElement.style.borderRadius = '';
+                        targetElement.style.padding = '';
+                        console.log('高亮效果已清除');
+                    }, 1500);
+                    
+                    console.log('滚动和高亮效果已应用');
+                } catch (error) {
+                    console.error('滚动或高亮时出错:', error);
+                }
+            } else {
+                console.warn('未找到目标元素:', targetId);
+                // 显示所有可用的ID供调试
+                const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
+                console.log('页面中所有可用的ID:', allIds.filter(id => id.includes(targetId) || targetId.includes(id.substring(0, 3))));
+            }
+            console.log('=== 内部链接点击事件结束 ===');
+        }
+        
+        // 统一的内部链接鼠标悬停处理
+        function handleInternalLinkMouseEnter(e) {
+            const href = this.getAttribute('href');
+            const targetId = href.startsWith('#') ? href.substring(1) : href;
+            
+            console.log('鼠标悬停在链接上:', href, '-> target:', targetId);
+            
+            try {
+                // 根据不同类型显示不同的tooltip
+                if (targetId.startsWith('sec')) {
+                    if (typeof showSectionTooltip === 'function') {
+                        showSectionTooltip(e, targetId);
+                    } else {
+                        console.warn('showSectionTooltip function not available');
+                    }
+                } else if (targetId.startsWith('fig')) {
+                    if (typeof showFigureTooltip === 'function') {
+                        const targetElement = document.getElementById(targetId);
+                        showFigureTooltip(e, targetElement);
+                    } else {
+                        console.warn('showFigureTooltip function not available');
+                    }
+                } else {
+                    // 为其他类型的引用显示简单的tooltip
+                    showSimpleTooltip(e, targetId);
+                }
+            } catch (error) {
+                console.error('显示tooltip时出错:', error);
+            }
+        }
+        
+        // 统一的内部链接鼠标离开处理
+        function handleInternalLinkMouseLeave(e) {
+            hideSectionTooltip();
+            hideFigureTooltip();
+            hideSimpleTooltip();
+            hideTableTooltip();
+        }
+
+        // 只为章节链接绑定事件
+        function bindAllInternalLinkEvents() {
+            console.log('=== 开始绑定章节链接事件 ===');
+            
+            // 只查找章节链接，不干扰表格、公式、图片的原有机制
+            const sectionLinks = document.querySelectorAll('a[href^="#sec"], a[href^="sec"]');
+            console.log('找到章节链接数量:', sectionLinks.length);
+            
+            let boundCount = 0;
+            
+            sectionLinks.forEach((link, index) => {
+                const href = link.getAttribute('href');
+                if (!href || href === '#') {
+                    console.log(`跳过无效链接 ${index}:`, href);
+                    return;
+                }
+                
+                // 获取目标ID（处理带#和不带#的情况）
+                const targetId = href.startsWith('#') ? href.substring(1) : href;
+                
+                console.log(`绑定事件到章节链接 ${index}:`, href, '-> target:', targetId, '文本:', link.textContent.trim());
+                
+                // 移除可能存在的旧事件监听器
+                link.removeEventListener('click', handleInternalLinkClick);
+                link.removeEventListener('mouseenter', handleInternalLinkMouseEnter);
+                link.removeEventListener('mouseleave', handleInternalLinkMouseLeave);
+                
+                // 绑定新的事件监听器
+                link.addEventListener('click', handleInternalLinkClick);
+                link.addEventListener('mouseenter', handleInternalLinkMouseEnter);
+                link.addEventListener('mouseleave', handleInternalLinkMouseLeave);
+                
+                // 添加一个样式类来标识已绑定的链接
+                link.classList.add('internal-link-bound');
+                
+                boundCount++;
+            });
+            
+            console.log(`成功绑定 ${boundCount} 个章节链接的事件`);
+            console.log('=== 章节链接事件绑定完成 ===');
+        }
+
         // 处理章节引用链接的全局事件处理器
         let sectionLinksHandlerAdded = false;
         
@@ -7438,97 +7927,60 @@
                 link.parentNode.replaceChild(newLink, link);
             });
             
-            // 移除原来的全局点击事件处理，现在在bindSectionLinkEvents中处理
-
-            // 为新的链接绑定所有事件（点击和tooltip）
-            function bindSectionLinkEvents() {
-                const sectionLinks = document.querySelectorAll('a[href^="#sec"]');
-                console.log('Found section links to bind:', sectionLinks.length);
-                
-                sectionLinks.forEach(link => {
-                    console.log('Binding events to link:', link.href);
-                    
-                    // 点击事件
-                    link.addEventListener('click', function(e) {
-                        console.log('检测到章节链接点击:', this.getAttribute('href'));
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        const id = this.getAttribute('href').slice(1);
-                        console.log('查找章节ID:', id);
-                        
-                        const el = document.getElementById(id);
-                        if (el) {
-                            console.log('找到章节元素，准备滚动到:', id, el);
-                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            // 高亮章节标题
-                            el.style.background = 'rgba(52,152,219,0.08)';
-                            el.style.borderRadius = '6px';
-                            el.style.padding = '0.2em 0.5em';
-                            el.style.transition = 'all 0.3s ease';
-                            setTimeout(() => {
-                                el.style.background = '';
-                                el.style.borderRadius = '';
-                                el.style.padding = '';
-                            }, 1500);
-                        } else {
-                            console.log('未找到章节元素:', id);
-                        }
-                    });
-                    
-                    // Tooltip事件
-                    link.addEventListener('mouseenter', function(e) {
-                        const id = this.getAttribute('href').slice(1);
-                        console.log('mouseenter on section link:', id);
-                        showSectionTooltip(e, id);
-                    });
-                    
-                    link.addEventListener('mouseleave', function(e) {
-                        console.log('mouseleave on section link');
-                        hideSectionTooltip();
-                    });
-                });
-            }
+            // 立即执行一次绑定
+            bindAllInternalLinkEvents();
             
-            // 立即执行一次
-            bindSectionLinkEvents();
-            
-            // 清理工作完成，现在所有事件都在bindSectionLinkEvents中统一处理
+            // 清理工作完成，现在所有事件都在bindAllInternalLinkEvents中统一处理
         }
 
         // 自动填充空的链接标签
         function autoFillEmptyLinks() {
             console.log('开始自动填充空的链接标签');
             
-            // 查找所有空的链接标签 <a href="#xxx"></a>
-            const emptyLinks = document.querySelectorAll('a[href^="#"]:empty');
-            console.log(`发现 ${emptyLinks.length} 个空链接标签`);
+            // 查找所有空的链接标签，包括 <a href="#xxx"></a> 和 <a href="xxx"></a>
+            const emptyLinksWithHash = document.querySelectorAll('a[href^="#"]:empty');
+            const emptyLinksWithoutHash = document.querySelectorAll('a[href]:empty:not([href^="#"]):not([href^="http"]):not([href^="mailto"]):not([href^="tel"])');
             
-            if (emptyLinks.length === 0) {
+            const allEmptyLinks = [...emptyLinksWithHash, ...emptyLinksWithoutHash];
+            console.log(`发现 ${allEmptyLinks.length} 个空链接标签`);
+            
+            if (allEmptyLinks.length === 0) {
                 return;
             }
             
             // 建立章节和内容映射
             const contentMap = buildContentMap();
             
-            emptyLinks.forEach(link => {
+            let hasFilledLinks = false;
+            
+            allEmptyLinks.forEach(link => {
                 const href = link.getAttribute('href');
                 if (!href || href === '#') return;
                 
-                const id = href.substring(1); // 移除 # 号
-                console.log(`处理空链接: ${href}`);
+                // 处理带#和不带#的情况
+                const id = href.startsWith('#') ? href.substring(1) : href;
+                console.log(`处理空链接: ${href} -> ID: ${id}`);
                 
                 // 查找对应的内容
                 const content = findContentForId(id, contentMap);
                 if (content) {
                     link.textContent = content;
                     console.log(`已填充链接 ${href} 内容: ${content}`);
+                    hasFilledLinks = true;
                 } else {
                     // 如果找不到内容，添加一个占位符
                     link.innerHTML = `<span style="color: #dc3545; font-style: italic;"><!-- 链接 ${id} 待填充 --></span>`;
                     console.warn(`未找到 ${href} 对应的内容`);
                 }
             });
+            
+            // 总是重新绑定所有内部链接的事件，确保功能正常
+            if (typeof bindAllInternalLinkEvents === 'function') {
+                console.log('绑定所有内部链接事件...');
+                bindAllInternalLinkEvents();
+            } else {
+                console.error('bindAllInternalLinkEvents function not found!');
+            }
         }
         
         // 建立内容映射表
@@ -7573,7 +8025,7 @@
             const specialMappings = {
                 'fig1': 'Fig. 1', 'fig2': 'Fig. 2', 'fig3': 'Fig. 3', 'fig4': 'Fig. 4', 'fig5': 'Fig. 5',
                 'fig6': 'Fig. 6', 'fig7': 'Fig. 7', 'fig8': 'Fig. 8', 'fig9': 'Fig. 9', 'fig10': 'Fig. 10',
-                'table1': 'Table 1', 'table2': 'Table 2', 'table3': 'Table 3', 'table4': 'Table 4', 'table5': 'Table 5',
+                'tab1': 'Table 1', 'tab2': 'Table 2', 'tab3': 'Table 3', 'tab4': 'Table 4', 'tab5': 'Table 5',
                 'eq1': 'Eq. (1)', 'eq2': 'Eq. (2)', 'eq3': 'Eq. (3)', 'eq4': 'Eq. (4)', 'eq5': 'Eq. (5)',
                 'eq6': 'Eq. (6)', 'eq7': 'Eq. (7)', 'eq8': 'Eq. (8)', 'eq9': 'Eq. (9)', 'eq10': 'Eq. (10)',
                 'thm1': 'Theorem 1', 'thm2': 'Theorem 2', 'thm3': 'Theorem 3', 'thm4': 'Theorem 4', 'thm5': 'Theorem 5',
@@ -7634,12 +8086,230 @@
                 return `Sec. ${matches[1]}.${matches[2]}.${matches[3]}`;
             }
             
+            // 公式引用：eq12 对应 "Eq. (12)"
+            if (id.match(/^eq(\d+)$/)) {
+                const num = id.match(/^eq(\d+)$/)[1];
+                return `Eq. (${num})`;
+            }
+            
+            // 图片引用：fig12 对应 "Fig. 12"
+            if (id.match(/^fig(\d+)$/)) {
+                const num = id.match(/^fig(\d+)$/)[1];
+                return `Fig. ${num}`;
+            }
+            
+            // 表格引用：tab12 对应 "Table 12"
+            if (id.match(/^tab(\d+)$/)) {
+                const num = id.match(/^tab(\d+)$/)[1];
+                return `Table ${num}`;
+            }
+            
+            // 定理引用：thm12 对应 "Theorem 12"
+            if (id.match(/^thm(\d+)$/)) {
+                const num = id.match(/^thm(\d+)$/)[1];
+                return `Theorem ${num}`;
+            }
+            
+            // 推论引用：cor12 对应 "Corollary 12"
+            if (id.match(/^cor(\d+)$/)) {
+                const num = id.match(/^cor(\d+)$/)[1];
+                return `Corollary ${num}`;
+            }
+            
+            // 引理引用：lemma12 对应 "Lemma 12"
+            if (id.match(/^lemma(\d+)$/)) {
+                const num = id.match(/^lemma(\d+)$/)[1];
+                return `Lemma ${num}`;
+            }
+            
+            // 定义引用：def12 对应 "Definition 12"
+            if (id.match(/^def(\d+)$/)) {
+                const num = id.match(/^def(\d+)$/)[1];
+                return `Definition ${num}`;
+            }
+            
+            // 假设引用：assumption12 对应 "Assumption 12"
+            if (id.match(/^assumption(\d+)$/)) {
+                const num = id.match(/^assumption(\d+)$/)[1];
+                return `Assumption ${num}`;
+            }
+            
+            // 备注引用：remark12 对应 "Remark 12"
+            if (id.match(/^remark(\d+)$/)) {
+                const num = id.match(/^remark(\d+)$/)[1];
+                return `Remark ${num}`;
+            }
+            
             // 然后检查直接映射
             if (contentMap.has(id)) {
                 return contentMap.get(id);
             }
             
             return null;
+        }
+
+        // 博客引用预览功能
+        function setupBlogReferencePreview() {
+            console.log('设置博客引用预览功能');
+            
+            // 查找所有博客引用链接 (?blog=xxx.md)
+            const blogLinks = document.querySelectorAll('a[href*="?blog="]');
+            console.log(`发现 ${blogLinks.length} 个博客引用链接`);
+            
+            blogLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                const blogMatch = href.match(/\?blog=([^&]+)/);
+                
+                if (blogMatch) {
+                    const fileName = decodeURIComponent(blogMatch[1]);
+                    console.log(`为博客链接添加预览功能: ${fileName}`);
+                    
+                    // 添加悬停事件
+                    link.addEventListener('mouseenter', (e) => showBlogPreview(e, fileName));
+                    link.addEventListener('mouseleave', hideBlogPreview);
+                    link.addEventListener('mousemove', updateBlogPreviewPosition);
+                    
+                    // 添加样式类
+                    link.classList.add('blog-reference-link');
+                }
+            });
+        }
+
+        // 显示博客预览
+        async function showBlogPreview(event, fileName) {
+            // 检查是否已经存在预览框
+            let previewBox = document.getElementById('blog-preview-tooltip');
+            if (!previewBox) {
+                previewBox = createBlogPreviewBox();
+            }
+            
+            // 显示加载状态
+            previewBox.innerHTML = `
+                <div class="blog-preview-loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>加载中...</span>
+                </div>
+            `;
+            previewBox.style.display = 'block';
+            updatePreviewPosition(event, previewBox);
+            
+            try {
+                // 尝试从已加载的博客中找到
+                let blogPost = null;
+                if (blogPosts && blogPosts.length > 0) {
+                    blogPost = blogPosts.find(post => post.fileName === fileName);
+                }
+                
+                // 如果没找到，尝试加载
+                if (!blogPost) {
+                    const response = await fetch(`./blogs/${fileName}`);
+                    if (response.ok) {
+                        const markdownText = await response.text();
+                        blogPost = parseBlogPost(markdownText, fileName);
+                    }
+                }
+                
+                if (blogPost) {
+                    const date = formatDate(blogPost.date);
+                    const tags = blogPost.tags && Array.isArray(blogPost.tags) 
+                        ? blogPost.tags.map(tag => `<span class="preview-tag">${tag}</span>`).join('')
+                        : '';
+                    
+                    previewBox.innerHTML = `
+                        <div class="blog-preview-header">
+                            <h4 class="blog-preview-title">${blogPost.title || '无标题'}</h4>
+                            <div class="blog-preview-meta">
+                                <span class="blog-preview-date">
+                                    <i class="fas fa-calendar"></i> ${date}
+                                </span>
+                                ${tags}
+                            </div>
+                        </div>
+                        <div class="blog-preview-content">
+                            <p class="blog-preview-excerpt">${blogPost.excerpt || '暂无摘要'}</p>
+                        </div>
+                        <div class="blog-preview-footer">
+                            <small class="text-muted">点击查看完整文章</small>
+                        </div>
+                    `;
+                } else {
+                    previewBox.innerHTML = `
+                        <div class="blog-preview-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>无法加载博客预览</span>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('加载博客预览失败:', error);
+                previewBox.innerHTML = `
+                    <div class="blog-preview-error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>加载失败</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 隐藏博客预览
+        function hideBlogPreview() {
+            const previewBox = document.getElementById('blog-preview-tooltip');
+            if (previewBox) {
+                previewBox.style.display = 'none';
+            }
+        }
+
+        // 更新博客预览位置
+        function updateBlogPreviewPosition(event) {
+            const previewBox = document.getElementById('blog-preview-tooltip');
+            if (previewBox && previewBox.style.display !== 'none') {
+                updatePreviewPosition(event, previewBox);
+            }
+        }
+
+        // 创建博客预览框
+        function createBlogPreviewBox() {
+            const previewBox = document.createElement('div');
+            previewBox.id = 'blog-preview-tooltip';
+            previewBox.className = 'blog-preview-tooltip';
+            document.body.appendChild(previewBox);
+            return previewBox;
+        }
+
+        // 更新预览框位置
+        function updatePreviewPosition(event, previewBox) {
+            const x = event.clientX;
+            const y = event.clientY;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const boxWidth = 320;
+            const boxHeight = previewBox.offsetHeight || 200;
+            
+            let left = x + 15;
+            let top = y + 15;
+            
+            // 防止超出右边界
+            if (left + boxWidth > windowWidth) {
+                left = x - boxWidth - 15;
+            }
+            
+            // 防止超出下边界
+            if (top + boxHeight > windowHeight) {
+                top = y - boxHeight - 15;
+            }
+            
+            // 防止超出左边界
+            if (left < 10) {
+                left = 10;
+            }
+            
+            // 防止超出上边界
+            if (top < 10) {
+                top = 10;
+            }
+            
+            previewBox.style.left = left + 'px';
+            previewBox.style.top = top + 'px';
         }
 
         // 全局hash跳转修正，确保异步渲染后锚点跳转生效

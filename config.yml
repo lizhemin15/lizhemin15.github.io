@@ -9,7 +9,7 @@ site:
 # Personal Information
 profile:
   name: "Zhemin Li (李哲民)"
-  avatar: "./src/idphoto.jpeg"
+  avatar: "./src/idphoto.jpg"
   title: 
     - "PhD Student at National University of Defense Technology"
     - "Computational Mathematics"
