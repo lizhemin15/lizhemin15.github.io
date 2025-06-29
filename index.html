@@ -8033,6 +8033,7 @@
                 'lemma1': 'Lemma 1', 'lemma2': 'Lemma 2', 'lemma3': 'Lemma 3',
                 'def1': 'Definition 1', 'def2': 'Definition 2', 'def3': 'Definition 3',
                 'assumption1': 'Assumption 1', 'assumption2': 'Assumption 2', 'assumption3': 'Assumption 3',
+                'asmp1': 'Assumption 1', 'asmp2': 'Assumption 2', 'asmp3': 'Assumption 3', 'asmp4': 'Assumption 4', 'asmp5': 'Assumption 5',
                 'remark1': 'Remark 1', 'remark2': 'Remark 2', 'remark3': 'Remark 3'
             };
             
@@ -8131,6 +8132,12 @@
             // 假设引用：assumption12 对应 "Assumption 12"
             if (id.match(/^assumption(\d+)$/)) {
                 const num = id.match(/^assumption(\d+)$/)[1];
+                return `Assumption ${num}`;
+            }
+            
+            // 假设引用（简写）：asmp12 对应 "Assumption 12"
+            if (id.match(/^asmp(\d+)$/)) {
+                const num = id.match(/^asmp(\d+)$/)[1];
                 return `Assumption ${num}`;
             }
             

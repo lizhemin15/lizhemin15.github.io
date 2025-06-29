@@ -418,7 +418,15 @@ $$ \begin{aligned} \bar{h}_{1} & =\bar{h}-n^{-c-1 / 2} \chi v^{\top} h^{\top} h=
 由于 $v$ 有着大小 $\Theta(n^{-1/2})$，我们发现$\bar{h}$和$f$都改变$\Theta(1)$若$c=0$(即学习率是$\Theta(1)$)。这直接揭示了1步SGD以后的特征学习。对于更一般的MLPs，我们将会检查 $a_{L+1}=1/2,c=0$，并因此得到 <a href="#thm4"></a>。
 
 ### Kernel Behavior or Lack Thereof
+这里我们举的是只训练线性MLP的中间层的例子，实际上在 kernel regime。这和<a href="#cor1"></a> 并不冲突，然而，其有<a href="#asmp1"></a>。如果，举个例子，我们有$tanh$非线性，那么很容易看到$\mu P$ SGD的动力学不会有核极限：如果是，那么 $f_1-f$是在学习率为$\eta$的情况下线性的。但是注意到$\bar{h}_1-\bar{h}$是$\Theta(1)$的随着$n\rightarrow \infty$且在$\eta$是线性的，正如 <a href="#eq15"></a>类似导出的。因为 $tanh$ 是有界的，这不可能发生。与SP或NTP相对的，其中$\bar{h}_1-\bar{h}$是$\Theta(1/\sqrt{n})$且因此“位于$tanh$的线性区域”，允许通过$\eta$进行完美的缩放。
 
+此外，就算是在一个线性的MLP，如果我们训练中间的层和最后一层，那么直观上，权重的动力学就会变成二次的，因此不会有该极限。与SP或NTP不同，它们由于学习率较小且采用一阶泰勒展开启发式方法，抑制了这些高阶交互作用。
+
+### How is this different from standard parametrization with learning rate $1/\sqrt{n}$?
+如以上所示，logits $f$ 增大了 $\Theta(\sqrt{n})$ 在SP的一步学习率为$\Theta(1/\sqrt{n})$的 SGD 后，但是在我们的参数化下依然是$\Theta(1)$。这两种参数化看着相似的原因是因为在一步，权重得到了相同的更新$\chi=\mathcal{L}'(f,y)$。因此，$x_1^L-x^L$和$h_1^L-h^L$在所有的情况下都是$\Theta(1)$的。然而，这更新使得$x_1^L$和$W_1^{L+1}$相关，因此$W_1^{L+1}x_1^L$(和$f_1$)缩放为$\Theta(n^{1-a_{L+1}-b_{L+1}})$由于大叔定律。因此只有在我们的参数化下($a_{L+1}=b_{L+1}=1/2$)是$\Theta(1)$，尽管在SP($a_{L+1}=0,b_{L+1}=1/2$)其增长为$\Theta(\sqrt{n})$。对比起其在初始化的表现，其中$W^{L+1}$和$x^L$都独立且零均值，因此$W^{L+1}x^L$缩放为$\Theta(n^{1/2-a_{L+1}-b_{L+1}})$通过中心极限定理。
+
+## 第一层参数化
+尽管现在可以进行 feature learning 了，第一层的预激活 $h$ 在整个训练过程中保持了固定，如果我们训练$U$。举个例子，如果我们在线性MLP例子 <a href="#eq14"></a>，然后通过<a href="#eq11"></a>
 
 
 
