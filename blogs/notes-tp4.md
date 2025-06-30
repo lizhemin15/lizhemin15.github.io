@@ -426,14 +426,35 @@ $$ \begin{aligned} \bar{h}_{1} & =\bar{h}-n^{-c-1 / 2} \chi v^{\top} h^{\top} h=
 如以上所示，logits $f$ 增大了 $\Theta(\sqrt{n})$ 在SP的一步学习率为$\Theta(1/\sqrt{n})$的 SGD 后，但是在我们的参数化下依然是$\Theta(1)$。这两种参数化看着相似的原因是因为在一步，权重得到了相同的更新$\chi=\mathcal{L}'(f,y)$。因此，$x_1^L-x^L$和$h_1^L-h^L$在所有的情况下都是$\Theta(1)$的。然而，这更新使得$x_1^L$和$W_1^{L+1}$相关，因此$W_1^{L+1}x_1^L$(和$f_1$)缩放为$\Theta(n^{1-a_{L+1}-b_{L+1}})$由于大叔定律。因此只有在我们的参数化下($a_{L+1}=b_{L+1}=1/2$)是$\Theta(1)$，尽管在SP($a_{L+1}=0,b_{L+1}=1/2$)其增长为$\Theta(\sqrt{n})$。对比起其在初始化的表现，其中$W^{L+1}$和$x^L$都独立且零均值，因此$W^{L+1}x^L$缩放为$\Theta(n^{1/2-a_{L+1}-b_{L+1}})$通过中心极限定理。
 
 ## 第一层参数化
-尽管现在可以进行 feature learning 了，第一层的预激活 $h$ 在整个训练过程中保持了固定，如果我们训练$U$。举个例子，如果我们在线性MLP例子 <a href="#eq14"></a>，然后通过<a href="#eq11"></a>
+尽管现在可以进行 feature learning 了，第一层的预激活 $h$ 在整个训练过程中保持了固定，如果我们训练$U$。举个例子，如果我们在线性MLP例子 <a href="#eq14"></a>，然后通过<a href="#eq11"></a>，
+$$ \begin{array}{l}U_{1}=U-n^{-c} \chi d U=U-n^{-c} \chi d h \xi^{\top} \\ h_{1}=U_{1} \xi=h-n^{-c} \chi d h \xi^{\top} \xi=h-\Theta\left(n^{-c}\right) d h\end{array} $$
+由于$\xi^\top\xi,\chi=\Theta(1)$。现在$dh=W^top d\bar{h}=W^\top \frac{1}{\sqrt{n}}v^\top$ 有iid 的高斯坐标，每个的大小为 $\Theta(1/n)$，由于$\frac{1}{\sqrt{n}}v^\top$有着相同的坐标大小。因此，甚至$c=0,h$会被最多$(1/n)$大小改变，其被其初始化的值所主导。这个$O(1/n)$的改变同样在$f$得到了$O(1/n)$的改变，其将会被$\Theta(1)$的改变所主导，由于$W$的演化，见<a href="#eq15"></a>。
+
+我们因此提出设置<a href="#sec6-1"></a>中的参数化：$a_1=-1/2,b_1=1/2$。这意味着$f$的前向传播保持不变，但是$U$的梯度会通过$n$缩放，因此$h$现在会改变$\Theta(1)$的大小。总的来说，我们定义
+```definition (定义 5.1)
+*Maxinal Upate Parametrization (MUP, $\mu P$)* 在一个$L$-隐层层的MLP中，给定为
+$$ c=0, \quad b_{l}=1 / 2 \forall l, \quad a_{l}=\left\{\begin{array}{ll}-1 / 2 & l=1 \\ 0 & 2 \leq l \leq L \\ 1 / 2 & l=L+1\end{array}\right. $$
+注意到$\mu P$对于一个单隐藏层的感知机等价于通过<a href="#eq5"></a>的平均场参数化。我们在附录同样描述了各种结构的$\mu$P。
+```
+
+## $\mu P$ 在最大化些什么？
+出于技术原因，我们对本节的形式结果再次采用<a href="#asmp1"></a>。
+
+在 abc-parametrization 下，权重$W=W_t^l$对任意$l\geq 2$由于学习率$n^{-c}$为$\delta W\stackrel{\text{def}}{=}-n^{-c}\cdot n^{-2a} dh x^\top$ 我们缩写为 $x=x_t^{l-1},h=h_t^l,a=a_l$。(我们将会使用$\delta$来标识一步的变化，但是$\Delta$表示 lifetime change)。在之后的前向传播，$\delta W$的贡献为$\delta W \bar{x}=-n^{1-c-2a}(x%\top \bar{x}/n)dh$，其中$\bar{x}$ 是由于之前层权重的改变得到的新的激活。一般来说，$x$和$\bar{x}$是强相关的。那么$x^\top \bar{x}/n\rightarrow R$对某些$R\neq 0$通过大数定律(因为在stable parametrization 下有着 $\Theta(1)$ 大小)。可以启发式的看到$dh$在最后一层的权重有着相同的大小，其为 $\Theta(n^{-(a_{L+1}+b_{L+1})}+n^{-(2a_{L+1}+c)})$(其中第一个和数从$W_0^{L+1}$来，另一个从$\Delta W_t^{L+1}$来)。因此，$\delta W\bar{x}$ 是一个向量；若$r_l<0$，那么$\delta W \bar{x}$会爆炸。对于$l=1$，我们在考虑了$\xi$的维度后，得到了类似的见解。
+
+```definition (定义 5.2)
+对于$l\in [L]$，我们说$W^l$是最大限度更新的，如果$\Delta W_t^l x_t^{l-1}(\xi)$ 有 $\Theta(1)$的大小，对于某些训练路径，时间$t\geq 1$，以及输入$\xi$。
+```
 
 
+```proposition (5.3)
+在 stable abc-parametrization 下，对于任意的 $l\in [L]$，$W^l$ 是最大化更新的 当且仅当
+$$
+r_l\stackrel{\text{def}}{=}\min(a_{L+1}+b_{L+1},2a_{L+1}+c)+c-1+2a_l+\mathbb{I}(l=1)=0.
+$$
+```
 
-
-
-
-
+注意到<a href="#def1"></a> 在所有的$l$中最小的$r_l$。在$\mu P$，我们可以计算$r_l=0$对所有的$l\in [L]$，因此所有的$W^l,l\in [L]$，都 *updated maximally*。
 
 
 

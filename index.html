@@ -951,6 +951,45 @@
              color: #bb7dd8;
          }
 
+         /* Proposition container styles */
+         .proposition-container {
+             margin: 20px 0;
+             padding: 20px;
+             border-left: 4px solid #9f7aea;
+             background: linear-gradient(135deg, rgba(159, 122, 234, 0.05), rgba(159, 122, 234, 0.1));
+             border-radius: 8px;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+             position: relative;
+             font-family: "Times New Roman", "KaTeX_Main", serif;
+         }
+
+         .proposition-container::before {
+             content: attr(data-proposition-title);
+             display: block;
+             font-weight: bold;
+             color: #9f7aea;
+             font-size: 1.1em;
+             margin-bottom: 12px;
+             padding-bottom: 8px;
+             border-bottom: 1px solid rgba(159, 122, 234, 0.3);
+         }
+
+         .proposition-content {
+             line-height: 1.7;
+             font-size: 1.05em;
+         }
+
+         /* Dark mode support for proposition container */
+         [data-theme="dark"] .proposition-container {
+             background: linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(159, 122, 234, 0.15));
+             border-left-color: #9f7aea;
+             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+         }
+
+         [data-theme="dark"] .proposition-container::before {
+             color: #9f7aea;
+         }
+
          /* Lemma container styles */
          .lemma-container {
              margin: 20px 0;
@@ -1995,6 +2034,37 @@
              line-height: 1.8;
          }
 
+         /* Comments section styles */
+         .comments-section {
+             padding-top: 2rem;
+             border-top: 2px solid var(--light-bg);
+         }
+
+         .comments-section h3 {
+             color: var(--primary-color);
+             font-weight: 600;
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+
+         .comments-section h3 i {
+             color: var(--accent-color);
+         }
+
+         #giscus-container {
+             margin-top: 1rem;
+         }
+
+         /* Dark mode support for comments */
+         [data-theme="dark"] .comments-section {
+             border-top-color: var(--dark-border-color);
+         }
+
+         [data-theme="dark"] .comments-section h3 {
+             color: var(--dark-text-color);
+         }
+
          /* Responsive design */
          @media (max-width: 768px) {
              .blogs-header h1 {
@@ -2622,6 +2692,23 @@
             }
         }
 
+        @keyframes highlight-proposition {
+            0% { 
+                background-color: transparent;
+                box-shadow: none;
+            }
+            30% { 
+                background-color: rgba(159, 122, 234, 0.15);
+                box-shadow: 0 0 20px rgba(159, 122, 234, 0.3);
+                transform: scale(1.02);
+            }
+            100% { 
+                background-color: transparent;
+                box-shadow: none;
+                transform: scale(1);
+            }
+        }
+
         /* Enhanced mobile experience */
         @media (max-width: 768px) {
             .theme-toggle-fixed {
@@ -3108,6 +3195,38 @@
             color: #a29bfe;
             border-bottom: 1px solid #a29bfe;
             background-color: rgba(116, 185, 255, 0.2);
+        }
+
+        /* Proposition links styles */
+        .markdown-content a[href^="#prop"] {
+            color: #9f7aea;
+            text-decoration: none;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #9f7aea;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .markdown-content a[href^="#prop"]:hover {
+            color: #805ad5;
+            border-bottom: 1px solid #805ad5;
+            background-color: rgba(159, 122, 234, 0.1);
+        }
+
+        .markdown-content a[href^="#prop"]:active {
+            transform: scale(0.98);
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#prop"] {
+            color: #9f7aea;
+            border-bottom: 1px dashed #9f7aea;
+        }
+
+        [data-theme="dark"] .markdown-content a[href^="#prop"]:hover {
+            color: #b794f6;
+            border-bottom: 1px solid #b794f6;
+            background-color: rgba(159, 122, 234, 0.2);
         }
 
         /* Section number styles */
@@ -3647,7 +3766,7 @@
     <aside class="sidebar" id="sidebar">
         <!-- Profile section -->
         <div class="profile-section">
-            <img id="profile-avatar" src="src/idphoto.jpeg" alt="Profile Photo" class="profile-photo">
+            <img id="profile-avatar" src="" alt="Profile Photo" class="profile-photo" style="opacity: 0; transition: opacity 0.3s ease;">
             <div id="profile-name" class="profile-name">Loading...</div>
             <div id="profile-title" class="profile-title">Loading...</div>
             <div id="social-links" class="social-links">
@@ -4221,7 +4340,7 @@
                 }
                 
                 // Render single article
-                const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
+                const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, propositionBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
                 let htmlContent = marked.parse(preprocessedContent);
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
                 htmlContent = renderTables(htmlContent, tableBlocks);
@@ -4230,6 +4349,7 @@
                 htmlContent = renderAssumptions(htmlContent, assumptionBlocks);
                 htmlContent = renderDefinitions(htmlContent, definitionBlocks);
                 htmlContent = renderCorollaries(htmlContent, corollaryBlocks);
+                htmlContent = renderPropositions(htmlContent, propositionBlocks);
                 htmlContent = renderLemmas(htmlContent, lemmaBlocks);
                 htmlContent = renderRemarks(htmlContent, remarkBlocks);
                 
@@ -4267,6 +4387,15 @@
                         </div>
                         <div class="blog-post-content markdown-content">
                             ${htmlContent}
+                        </div>
+                        
+                        <!-- 评论系统 -->
+                        <div class="comments-section mt-5">
+                            <hr class="mb-4">
+                            <h3 class="mb-4">
+                                <i class="fas fa-comments"></i> 评论
+                            </h3>
+                            <div id="giscus-container"></div>
                         </div>
                     </div>
                 `;
@@ -4327,6 +4456,9 @@
                 
                 // 同步幻灯片按钮状态
                 syncSlidesButton();
+                
+                // Initialize Giscus comments system
+                initializeGiscus(post.fileName, post.title);
             } catch (error) {
                 console.error('Error loading blog post:', error);
                 showError('Article Loading Failed', `Unable to load article "${fileName}"`, error.message, 'blogs');
@@ -4342,6 +4474,66 @@
         function navigateToBlogs() {
             updateURL({ section: 'blogs' });
             loadContentFromURL();
+        }
+
+        // Initialize Giscus comments system
+        function initializeGiscus(fileName, title) {
+            const giscusContainer = document.getElementById('giscus-container');
+            if (!giscusContainer) return;
+            
+            // Clear existing giscus
+            giscusContainer.innerHTML = '';
+            
+            // Remove any existing giscus script
+            const existingScript = document.querySelector('script[src*="giscus.app"]');
+            if (existingScript) {
+                existingScript.remove();
+            }
+            
+            // Create new giscus script
+            const script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            script.setAttribute('data-repo', 'lizhemin15/lizhemin15.github.io');
+            script.setAttribute('data-repo-id', 'MDEwOlJlcG9zaXRvcnkzNzI1MDc5MTQ=');
+            script.setAttribute('data-category', 'General');
+            script.setAttribute('data-category-id', 'DIC_kwDOFjQFCs4CsPHf');
+            script.setAttribute('data-mapping', 'title');
+            script.setAttribute('data-strict', '0');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'bottom');
+            script.setAttribute('data-theme', 'preferred_color_scheme');
+            script.setAttribute('data-lang', 'zh-CN');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            
+            giscusContainer.appendChild(script);
+        }
+
+        // Alternative: Initialize Utterances comments system (lightweight option)
+        function initializeUtterances(fileName, title) {
+            const giscusContainer = document.getElementById('giscus-container');
+            if (!giscusContainer) return;
+            
+            // Clear existing content
+            giscusContainer.innerHTML = '';
+            
+            // Remove any existing utterances script
+            const existingScript = document.querySelector('script[src*="utteranc.es"]');
+            if (existingScript) {
+                existingScript.remove();
+            }
+            
+            // Create new utterances script
+            const script = document.createElement('script');
+            script.src = 'https://utteranc.es/client.js';
+            script.setAttribute('repo', 'lizhemin15/lizhemin15.github.io');
+            script.setAttribute('issue-term', 'title');
+            script.setAttribute('theme', 'preferred-color-scheme');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            
+            giscusContainer.appendChild(script);
         }
 
         // Load default content
@@ -4451,7 +4643,9 @@
             if (siteConfig.profile) {
                 // Avatar
                 if (siteConfig.profile.avatar) {
-                    document.getElementById('profile-avatar').src = siteConfig.profile.avatar;
+                    const avatarElement = document.getElementById('profile-avatar');
+                    avatarElement.src = siteConfig.profile.avatar;
+                    avatarElement.style.opacity = '1';
                 }
 
                 // Name
@@ -4575,6 +4769,7 @@
             let assumptionIndex = 0; // 新增：assumption编号计数器
             let definitionIndex = 0; // 新增：definition编号计数器
             let corollaryIndex = 0; // 新增：corollary编号计数器
+            let propositionIndex = 0; // 新增：proposition编号计数器
             let lemmaIndex = 0; // 新增：lemma编号计数器
             let remarkIndex = 0; // 新增：remark编号计数器
             
@@ -4685,6 +4880,31 @@
                 });
                 
                 console.log(`创建corollary占位符: ${corollaryId}, 编号=${corollaryIndex}, 标题=${corollaryTitle}`);
+                return placeholder;
+            });
+
+            // 处理proposition代码块
+            const propositionBlocks = [];
+            
+            content = content.replace(/```proposition(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, propositionContent) {
+                console.log('处理proposition代码块占位符...');
+                propositionIndex++;
+                const propositionId = `prop${propositionIndex}`;
+                const propositionTitle = title ? 
+                    `Proposition ${propositionIndex}: ${title.trim()}` : 
+                    `Proposition ${propositionIndex}`;
+                
+                const placeholder = `[[[PROPOSITION_PLACEHOLDER_${propositionIndex}]]]`;
+                
+                propositionBlocks.push({
+                    placeholder: placeholder,
+                    propositionId: propositionId,
+                    propositionTitle: propositionTitle,
+                    propositionContent: propositionContent.trim(),
+                    originalContent: propositionContent.trim()
+                });
+                
+                console.log(`创建proposition占位符: ${propositionId}, 编号=${propositionIndex}, 标题=${propositionTitle}`);
                 return placeholder;
             });
 
@@ -4869,7 +5089,7 @@
                 }
             });
             
-            return { content, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, lemmaBlocks, remarkBlocks, tableIndex, figureIndex, theoremIndex, assumptionIndex, definitionIndex, corollaryIndex, lemmaIndex, remarkIndex };
+            return { content, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, propositionBlocks, lemmaBlocks, remarkBlocks, tableIndex, figureIndex, theoremIndex, assumptionIndex, definitionIndex, corollaryIndex, propositionIndex, lemmaIndex, remarkIndex };
         }
 
         // 工具函数：转义正则特殊字符
@@ -5467,6 +5687,52 @@
             });
             
             console.log('推论渲染完成');
+            return htmlContent;
+        }
+
+        // Proposition rendering function
+        function renderPropositions(htmlContent, propositionBlocks) {
+            if (!propositionBlocks || propositionBlocks.length === 0) {
+                return htmlContent;
+            }
+            
+            console.log('开始渲染命题，共', propositionBlocks.length, '个');
+            
+            propositionBlocks.forEach(function(propositionBlock, index) {
+                try {
+                    console.log(`渲染命题${index}:`, propositionBlock.propositionId);
+                    
+                    // 使用原始内容（包含原始的数学公式）
+                    let propositionContent = propositionBlock.originalContent || propositionBlock.propositionContent;
+                    
+                    // 单独为命题内容处理数学公式
+                    const { content: processedContent, mathBlocks: propositionMathBlocks } = preprocessMathFormulas(propositionContent);
+                    
+                    // 用marked解析处理过的内容
+                    let renderedContent = marked.parse(processedContent);
+                    
+                    // 渲染命题内容中的数学公式
+                    renderedContent = renderMathFormulas(renderedContent, propositionMathBlocks);
+                    
+                    // 创建命题HTML结构
+                    const propositionHtml = `<div id="${propositionBlock.propositionId}" class="proposition-container" data-proposition-number="${propositionBlock.propositionId.replace('proposition', '')}" data-proposition-title="${propositionBlock.propositionTitle}">
+                        <div class="proposition-content">
+                            ${renderedContent}
+                        </div>
+                    </div>`;
+                    
+                    // 替换占位符
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(propositionBlock.placeholder), 'g'), propositionHtml);
+                    
+                    console.log(`命题${index}渲染完成: ${propositionBlock.propositionId}`);
+                } catch (e) {
+                    console.error('渲染命题失败:', e);
+                    // 失败时保留原始内容
+                    htmlContent = htmlContent.replace(new RegExp(escapeRegExp(propositionBlock.placeholder), 'g'), propositionBlock.originalContent || propositionBlock.propositionContent);
+                }
+            });
+            
+            console.log('命题渲染完成');
             return htmlContent;
         }
 
@@ -7078,7 +7344,7 @@
                 }
                 
                 // Render single article
-                const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
+                const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, propositionBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
                 let htmlContent = marked.parse(preprocessedContent);
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
                 htmlContent = renderTables(htmlContent, tableBlocks);
@@ -7087,6 +7353,7 @@
                 htmlContent = renderAssumptions(htmlContent, assumptionBlocks);
                 htmlContent = renderDefinitions(htmlContent, definitionBlocks);
                 htmlContent = renderCorollaries(htmlContent, corollaryBlocks);
+                htmlContent = renderPropositions(htmlContent, propositionBlocks);
                 htmlContent = renderLemmas(htmlContent, lemmaBlocks);
                 htmlContent = renderRemarks(htmlContent, remarkBlocks);
                 
@@ -7124,6 +7391,15 @@
                         </div>
                         <div class="blog-post-content markdown-content">
                             ${htmlContent}
+                        </div>
+                        
+                        <!-- 评论系统 -->
+                        <div class="comments-section mt-5">
+                            <hr class="mb-4">
+                            <h3 class="mb-4">
+                                <i class="fas fa-comments"></i> 评论
+                            </h3>
+                            <div id="giscus-container"></div>
                         </div>
                     </div>
                 `;
@@ -8034,6 +8310,7 @@
                 'def1': 'Definition 1', 'def2': 'Definition 2', 'def3': 'Definition 3',
                 'assumption1': 'Assumption 1', 'assumption2': 'Assumption 2', 'assumption3': 'Assumption 3',
                 'asmp1': 'Assumption 1', 'asmp2': 'Assumption 2', 'asmp3': 'Assumption 3', 'asmp4': 'Assumption 4', 'asmp5': 'Assumption 5',
+                'prop1': 'Proposition 1', 'prop2': 'Proposition 2', 'prop3': 'Proposition 3', 'prop4': 'Proposition 4', 'prop5': 'Proposition 5',
                 'remark1': 'Remark 1', 'remark2': 'Remark 2', 'remark3': 'Remark 3'
             };
             
@@ -8075,15 +8352,27 @@
                 return `Sec. ${num}`;
             }
             
-            // 例如 sec4_1 对应 "Sec. 4.1"
+            // 例如 sec4_1 对应 "Sec. 4.1" (下划线分隔符)
             if (id.match(/^sec(\d+)_(\d+)$/)) {
                 const matches = id.match(/^sec(\d+)_(\d+)$/);
                 return `Sec. ${matches[1]}.${matches[2]}`;
             }
             
-            // 例如 sec4_1_2 对应 "Sec. 4.1.2"
+            // 例如 sec4-1 对应 "Sec. 4.1" (破折号分隔符)
+            if (id.match(/^sec(\d+)-(\d+)$/)) {
+                const matches = id.match(/^sec(\d+)-(\d+)$/);
+                return `Sec. ${matches[1]}.${matches[2]}`;
+            }
+            
+            // 例如 sec4_1_2 对应 "Sec. 4.1.2" (下划线分隔符)
             if (id.match(/^sec(\d+)_(\d+)_(\d+)$/)) {
                 const matches = id.match(/^sec(\d+)_(\d+)_(\d+)$/);
+                return `Sec. ${matches[1]}.${matches[2]}.${matches[3]}`;
+            }
+            
+            // 例如 sec4-1-2 对应 "Sec. 4.1.2" (破折号分隔符)
+            if (id.match(/^sec(\d+)-(\d+)-(\d+)$/)) {
+                const matches = id.match(/^sec(\d+)-(\d+)-(\d+)$/);
                 return `Sec. ${matches[1]}.${matches[2]}.${matches[3]}`;
             }
             
@@ -8139,6 +8428,12 @@
             if (id.match(/^asmp(\d+)$/)) {
                 const num = id.match(/^asmp(\d+)$/)[1];
                 return `Assumption ${num}`;
+            }
+            
+            // 命题引用：prop12 对应 "Proposition 12"
+            if (id.match(/^prop(\d+)$/)) {
+                const num = id.match(/^prop(\d+)$/)[1];
+                return `Proposition ${num}`;
             }
             
             // 备注引用：remark12 对应 "Remark 12"
