@@ -8,7 +8,7 @@ visible: true
 pinned: false
 ---
 
-# 论文来源
+**论文来源**
 Greg Yang 大神的 Tensor Program 系列第四篇，其它的系列作品有时间和需求时后续再进行更新补充。
 
 # 前言
@@ -454,18 +454,102 @@ r_l\stackrel{\text{def}}{=}\min(a_{L+1}+b_{L+1},2a_{L+1}+c)+c-1+2a_l+\mathbb{I}(
 $$
 ```
 
-注意到<a href="#def1"></a> 在所有的$l$中最小的$r_l$。在$\mu P$，我们可以计算$r_l=0$对所有的$l\in [L]$，因此所有的$W^l,l\in [L]$，都 *updated maximally*。
+注意到<a href="#def1"></a> 在所有的$l$中最小的$r_l$。在$\mu P$，我们可以计算$r_l=0$对所有的$l\in [L]$，因此所有的$W^l,l\in [L]$，都 *updated maximally*。换一种说法，最后的嵌入$x^L(\xi)$ 将会从 $\Delta W^l$ 对所有$l$得到非零 (非线性)贡献。这些贡献导致 logit $f(\xi)$ 在和$W_0^{L+1}$ 和 $\Delta W_0^{L+1}$ 交互的时候发生改变。如果$W_0^{L+1}$和$\Delta W_0^{L+1}$太小，那么 logit对其初始值就是固定的，因此所有的特征学习都是无用的。也有可能一个贡献消失，但是另一个没有，但在 $\mu P$ 中都有贡献。
+
+```definition (定义 5.4)
+我们称 $W^{L+1}$ 是 *updated maximally* (*initialized maximally*) 的如果 $\Delta W_t^{L+1}x_t^L(\xi)=\Theta(1)$ ($W_t^{L+1}\Delta x_t^L(\xi)=\Theta(1)$) 对于一些训练路径，时间$t\geq 1$以及输入$\xi$。
+```
+
+注意到 <a href="#def6"></a> 和<a href="#def5"></a> 很像，除了 $\Delta W_t^{L+1}x_t^L(\xi)\in\mathbb{R}$以及$\Delta W_t^lx_t^{l-1}(\xi)\in\mathbb{R}^n$。
 
 
+```proposition (Proposition 5.5)
+在 stable abc-parametrization 中，$W^{L+1}$ 是 1) updated maximally iff $2a_{L+1}+c=1$，且 2) initialized maximally iff $a_{L+1}+b_{L+1}+r=1$。
+```
 
+```theorem (定理 5.6)
+在$\mu P$，$W^l$对每个$l\in [L+1]$ *upated maximally*，且$W^{L+1}$被 initialized maximally。 $\mu P$ 在这种性质下是唯一 stable abc-parametrization。 
+```
 
+# Deriving Feature Learning Infinite-Width Limit: Intuition and Examples
+我们提出 *Tensor Programs technique* 用于得到任何 abc-parametrization 的无穷宽极限。这最终只需要研究人员机械的将一组规则应用于SGD下的计算图。然而，尽管操作简单，这个程序在开始看起来“太神奇”了。在这一节，通过一系列的例子，我们试图建立对这个过程自动化的直觉。然后，在下一节中，我们正式描述 Tensor Programs 框架。
 
+**Setup and Notation**
+为了简单的把这件事情讲清楚，我们只考虑输入维度$d=1$以及学习率$\eta=1$，但是泛化到$d>1,\eta\neq 1$是直接点。我们考虑 单例小批次 SGD $\{(\xi_t,y_t)\}$ 在时间 $t=0,1,2,\ldots$，其中$\xi_t$ 是网络的输入且 $y_t$ 是标签。我们记$W_t^l$ 为矩阵$W^l$ 在$t$步这样的训练以后。对于任意的网络输入$\xi\in\mathbb{R}$，我们记 $x_t^l(\xi)$ ($h_t^l(\xi)$,$f_t(\xi)$) 对于激活 $x^l$ (preactivation $h^l$, logits $f$) 在$t$步SGD的网络。我们记缩放的梯度 $n\nabla_{x_{t}^l} f_t(\xi)$ ($n \nabla_{h_t^l} f_t(\xi)$) 通过 $d x_t^l(\xi)$ ($d h_t^l(\xi)$)。为了简洁起见，我们滥用符号并使用 $x_t^l$ (没有用到$\xi$) 来表示向量 $x_t^l(\xi_t)$；类似的，对于$h_t^l,d h_t^l,d x_t^l,f_t$。我们将不会使用 $x_t^l$ 来记函数 $\xi \mapsto x_t^l(\xi)$ 使其不会造成混淆。损失函数记为 $\mathcal{L}$ 损失的导数 $\mathcal{L}'(logit,target)$ 是对第一个参数的。我们记 $\chi_t\stackrel{\text{def}}{=}\mathcal{L}'(f_t,y_t)$。
 
+## 1-Hidden-Layer MLP
+如之前所提到的，对于单隐藏层，无穷宽$\mu P$的极限和平均场极限一样。此外，我们还提出了一个稍微不同的推导，更符合张量程序的哲学。在输入$\xi\in \mathbb{R}$ 的网络给定为
+```equation
+$$
+f(\xi)=V x(\xi), \quad x(\xi)=\phi(h(\xi)), \quad h(\xi)=U \xi,
+$$
+```
+对于$U\in \mathbb{R}^{n\times 1},V\in\mathbb{R}^{1\times n}$被参数化为 $U=\sqrt{n}u,V=\frac{1}{\sqrt{n}}v$且初始化$u_{\alpha\beta},v_{\alpha\beta}\sim\mathcal{N}(0,1/n)$。那么$U_0$($U$的初始值)有着 iid $\mathcal{N}(0,1)$ 的数值。将这样的坐标分布表征为随机变量$Z^{U_0}\stackrel{\text{def}}{=}\mathcal{N}(0,1)$是最方便的。类似的，令$Z^{n V_0}\stackrel{\text{def}}{=}\mathcal{N}(0,1)$，独立于 $Z^{U_0}$，表示 $n V_0$ 的坐标分布。在陈述一般情况之前，我们手动导出了第一次前向和后向传播的 $\mu P$ 极限。为了简化符号，我们隐去了$t=0$的下标($U=U_0,h=h_0,f=f_0$)，因为我们将在第一个SGD步骤上花更多时间。
 
+**第一步前向传播** 在随机初始化后，预激活 $h=h(\xi)$ (其中$\xi=\xi_0\in\mathbb{R}$是第一个输入)有着 iid coordinates，每个从 $Z^x\stackrel{\text{def}}{=} \phi(Z^h)$。最后，$f=Vx=\frac{1}{n}\sum_{\alpha=1}^n (nV)_\alpha x_\alpha\rightarrow \stackrel{\circ}{f} \stackrel{\text { def }}{=} \mathbb{E} Z^{nV}Z^x$ 通过大数定律随着 $n\rightarrow \infty$得到。特别的，$f$在极限下变成确定的$0$，由于$V$和$U$是独立的。对于典型的损失函数$\mathcal{L}$，损失的导数$\chi\stackrel{\text{def}}{=} \mathcal{L}'(f,y)$ 也变成了确定的，$\chi\rightarrow \stackrel{\circ}{\chi}\stackrel{\text{def}}{=}\mathcal{L}'(\stackrel{\circ}{f},y)$。
 
+**第一步后向传播** 类似的，$dx=n V^\top$ (回顾 $d x_t\stackrel{\text{def}}{=} n\nabla_{x_t}f_t$)有着坐标分布如$Z^{dx}\stackrel{\text{def}}{=}Z^{nV}$ 以及 $dh= dx \odot \phi'(h)$ 有着坐标分布 $Z^{dh}=\stackrel{def}{=}Z^{dx} \phi'(Z^h)=Z^{nV}\phi'(Z^h)$。那么SGD以$1$学习率有以下更新
+$$ \begin{array}{lll}v_{1}=v-\chi x / \sqrt{n} & \Longrightarrow & V_{1}=V-\chi x / n \\ u_{1}=u-\chi \xi d h / \sqrt{n} & \Longrightarrow & U_{1}=U-\chi \xi d h .\end{array} $$
+由于$\chi$收敛到特定的极限$\stackrel{\circ}{\chi}$，这些更新的坐标大致是iid的，对应于$Z$随机变量的更新：
+$$ Z^{n V_{1}}=Z^{n V}-\stackrel{\circ}{\chi} Z^{x}, \quad Z^{U_{1}}=Z^{U}-\stackrel{\circ}{\chi} \xi Z^{d h} .$$
 
+**第二次前向传播** 因此 $V_1$ 和 $U_1$在1步SGD后是大致 iid 坐标。那么，在第二步前向传播后，$h_1$有
+$$
+Z^{h_{1}} \stackrel{\text { def }}{=} \xi_{1} Z^{U_{1}}=\xi_{1} Z^{U}-\xi_{1} \stackrel{\circ}{\chi} \xi Z^{d h}=\xi_{1} Z^{U}-\xi_{1} \stackrel{\circ}{\chi} \xi Z^{n V} \phi^{\prime}\left(Z^{h}\right),
+$$
+$x_1$有着大小 $Z^{x_1}\stackrel{\text{def}}{=}\phi(Z^{h_1})$，且输出为
+```equation
+$$ f_{1}=\frac{1}{n} \sum_{\alpha=1}^{n}\left(n V_{1}\right)_{\alpha} x_{\alpha} \rightarrow \stackrel{\circ}{f_{1}} \stackrel{\text { def }}{=} \mathbb{E} Z^{n V_{1}} Z^{x_{1}}=\mathbb{E}\left(Z^{n V}-\stackrel{\circ}{\chi} Z^{x}\right) Z^{x_{1}} $$
+```
+随着$n\rightarrow \infty$。那么$\chi_1\stackrel{\text{def}}{=}\mathcal{L}'(f_1,y_1)\rightarrow \stackrel{\circ}{\chi_1}\stackrel{\text{def}}{=}\mathcal{L}'(\stackrel{\circ}{f_1},y_1)$变成确定的。梯度向量通过相似的logic有着大致 iid的 coordinates。
 
+第$t$步**迭代** 重复上述推理表明，在任何时间$t$(独立于$n$)，我们有
 
+```theorem (定理 6.1)
+考虑一个单隐藏层MLP在 $\mu P$(<a href="#eq16"></a>) 且任何训练过程有着学习率$1$。假设$\phi'$是伪-Lipschitz的。那么随着$n\rightarrow \infty$，对于任何输入$\xi$，$f_t(\xi)$几乎一定收敛到 $\stackrel{\circ}{f_t}(\xi)$ 定义如下：
+```
+```equation
+$$ f_{t}(\xi) \xrightarrow{\text { a.s. }} f_{t}(\xi) \xlongequal{\text { def }} \mathbb{E} Z^{n V_{t}} Z^{x_{t}(\xi)}, \quad Z^{x_{t}(\xi)} \xlongequal{\text { def }} \phi\left(Z^{h_{t}(\xi)}\right), \quad Z^{h_{t}(\xi)} \xlongequal{\text { def }} \xi Z^{U_{t}} $$
+```
+```equation
+$$ \stackrel{\circ}{\chi}_{t} \stackrel{\text { def }}{=} \mathcal{L}^{\prime}\left(\stackrel{\circ}{f}_{t}, y_{t}\right), \quad Z^{n V_{t+1}} \stackrel{\text { def }}{=} Z^{n V_{t}}-\stackrel{\circ}{\chi}_{t} Z^{x_{t}}, \quad Z^{U_{t+1}} \stackrel{\text { def }}{=} Z^{U_{t}}-\stackrel{\circ}{\chi}_{t} \xi_{t} Z^{n V_{t}} \phi^{\prime}\left(Z^{h_{t}}\right) $$
+```
+由初始化条件，$Z^{U_0}$和$Z^{n V_0}$是独立的标准高斯，其中在<a href="#eq19"></a> 我们简写 $\stackrel{\circ}{f_t}=\stackrel{\circ}{f_t}(\xi)$, $x_t=x_t(\xi_t)$, $h_t=h_t(\xi_t)$。
+
+如之前所示，这是离散时间，小批次的MFL版本。当$\phi$ 是单位的，这很容易看到$Z^{n V_t}$和$Z^{U_t}$ 总是$Z^{n V_0}$和$Z^{U_0}$的线性组合，即$Z^{n V_t}=A_t Z^{n V_0}+B_t Z^{U_0}$和$Z^{U_t}=C_t Z^{n V_0}+D_t Z^{U_0}$。然后极限$\stackrel{\circ}{f_t}$仅依赖于 $A_t,B_t,C_t,D_t$。通过追踪这些演化，我们得到了如下的极大简化后的形式，对于一个无穷宽的 $\mu P$线性网络。
+
+```corollary (推论 6.2)
+考虑一个单隐藏层的线性MLP在$\mu P$ (<a href="#eq16"></a>)且任何训练过程有着学习率$1$。随着$n\rightarrow \infty$，对于每个输入 $\xi$， $f_t(\xi)$ 几乎一定收敛到如下定义的$\stackrel{\circ}{f_t(\xi)}$：
+$$ \begin{aligned} \dot{f}_{t}(\xi) & =\left(A_{t} C_{t}+B_{t} D_{t}\right) \xi, \quad \dot{\chi}_{t}=\mathcal{L}^{\prime}\left(\dot{f}_{t}, y_{t}\right), \\ \left(A_{t+1}, B_{t+1}\right) & =\left(A_{t}, B_{t}\right)-\dot{\chi}_{t} \xi_{t}\left(C_{t}, D_{t}\right), \\ \left(C_{t+1}, D_{t+1}\right) & =\left(C_{t}, D_{t}\right)-\dot{\chi}_{t} \xi_{t}\left(A_{t}, B_{t}\right),\end{aligned} $$
+以初始化条件 $A_0=D_0=1,B_0,C_0=0$。
+```
+
+这很容易泛化到大的输入和输出维度。简而言之，这样的无穷宽 $\mu P$ 线性网络有着输入维度$d$以及输出维度$d_o$ 是等价于一个宽度为 $d+d_o$ 大的线性网络，有着相同的输入/输出维度，但是是“对角”的，而不是随机，初始化的。我们的 Word2Vec 和 MAML 实验将会关键地依赖于这种简化地观察。我们注意到，与我们的方法相反，这样的观察被之前工作的偏微分方程视角所覆盖。
+
+## 2-Hidden-Layer MLP: SGD with Partially Decoupled Backpropagation
+一个 2-hidden-layer MLP 通过以下给出
+$$ f(\xi)=V \bar{x}(\xi), \quad \bar{x}(\xi)=\phi(\bar{h}(\xi)), \quad \bar{h}(\xi)=W x(\xi), \quad x(\xi)=\phi(h(\xi)), \quad h(\xi)=U \xi,$$ 
+对于 $U\in\mathbb{R}^{n\times 1},W\in\mathbb{R}^{n\times n}$ 参数化为$U=\sqrt{n}u,V=\frac{1}{\sqrt{n}}v$且有着初始化 $u_{\alpha\beta},W_{\alpha\beta},v_{\alpha\beta}\sim\mathcal{N}(0,1/n)$。$n\times n$的矩阵$W$存在("$\infty\times \infty$"，相对于$U$的"$\infty\times \text{finite}$",或是$V$的"$\text{finite}\times \infty$")是新的且对无穷宽的训练动力学有两个主要影响： 1) 从随机高斯$W$的中心极限效应 2) $W$和$W^\top$ 的相关效应。 我们通过分析一个稍微不同的反向传播版本(它与正常的反向传播有不同的限制)来隔离第一种效应，然后再下一届讨论第二种效应。我们滥用符号，缩写$W=W_0$。
+
+**Partially Decoupled Backpropagation** 在这一节，我们分析SGD的版本，其反向传播的权重与前向传播权重部分解耦合。这里，我们认为$\Delta W_t$是可训练的权重，初始化为$0$，并将高斯$W$认为是不可训练的“常数”。前向传播正常时$W_t=W+\Delta W_t$。但是我们采样并固定 iid $W^\top$ 的拷贝 $\tilde{W}$在训练钱，在反向传播计算
+```equation
+$$ d x_{t}=\left(\widetilde{W}+\Delta W_{t}^{\top}\right) d \bar{h}_{t} \quad \text{instead of} \quad d x_{t}=\left(W^{\top}+\Delta W_{t}^{\top}\right) d \bar{h}_{t}=W_{t}^{\top} d \bar{h}_{t} .$$
+```
+
+特别的，在初始化时，我们有 $d x_0=\tilde{W}d \bar{h}_0$ 而不是 $d x_0=W^\top d\bar{h}_0$。在反向传播中，其它一切都保持不变。最后，每个权重都依然可以通过SGD的外积来更新：以$\chi_t\stackrel{\text{def}}{=}\mathcal{L}'(f_t,y_t)$，
+```equation
+$$ v_{t+1}=v_{t}-\chi_{t} \bar{x}_{t}^{\top} / \sqrt{n}, \quad \Delta w_{t+1}=\Delta w_{t}-\chi_{t} d \bar{h}_{t} x_{t}^{\top} / n, \quad u_{t+1}=u_{t}-\chi_{t} \xi_{t} d h_{t}^{\top} / \sqrt{n}. $$
+```
+由于 $V=v/\sqrt{n},W=w,U=\sqrt{n}u$对于每个 $\mu P$，这导致以下$W$的改变：
+```equation
+$$ V_{t+1}=V_{t}-\chi_{t} \bar{x}_{t}^{\top} / n, \quad \Delta W_{t+1}=\Delta W_{t}-\chi_{t} d \bar{h}_{t} x_{t}^{\top} / n, \quad U_{t+1}=U_{t}-\chi_{t} \xi_{t} d h_{t}^{\top} $$
+```
+注意到我们是在更新$\Delta w,\Delta W$而非$w,W$。
+
+**Why This Decoupled SGD?** 
+我们讨论这个版本的SGD的原因是其隔离了在反向传播有 Gaussian $n\times n$ 高斯矩阵 $\tilde{W}$，我们可以用中心极限导出其无穷宽极限。在正常版本的SGD中，$\tilde{W}$会等于$W^\top$，且其和$W$的相关性造成了无穷宽动力学的额外项，它们自己解释的更好。
+
+同样，在陈述一般情况前，我们通过几次前向和后向传播来获得对无穷宽极限的直觉。
 
 
 
