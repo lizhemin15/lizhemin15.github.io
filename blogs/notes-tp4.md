@@ -97,7 +97,7 @@ NTK 参数化 (NTP) 有着 $a_1=0$且 $a_l=1/2$对于$l\geq 2$；$b_l=0$ 对所�
 为了简单起见，定义一个浅层网络 $f(\xi)$ 输入/输出维度为 1
 
 ```equation
-$$f(\xi)=Vx(x)\in\mathbb{R},x(\xi)=\phi(h(\xi))\in\mathbb{R}^n,h(\xi)=U\xi \in\mathbb{R}^n.$$
+$$f(\xi)=Vx(\xi)\in\mathbb{R},x(\xi)=\phi(h(\xi))\in\mathbb{R}^n,h(\xi)=U\xi \in\mathbb{R}^n.$$
 ```
 
 如<a href="#eq1">公式(1)</a>的定义，我们参数化权重 $V=n^{-a_v}v\in\mathbb{R}^{1\times n}$ 且 $U=n^{-a_u}u\in\mathbb{R}^{n\times 1}$，其中宽度$n$应当趋于$\infty$，且$v,u$应当是实际可训练的参数。我们将采样 $v_\alpha\sim \mathcal{N}(0,n^{-2b_v}),u_\alpha\sim\mathcal{N}(0,n^{-2b_u})$对于$\alpha\in[n]$。学习率是$\eta n^{-c}$对于一些独立于$n$的$\eta$。
