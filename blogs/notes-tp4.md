@@ -551,7 +551,20 @@ $$ V_{t+1}=V_{t}-\chi_{t} \bar{x}_{t}^{\top} / n, \quad \Delta W_{t+1}=\Delta W_
 
 同样，在陈述一般情况前，我们通过几次前向和后向传播来获得对无穷宽极限的直觉。
 
-**First Forward Pass** 和 <a href="sec6-1"></a> 的是相似的，
+**First Forward Pass** 和 <a href="sec6-1"></a> 的是相似的，并按照NNGP的计算方式进行推导。
+
+**First Backward Pass** 类似于<a href="sec6-1"></a>来计算导出 Neural Tangent Kernel，除了交换 $W^\top$ 和 $\tilde{W}$ (由于“梯度独立现象”，在这一点没有明显的影响，但其影响将在第二个前向传播变得清晰)；最后我们得到 $\Delta W_1=-\chi_0 d\bar{h}_0 x_0^\top$.
+
+**Second Forward Psss** 和之前一样，我们有 $Z^{h_1}=\xi_1 Z^{U_1}=\xi_1 Z^{U_0}-\stackrel{\circ}{\chi}\xi_1\xi_0 Z^{d h_0}$ 且 $Z^{x_1}=\phi(Z^{h_1})$，反映着$h_1$和$x_1$的坐标分布。然后，
+```equation
+$$
+\bar{h}_1=W x_1+\Delta W_1 x_1=W x_1 -\chi_0 d \bar{h}_0 \frac{x_0^\top x_1}{n}.
+$$
+```
+
+在一方面，1） $\frac{x_0^\top x_1}{n}\rightarrow \mathbb{E} Z^{x_1}Z^{x_0}$ 通过大数定律得到。另一方面 2） 通过中心极限定理得到，$W x_1$ 应当大概有高斯坐标 $Z^{W x_1}$ 和 $Z^{\bar{h}_0}=Z^{W x_0}$ 有着 $Cov(Z^{W x_1},Z^{W x_0})=\lim \frac{x_0^\top x_1}{n}=\mathbb{E} Z^{x_1}Z^{x_0}$。然而，*非常重要的是*，这个中心极限启发式是对的，是因为我们在反向传播用 $\tilde{W}$而不是 $W^\top$；否则，$h_1$和$W$有着强相关，通过 $d h_0=\phi'(h_0)\odot (W^\top d \bar{h}_0)$。
+
+
 
 
 
