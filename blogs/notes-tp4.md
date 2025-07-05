@@ -551,6 +551,9 @@ $$ V_{t+1}=V_{t}-\chi_{t} \bar{x}_{t}^{\top} / n, \quad \Delta W_{t+1}=\Delta W_
 
 同样，在陈述一般情况前，我们通过几次前向和后向传播来获得对无穷宽极限的直觉。
 
+**First Forward Pass** 和 <a href="sec6-1"></a> 的是相似的，
+
+
 
 
 
