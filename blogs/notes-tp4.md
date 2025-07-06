@@ -5,7 +5,7 @@ tags: ["Notes", "论文精读", "神经网络理论"]
 keywords: ["Feature Learning", "NTK", "Theory", "Infinite-width neural networks"]
 excerpt: "尽管NTK极限下得到了很漂亮的深度神经网络的近似，但是也同时失去了特征学习能力。这篇文章发现通过修改标准的参数化方式，就可以使得在无穷宽极限下进行特征学习，并使用 'Tensor Programs' 技术导出了这个极限的显式形式。Feature Learning 对于迁移学习非常重要，可以说，如果学不到特征，那么迁移学习都不存在可行性。"
 visible: true
-pinned: false
+pinned: true
 ---
 
 **论文来源**
