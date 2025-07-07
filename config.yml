@@ -28,7 +28,7 @@ social:
     tooltip: "GitHub"
   - name: "Email"
     icon: "fas fa-envelope"
-    url: "mailto:lizhemin@nudt.edu.cn"
+    url: "mailto:lizhemin@alumni.nudt.edu.cn"
     tooltip: "Email"
   - name: "ORCID"
     icon: "fab fa-orcid"
@@ -82,7 +82,7 @@ navigation:
 
 # Contact Information
 contact:
-  email: "lizhemin@nudt.edu.cn"
+  email: "lizhemin@alumni.nudt.edu.cn"
   office: "Department of Mathematics, National University of Defense Technology"
 
 

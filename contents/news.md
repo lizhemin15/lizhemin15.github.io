@@ -1,4 +1,4 @@
-Zhemin Li (李哲民) is a Ph.D. graduate in Mathematics from National University of Defense Technology, supervised by Researcher Hongxia Wang. **Education:** Ph.D. in Mathematics (2019-2025), B.S. in Mathematics (2015-2019) - National University of Defense Technology. **Research Focus:** Memory and reasoning mechanisms in implicit neural representations (INRs) and generative models. Contact 📬: lizhemin15@163.com (Primary), lizhemin@nudt.edu.cn (Academic).
+Zhemin Li (李哲民) is a Ph.D. graduate in Mathematics from National University of Defense Technology, supervised by Researcher Hongxia Wang. **Education:** Ph.D. in Mathematics (2019-2025), B.S. in Mathematics (2015-2019) - National University of Defense Technology. **Research Focus:** Memory and reasoning mechanisms in implicit neural representations (INRs) and generative models. Contact 📬: lizhemin15@163.com (Primary), lizhemin@alumni.nudt.edu.cn (Academic).
 
 # Recent News
 
