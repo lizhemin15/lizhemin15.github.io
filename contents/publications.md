@@ -2,13 +2,13 @@
 
 ### 2025
 
-[7] **Zhemin Li**, Liyuan Ma, Hongxia Wang, Yaoyun Zeng, Xiaolong Han. Learning Input Encodings for Kernel-Optimal Implicit Neural Representations. *Proceedings of the International Conference on Machine Learning (ICML)*, pp. 1-12, Vancouver, Canada, July 2025. (CCF-A) [📋](https://openreview.net/pdf?id=Cx80t5FAQJ)  [🔗](https://github.com/lizhemin15/KAR)
+[7] **Zhemin Li**, Liyuan Ma, Hongxia Wang, Yaoyun Zeng, Xiaolong Han. Learning Input Encodings for Kernel-Optimal Implicit Neural Representations. *Proceedings of the International Conference on Machine Learning (ICML)*, pp. 1-12, Vancouver, Canada, July 2025. (CCF-A) [📋](https://openreview.net/pdf?id=Cx80t5FAQJ)  [🔗](https://github.com/lizhemin15/KAR)  [🎬](https://www.bilibili.com/video/BV1ZgGJzhExr/?vd_source=10e998b32a9f8987940b8a044e698685)
 
 [6] Wenqiang Huang†, Yucheng Jin†, **Zhemin Li**†, et al. Auto-resolving atomic structure at van der Waals interfaces using a generative model. *Nature Communications*, vol. 16, no. 2927, 2025. († Equal Contribution)  [📋](https://www.nature.com/articles/s41467-025-58160-3)  [🔗](https://github.com/dptech-corp/TED-Gen)
 
 ### 2023
 
-[5] **Zhemin Li**, Hongxia Wang, and Deyu Meng. Regularize implicit neural representation by itself. *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pp. 10280-10288, Vancouver, Canada, June 2023. **(Highlight Paper, Top 2.5%)**  [📋](https://openaccess.thecvf.com/content/CVPR2023/papers/Li_Regularize_Implicit_Neural_Representation_by_Itself_CVPR_2023_paper.pdf)  [🔗](https://github.com/lizhemin15/RSS)
+[5] **Zhemin Li**, Hongxia Wang, and Deyu Meng. Regularize implicit neural representation by itself. *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, pp. 10280-10288, Vancouver, Canada, June 2023. **(Highlight Paper, Top 2.5%)**  [📋](https://openaccess.thecvf.com/content/CVPR2023/papers/Li_Regularize_Implicit_Neural_Representation_by_Itself_CVPR_2023_paper.pdf)  [🔗](https://github.com/lizhemin15/RSS) [🎬](https://www.bilibili.com/video/BV1Qo4y1g7VK/)
 
 [4] Yisi Luo, Xile Zhao, **Zhemin Li**, Michael K. Ng, and Deyu Meng. Low-rank tensor function representation for multi-dimensional data recovery. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. 46, no. 5, pp. 3351-3369, 2023. [📋](https://ieeexplore.ieee.org/document/10354352)  [🔗](https://github.com/YisiLuo/Continuous-Tensor-Toolbox)
 
