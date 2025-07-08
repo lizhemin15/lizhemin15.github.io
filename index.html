@@ -7005,13 +7005,13 @@
                     const frontMatter = jsyaml.load(match[1]);
                     const content = match[2];
                     
-                    return {
+                return {
                         ...frontMatter,
                         content: content,
                         fileName: fileName,
                         excerpt: generateExcerpt(content)
-                    };
-                } catch (error) {
+                };
+            } catch (error) {
                     console.warn(`Failed to parse front matter for ${fileName}:`, error);
                 }
             }
@@ -8450,8 +8450,8 @@
                 return contentMap.get(id);
             }
             
-            return null;
-        }
+                return null;
+            }
 
         // 博客引用预览功能
         function setupBlogReferencePreview() {
