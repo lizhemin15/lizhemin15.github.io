@@ -3,6 +3,7 @@ Zhemin Li (李哲民) is a Ph.D. graduate in Mathematics from National Universit
 # Recent News
 
 ## 2025
+* **July 16** - Launch [Running](https://lizhemin15.github.io/?section=run) everyday plan! (7 YEARS)
 * **July 7** - Unify the [AAAI 2026 template](https://github.com/lizhemin15/AAAI-2026-Latex-Unified).
 * **July 3** - Received Ph.D. degree in Mathematics! 🎉
 * **June 22** - Launched GitHub Pages with Cursor assistance

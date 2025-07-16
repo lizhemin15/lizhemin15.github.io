@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.css">
     <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+    <!-- ECharts CDN -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
     <style id="dynamic-styles">
         :root {
             --primary-color: #2c3e50;
@@ -788,6 +790,22 @@
 
         [data-theme="dark"] .section-tooltip .section-number {
             color: #74b9ff;
+        }
+
+        /* 运动仪表盘响应式样式 */
+        @media (max-width: 768px) {
+            .dashboard-charts {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+            
+            .dashboard-charts > div {
+                padding: 12px !important;
+            }
+            
+            .dashboard-charts h3 {
+                font-size: 1rem !important;
+            }
         }
 
          [data-theme="dark"] .table-container {
@@ -2379,10 +2397,6 @@
             backdrop-filter: blur(8px) saturate(160%);
         }
 
-        [data-theme="dark"] .markdown-content {
-            color: var(--dark-text-color);
-        }
-
         [data-theme="dark"] .markdown-content h1,
         [data-theme="dark"] .markdown-content h2,
         [data-theme="dark"] .markdown-content h3 {
@@ -3868,6 +3882,7 @@
                     </div>
                 </div>
             </div>
+            <div id="run-section" style="display:none;"></div>
         </div>
         
         <!-- Theme Toggle Button - Fixed at bottom left -->
@@ -6817,11 +6832,28 @@
         // Load Markdown content
         async function loadContent(section) {
             const contentDiv = document.getElementById('content');
+            const runSectionDiv = document.getElementById('run-section');
             currentSection = section;
-            
             // Reset currentBlogPost when switching to non-blog sections
             if (section !== 'blogs') {
                 currentBlogPost = null;
+            }
+            // Run页面特殊处理
+            if(section === 'run') {
+                contentDiv.style.display = 'none';
+                runSectionDiv.style.display = '';
+                runSectionDiv.innerHTML = `<div class='loading'><i class='fas fa-spinner'></i><p>加载跑步数据...</p></div>`;
+                try {
+                    const res = await fetch('run/run-records.json');
+                    const runData = await res.json();
+                    renderRunSection(runData);
+                } catch(e) {
+                    runSectionDiv.innerHTML = `<div class='text-danger p-4'>无法加载跑步数据</div>`;
+                }
+                return;
+            } else {
+                runSectionDiv.style.display = 'none';
+                contentDiv.style.display = '';
             }
             
             // Show loading state with enhanced animation
@@ -9016,7 +9048,530 @@
             }
         }
 
+        // 跑步记录页面渲染函数
+        function renderRunSection(runData) {
+            let selectedYear = '全部';
+            let selectedMonth = '全部';
+            let displayMode = '月'; // 年/月/日
+            let filteredData = runData;
+            const runSectionDiv = document.getElementById('run-section');
+            runSectionDiv.innerHTML = `
+                <div class="run-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                    <h1 style="font-size:1.5rem;margin:0;">运动仪表盘</h1>
+                    <span style="color:#888;font-size:0.9rem;">数据来源：run/run-records.json</span>
+                </div>
+                
+                <!-- 筛选控件 -->
+                <div style="background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:20px;">
+                    <div class="run-filter" id="run-filter"></div>
+                </div>
+                
+                <!-- 统计卡片 -->
+                <div style="margin-bottom:20px;">
+                    <div class="run-stats" id="run-stats"></div>
+                </div>
+                
+                <!-- 紧凑的可视化区域 -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="dashboard-charts">
+                    <div style="background:#f8f9fa;padding:16px;border-radius:8px;">
+                        <h3 style="font-size:1.1rem;font-weight:600;margin:0 0 12px 0;color:#2c3e50;">运动热度图</h3>
+                        <div id="run-calendar" style="width:100%;height:380px;"></div>
+                    </div>
+                    <div style="background:#f8f9fa;padding:16px;border-radius:8px;">
+                        <h3 style="font-size:1.1rem;font-weight:600;margin:0 0 12px 0;color:#2c3e50;">运动趋势</h3>
+                        <div id="run-charts" style="width:100%;height:380px;"></div>
+                    </div>
+                </div>
+                
+                <!-- 紧凑的表格 -->
+                <div style="background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                    <h3 style="font-size:1.1rem;font-weight:600;margin:0;padding:16px 16px 12px 16px;color:#2c3e50;border-bottom:1px solid #eee;">运动记录</h3>
+                    <div class="run-table" id="run-table" style="max-height:400px;overflow-y:auto;"></div>
+                </div>
+            `;
+            function renderFilter() {
+                const years = Array.from(new Set(runData.map(r => r.date.slice(0,4)))).sort((a,b)=>b-a);
+                const months = Array.from(new Set(runData.map(r => r.date.slice(5,7)))).sort();
+                let html = '';
+                html += '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">';
+                html += '<div style="display:flex;align-items:center;gap:8px;">';
+                html += '<span style="color:#2c3e50;font-weight:600;font-size:1rem;">📅 数据分析</span>';
+                html += '</div>';
+                html += '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">';
+                
+                // 显示模式选择器
+                html += '<div style="display:flex;align-items:center;gap:8px;">';
+                html += '<label style="color:#666;font-size:0.9rem;">显示模式:</label>';
+                html += '<select id="display-mode-select" style="padding:8px 12px;border:2px solid #f3e5f5;border-radius:6px;font-size:0.9rem;background:#fff;color:#2c3e50;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#9c27b0\'" onmouseout="this.style.borderColor=\'#f3e5f5\'">';
+                html += '<option value="年"' + (displayMode==='年'?' selected':'') + '>按年显示</option>';
+                html += '<option value="月"' + (displayMode==='月'?' selected':'') + '>按月显示</option>';
+                html += '<option value="日"' + (displayMode==='日'?' selected':'') + '>按日显示</option>';
+                html += '</select>';
+                html += '</div>';
+                
+                html += '<div style="display:flex;align-items:center;gap:12px;">';
+                html += '<div style="display:flex;align-items:center;gap:6px;">';
+                html += '<label style="color:#666;font-size:0.9rem;">年份:</label>';
+                html += '<select id="year-select" style="padding:8px 12px;border:2px solid #e3f2fd;border-radius:6px;font-size:0.9rem;background:#fff;color:#2c3e50;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#2196f3\'" onmouseout="this.style.borderColor=\'#e3f2fd\'">';
+                html += '<option>全部年份</option>';
+                years.forEach(y => html += `<option${y===selectedYear?' selected':''}>${y}年</option>`);
+                html += '</select>';
+                html += '</div>';
+                
+                // 月份选择器（在按年显示时隐藏）
+                html += '<div id="month-filter-container" style="display:flex;align-items:center;gap:6px;' + (displayMode === '年' ? 'opacity:0.5;pointer-events:none;' : '') + '">';
+                html += '<label style="color:#666;font-size:0.9rem;">月份:</label>';
+                html += '<select id="month-select" style="padding:8px 12px;border:2px solid #e8f5e8;border-radius:6px;font-size:0.9rem;background:#fff;color:#2c3e50;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#4caf50\'" onmouseout="this.style.borderColor=\'#e8f5e8\'">';
+                html += '<option>全部月份</option>';
+                months.forEach(m => html += `<option${m===selectedMonth?' selected':''}>${m}月</option>`);
+                html += '</select>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                document.getElementById('run-filter').innerHTML = html;
+                document.getElementById('display-mode-select').onchange = e => {
+                    displayMode = e.target.value;
+                    renderFilter(); // 重新渲染筛选器以更新月份选择器状态
+                    applyFilter();
+                };
+                document.getElementById('year-select').onchange = e => {
+                    selectedYear = e.target.value.replace('年','').replace('全部年份','全部');
+                    applyFilter();
+                };
+                document.getElementById('month-select').onchange = e => {
+                    selectedMonth = e.target.value.replace('月','').replace('全部月份','全部');
+                    applyFilter();
+                };
+            }
+            function applyFilter() {
+                filteredData = runData.filter(r => {
+                    let y = r.date.slice(0,4), m = r.date.slice(5,7);
+                    return (selectedYear==='全部'||y===selectedYear) && (selectedMonth==='全部'||m===selectedMonth);
+                });
+                renderStats();
+                renderTable();
+                renderCalendar();
+                renderCharts();
+            }
+            function renderStats() {
+                let total = runData.reduce((s,r)=>s+Number(r.distance_km),0);
+                let totalPushups = runData.reduce((s,r)=>s+Number(r.pushups||0),0);
+                let totalSitups = runData.reduce((s,r)=>s+Number(r.situps||0),0);
+                let totalSquats = runData.reduce((s,r)=>s+Number(r.squats||0),0);
+                let yearTotal = selectedYear==='全部'?total:runData.filter(r=>r.date.slice(0,4)===selectedYear).reduce((s,r)=>s+Number(r.distance_km),0);
+                let monthTotal = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.distance_km),0);
+                let yearPushups = selectedYear==='全部'?totalPushups:runData.filter(r=>r.date.slice(0,4)===selectedYear).reduce((s,r)=>s+Number(r.pushups||0),0);
+                let yearSitups = selectedYear==='全部'?totalSitups:runData.filter(r=>r.date.slice(0,4)===selectedYear).reduce((s,r)=>s+Number(r.situps||0),0);
+                let yearSquats = selectedYear==='全部'?totalSquats:runData.filter(r=>r.date.slice(0,4)===selectedYear).reduce((s,r)=>s+Number(r.squats||0),0);
+                let monthPushups = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.pushups||0),0);
+                let monthSitups = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.situps||0),0);
+                let monthSquats = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.squats||0),0);
+                let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">';
+                
+                // 总计统计
+                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#e74c3c;">${total.toFixed(1)}</div>
+                    <div style="font-size:0.8rem;color:#666;">总跑量(km)</div>
+                </div>`;
+                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#3498db;">${totalPushups}</div>
+                    <div style="font-size:0.8rem;color:#666;">总俯卧撑</div>
+                </div>`;
+                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#f39c12;">${totalSitups}</div>
+                    <div style="font-size:0.8rem;color:#666;">总仰卧起坐</div>
+                </div>`;
+                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#27ae60;">${totalSquats}</div>
+                    <div style="font-size:0.8rem;color:#666;">总深蹲</div>
+                </div>`;
+                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
+                    <div style="font-size:1.4rem;font-weight:700;color:#8e44ad;">${filteredData.length}</div>
+                    <div style="font-size:0.8rem;color:#666;">记录数</div>
+                </div>`;
+                
+                html += '</div>';
+                document.getElementById('run-stats').innerHTML = html;
+            }
+            function renderTable() {
+                if(filteredData.length===0) {
+                    document.getElementById('run-table').innerHTML = '<div class="p-4 text-muted">无记录</div>';
+                    return;
+                }
+                let html = '<table style="width:100%;min-width:700px;border-collapse:separate;border-spacing:0;"><thead><tr><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">日期</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">跑量 (km)</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">俯卧撑</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">仰卧起坐</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">深蹲</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">感想</th></tr></thead><tbody>';
+                // 按最新日期到旧日期排序
+                const sortedData = [...filteredData].sort((a, b) => new Date(b.date) - new Date(a.date));
+                sortedData.forEach(r => {
+                    html += `<tr style="transition:background 0.2s;" onmouseover="this.style.background='#f4faff'" onmouseout="this.style.background=''">
+                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.date}</td>
+                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.distance_km}</td>
+                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.pushups||0}</td>
+                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.situps||0}</td>
+                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.squats||0}</td>
+                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:left;color:#2c3e50;">${r.note||''}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('run-table').innerHTML = html;
+            }
+            function renderCalendar() {
+                console.log('=== renderCalendar 开始 ===');
+                console.log('filteredData:', filteredData);
+                const calendar = echarts.init(document.getElementById('run-calendar'));
+                // 设定达标标准
+                const goal = { distance: 10, pushups: 100, situps: 100, squats: 100 };
+                // 生成所有天的map，便于日历完整性
+                const allDates = {};
+                filteredData.forEach(r => { allDates[r.date] = r; });
+                // 取筛选区间内的所有天
+                let minDate = filteredData.length ? filteredData[0].date : '2024-01-01';
+                let maxDate = filteredData.length ? filteredData[filteredData.length-1].date : '2024-12-31';
+                if (filteredData.length) {
+                    minDate = filteredData.map(r=>r.date).sort()[0];
+                    maxDate = filteredData.map(r=>r.date).sort().slice(-1)[0];
+                }
+                // 生成日历数据，空天也要有
+                function getDateArray(start, end) {
+                    const arr = [];
+                    let dt = new Date(start);
+                    const endDt = new Date(end);
+                    while (dt <= endDt) {
+                        const dstr = dt.toISOString().slice(0,10);
+                        arr.push(dstr);
+                        dt.setDate(dt.getDate()+1);
+                    }
+                    return arr;
+                }
+                const dateArr = getDateArray(minDate, maxDate);
+                const calendarData = dateArr.map(date => {
+                    const r = allDates[date];
+                    return {
+                        date,
+                        distance: r ? Number(r.distance_km) : 0,
+                        pushups: r ? Number(r.pushups||0) : 0,
+                        situps: r ? Number(r.situps||0) : 0,
+                        squats: r ? Number(r.squats||0) : 0
+                    };
+                });
+                // 四色环自定义渲染 - 同心圆环
+                function ringSegments(statusArr, x, y, radius, width) {
+                    // statusArr: [bool, bool, bool, bool]
+                    const colors = ['#3498db','#2ecc71','#f1c40f','#e74c3c'];
+                    const gray = '#e0e0e0';
+                    const segs = [];
+                    
+                    // 绘制四个同心圆环
+                    for(let i=0;i<4;i++){
+                        const r = radius - i * 3; // 每个圆环半径递减
+                        segs.push({
+                            type:'circle',
+                            shape:{cx:x,cy:y,r:r},
+                            style:{
+                                stroke:statusArr[i]?colors[i]:gray,
+                                lineWidth:2,
+                                fill:'none'
+                            },
+                        });
+                    }
+                    return segs;
+                }
+                calendar.setOption({
+                    tooltip: {
+                        formatter: function(params) {
+                            const d = params.data;
+                            return `<div style='font-size:14px;'>${d.date}</div>`+
+                                `<div style='font-size:12px;'>跑量：${d.distance} km ${d.distance>=goal.distance?'<span style=\'color:#3498db\'>✔</span>':''}</div>`+
+                                `<div style='font-size:12px;'>俯卧撑：${d.pushups} ${d.pushups>=goal.pushups?'<span style=\'color:#2ecc71\'>✔</span>':''}</div>`+
+                                `<div style='font-size:12px;'>仰卧起坐：${d.situps} ${d.situps>=goal.situps?'<span style=\'color:#f1c40f\'>✔</span>':''}</div>`+
+                                `<div style='font-size:12px;'>深蹲：${d.squats} ${d.squats>=goal.squats?'<span style=\'color:#e74c3c\'>✔</span>':''}</div>`;
+                        }
+                    },
+                    calendar: {
+                        range: '2024-06',
+                        cellSize: [32, 32],
+                        yearLabel: {show:false},
+                        monthLabel: {nameMap:'cn',fontSize:12,color:'#888'},
+                        dayLabel: {nameMap:'cn',fontSize:10,color:'#aaa'},
+                        itemStyle: {borderWidth:1,borderColor:'#eee'}
+                    },
+                    series: [{
+                        type: 'heatmap',
+                        coordinateSystem: 'calendar',
+                        data: calendarData.map(d => {
+                            // 计算完成度得分 (0-4分)
+                            const goalStandard = { distance: 10, pushups: 100, situps: 100, squats: 100 };
+                            let score = 0;
+                            if (d.distance >= goalStandard.distance) score++;
+                            if (d.pushups >= goalStandard.pushups) score++;
+                            if (d.situps >= goalStandard.situps) score++;
+                            if (d.squats >= goalStandard.squats) score++;
+                            
+                            console.log(`${d.date}: score=${score}, data=${d.distance},${d.pushups},${d.situps},${d.squats}`);
+                            return [d.date, score];
+                        })
+                    }],
+                    visualMap: {
+                        min: 0,
+                        max: 4,
+                        type: 'piecewise',
+                        orient: 'horizontal',
+                        left: 'center',
+                        bottom: 10,
+                        pieces: [
+                            {min: 0, max: 0, color: '#ebedf0', label: '无运动'},
+                            {min: 1, max: 1, color: '#c6e48b', label: '1项达标'},
+                            {min: 2, max: 2, color: '#7bc96f', label: '2项达标'},
+                            {min: 3, max: 3, color: '#239a3b', label: '3项达标'},
+                            {min: 4, max: 4, color: '#196127', label: '全部达标'}
+                        ],
+                        textStyle: {
+                            fontSize: 11,
+                            color: '#666'
+                        },
+                        itemGap: 8,
+                        itemWidth: 12,
+                        itemHeight: 12
+                    }
+                });
+                console.log('=== renderCalendar 完成 ===');
+                console.log('calendarData sample:', calendarData.slice(0,3));
+                console.log('6月2日数据:', calendarData.find(d => d.date === '2024-06-02'));
+                console.log('ECharts series data sample:', calendarData.map(d=>[d.date,d.distance,d.pushups,d.situps,d.squats]).slice(0,3));
+                console.log('日历日期范围:', minDate, 'to', maxDate);
+                console.log('总数据条数:', calendarData.length);
+            }
+            function renderCharts() {
+                const charts = echarts.init(document.getElementById('run-charts'));
+                
+                let timeData = {};
+                let timeKeys = [];
+                let xAxisData = [];
+                let xAxisLabel = '';
+                
+                // 根据显示模式聚合数据
+                if (displayMode === '年') {
+                    timeData = filteredData.reduce((acc, cur) => {
+                        const year = cur.date.slice(0, 4);
+                        if (!acc[year]) {
+                            acc[year] = { distance: 0, pushups: 0, situps: 0, squats: 0 };
+                        }
+                        acc[year].distance += Number(cur.distance_km);
+                        acc[year].pushups += Number(cur.pushups || 0);
+                        acc[year].situps += Number(cur.situps || 0);
+                        acc[year].squats += Number(cur.squats || 0);
+                        return acc;
+                    }, {});
+                    timeKeys = Object.keys(timeData).sort();
+                    xAxisData = timeKeys.map(k => k + '年');
+                    xAxisLabel = '年份';
+                } else if (displayMode === '月') {
+                    timeData = filteredData.reduce((acc, cur) => {
+                        const month = cur.date.slice(0, 7);
+                        if (!acc[month]) {
+                            acc[month] = { distance: 0, pushups: 0, situps: 0, squats: 0 };
+                        }
+                        acc[month].distance += Number(cur.distance_km);
+                        acc[month].pushups += Number(cur.pushups || 0);
+                        acc[month].situps += Number(cur.situps || 0);
+                        acc[month].squats += Number(cur.squats || 0);
+                        return acc;
+                    }, {});
+                    timeKeys = Object.keys(timeData).sort();
+                    xAxisData = timeKeys.map(k => k.slice(5) + '月');
+                    xAxisLabel = '月份';
+                } else { // 按日显示
+                    timeData = filteredData.reduce((acc, cur) => {
+                        const date = cur.date;
+                        if (!acc[date]) {
+                            acc[date] = { distance: 0, pushups: 0, situps: 0, squats: 0 };
+                        }
+                        acc[date].distance += Number(cur.distance_km);
+                        acc[date].pushups += Number(cur.pushups || 0);
+                        acc[date].situps += Number(cur.situps || 0);
+                        acc[date].squats += Number(cur.squats || 0);
+                        return acc;
+                    }, {});
+                    timeKeys = Object.keys(timeData).sort();
+                    xAxisData = timeKeys.map(k => k.slice(5)); // MM-DD格式
+                    xAxisLabel = '日期';
+                }
+                
+                const distanceData = timeKeys.map(k => timeData[k].distance);
+                const pushupsData = timeKeys.map(k => timeData[k].pushups);
+                const situpsData = timeKeys.map(k => timeData[k].situps);
+                const squatsData = timeKeys.map(k => timeData[k].squats);
+                const chartsOption = {
+                    tooltip: {
+                        trigger: 'axis',
+                        backgroundColor:'#fff',
+                        borderColor:'#3498db',
+                        borderWidth:1,
+                        textStyle:{color:'#222',fontSize:13},
+                        extraCssText:'box-shadow:0 2px 12px rgba(52,152,219,0.12);border-radius:8px;',
+                        formatter: function(params) {
+                            const timeLabel = displayMode === '年' ? params[0].axisValue : 
+                                            displayMode === '月' ? `${selectedYear !== '全部' ? selectedYear + '年' : ''}${params[0].axisValue}` :
+                                            `${selectedYear !== '全部' ? selectedYear + '年' : ''}${params[0].axisValue}`;
+                            let result = `<div style="font-weight:600;margin-bottom:6px;">${timeLabel}</div>`;
+                            params.forEach(param => {
+                                const unit = param.seriesName === '跑量' ? 'km' : '次';
+                                result += `<div style="display:flex;align-items:center;margin:4px 0;">
+                                    <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${param.color};margin-right:8px;"></span>
+                                    <span style="flex:1;">${param.seriesName}:</span>
+                                    <span style="font-weight:600;color:${param.color};">${param.value}${unit}</span>
+                                </div>`;
+                            });
+                            return result;
+                        }
+                    },
+                    legend: {
+                        data: ['跑量', '俯卧撑', '仰卧起坐', '深蹲'],
+                        top:10,
+                        left:'center',
+                        icon:'circle',
+                        itemWidth:12,
+                        itemHeight:12,
+                        itemGap:20,
+                        textStyle:{fontWeight:500,fontSize:13}
+                    },
+                    grid: {
+                        left:60,
+                        right:80,
+                        top:60,
+                        bottom: displayMode === '日' ? 80 : 50
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: xAxisData,
+                        name: xAxisLabel,
+                        nameLocation: 'middle',
+                        nameGap: displayMode === '日' ? 60 : 30,
+                        nameTextStyle: {
+                            color: '#666',
+                            fontSize: 12
+                        },
+                        axisLine:{lineStyle:{color:'#e0e0e0'}},
+                        axisTick:{show:false},
+                        axisLabel:{
+                            fontSize:12,
+                            color:'#888',
+                            rotate: displayMode === '日' ? 45 : 0,
+                            interval: displayMode === '日' ? 'auto' : 0,
+                            margin: displayMode === '日' ? 15 : 8
+                        }
+                    },
+                    yAxis: [
+                        {
+                            type: 'value',
+                            name: '跑量(km)',
+                            position: 'left',
+                            min: 0,
+                            max: function(value) {
+                                return Math.ceil(value.max * 1.1);
+                            },
+                            splitLine:{lineStyle:{color:'#f0f0f0'}},
+                            axisLine:{show:false},
+                            axisTick:{show:false},
+                            axisLabel:{fontSize:13,color:'#3498db'},
+                            nameTextStyle:{
+                                color:'#3498db',
+                                fontSize:12,
+                                padding:[0,10,0,0]
+                            }
+                        },
+                        {
+                            type: 'value',
+                            name: '次数',
+                            position: 'right',
+                            min: 0,
+                            max: function(value) {
+                                return Math.ceil(value.max * 1.1);
+                            },
+                            splitLine:{show:false},
+                            axisLine:{show:false},
+                            axisTick:{show:false},
+                            axisLabel:{fontSize:13,color:'#e67e22'},
+                            nameTextStyle:{
+                                color:'#e67e22',
+                                fontSize:12,
+                                padding:[0,0,0,10]
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '跑量',
+                            type: 'line',
+                            data: distanceData,
+                            smooth:true,
+                            symbol:'circle',
+                            symbolSize:8,
+                            lineStyle:{width:3,color:'#3498db'},
+                            itemStyle:{color:'#3498db',borderWidth:2,borderColor:'#fff'},
+                            areaStyle:{color:'rgba(52,152,219,0.08)'},
+                            yAxisIndex: 0
+                        },
+                        {
+                            name: '俯卧撑',
+                            type: 'line',
+                            data: pushupsData,
+                            smooth:true,
+                            symbol:'circle',
+                            symbolSize:8,
+                            lineStyle:{width:3,color:'#2ecc71'},
+                            itemStyle:{color:'#2ecc71',borderWidth:2,borderColor:'#fff'},
+                            areaStyle:{color:'rgba(46,204,113,0.08)'},
+                            yAxisIndex: 1
+                        },
+                        {
+                            name: '仰卧起坐',
+                            type: 'line',
+                            data: situpsData,
+                            smooth:true,
+                            symbol:'circle',
+                            symbolSize:8,
+                            lineStyle:{width:3,color:'#f1c40f'},
+                            itemStyle:{color:'#f1c40f',borderWidth:2,borderColor:'#fff'},
+                            areaStyle:{color:'rgba(241,196,15,0.08)'},
+                            yAxisIndex: 1
+                        },
+                        {
+                            name: '深蹲',
+                            type: 'line',
+                            data: squatsData,
+                            smooth:true,
+                            symbol:'circle',
+                            symbolSize:8,
+                            lineStyle:{width:3,color:'#e74c3c'},
+                            itemStyle:{color:'#e74c3c',borderWidth:2,borderColor:'#fff'},
+                            areaStyle:{color:'rgba(231,76,60,0.08)'},
+                            yAxisIndex: 1
+                        }
+                    ]
+                };
+                charts.setOption(chartsOption);
+            }
+            renderFilter();
+            applyFilter();
+        }
 
+        // 初始化跑步记录页面
+        async function initRunSection() {
+            try {
+                const response = await fetch('run/run-records.json');
+                if (response.ok) {
+                    const runData = await response.json();
+                    renderRunSection(runData);
+                } else {
+                    console.error('加载跑步记录失败:', response.statusText);
+                }
+            } catch (error) {
+                console.error('加载跑步记录失败:', error);
+            }
+        }
+
+        // 初始化跑步记录页面
+        initRunSection();
     </script>
 </body>
 </html>
