@@ -5,7 +5,7 @@ tags: ["修身","修心"]
 keywords: ["修身","修心"]
 excerpt: "在即将到来的第五辈子，我选择使用奔跑的姿态去应对！"
 visible: true
-pinned: true
+pinned: false
 ---
 
 # 七年长跑启航
