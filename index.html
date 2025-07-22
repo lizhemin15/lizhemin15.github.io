@@ -3893,7 +3893,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <script>
         // Global configuration object
         let siteConfig = null;
@@ -6608,6 +6608,14 @@
         }
 
         function generateTableOfContents() {
+            const url = new URL(window.location.href);
+            console.log('generateTableOfContents called, currentSection=', typeof currentSection !== 'undefined' ? currentSection : 'undefined', 'section param=', url.searchParams.get('section'));
+            if ((typeof currentSection !== 'undefined' && currentSection === 'run') || url.searchParams.get('section') === 'run') {
+                document.getElementById('toc-container').style.display = 'none';
+                document.getElementById('toc-fab').style.display = 'none';
+                return;
+            }
+            
             const content = document.querySelector('.markdown-content');
             const tocContent = document.getElementById('toc-content');
             const tocFab = document.getElementById('toc-fab');
@@ -6835,6 +6843,12 @@
             if (section === 'run') {
                 document.getElementById('toc-container').style.display = 'none';
                 document.getElementById('toc-fab').style.display = 'none';
+                document.getElementById('toc-content').innerHTML = '';
+                setTimeout(() => {
+                    document.getElementById('toc-container').style.display = 'none';
+                    document.getElementById('toc-fab').style.display = 'none';
+                    document.getElementById('toc-content').innerHTML = '';
+                }, 100);
             } else {
                 document.getElementById('toc-container').style.display = '';
                 document.getElementById('toc-fab').style.display = '';
@@ -6970,6 +6984,18 @@
             }
             // 内容切换后保证全屏状态
             setTimeout(ensureFullscreenState, 0);
+            
+            // 在内容渲染和 toc 生成后，再次确保 run 页面时 toc 被隐藏
+            if (section === 'run') {
+                document.getElementById('toc-container').style.display = 'none';
+                document.getElementById('toc-fab').style.display = 'none';
+                document.getElementById('toc-content').innerHTML = '';
+                setTimeout(() => {
+                    document.getElementById('toc-container').style.display = 'none';
+                    document.getElementById('toc-fab').style.display = 'none';
+                    document.getElementById('toc-content').innerHTML = '';
+                }, 100);
+            }
         }
 
         // Blog post data storage
