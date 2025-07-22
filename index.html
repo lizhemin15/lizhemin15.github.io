@@ -20,7 +20,7 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
     <!-- ECharts CDN -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style id="dynamic-styles">
         :root {
             --primary-color: #2c3e50;
@@ -6831,6 +6831,15 @@
 
         // Load Markdown content
         async function loadContent(section) {
+            // 只隐藏右侧悬浮章节框，不隐藏左侧导航栏
+            if (section === 'run') {
+                document.getElementById('toc-container').style.display = 'none';
+                document.getElementById('toc-fab').style.display = 'none';
+            } else {
+                document.getElementById('toc-container').style.display = '';
+                document.getElementById('toc-fab').style.display = '';
+            }
+            
             const contentDiv = document.getElementById('content');
             const runSectionDiv = document.getElementById('run-section');
             currentSection = section;
@@ -9052,7 +9061,7 @@
         function renderRunSection(runData) {
             let selectedYear = '全部';
             let selectedMonth = '全部';
-            let displayMode = '月'; // 年/月/日
+            let displayMode = '日'; // 年/月/日
             let filteredData = runData;
             const runSectionDiv = document.getElementById('run-section');
             runSectionDiv.innerHTML = `
