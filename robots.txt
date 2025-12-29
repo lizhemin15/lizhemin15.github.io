@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# 排除不需要索引的路径
+Disallow: /libs/
+Disallow: /*.json$
+
+# Sitemap
+Sitemap: https://lizhemin15.github.io/sitemap.xml
+
