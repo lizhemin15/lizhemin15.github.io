@@ -6936,6 +6936,8 @@
             const runSectionDiv = document.getElementById('run-section');
             if (!contentDiv) return;
             currentSection = section;
+            // Update navigation active state
+            updateNavigationState(section, currentBlogPost);
             // Reset currentBlogPost when switching to non-blog sections
             if (section !== 'blogs') {
                 currentBlogPost = null;
