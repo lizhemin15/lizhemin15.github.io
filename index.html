@@ -4822,9 +4822,10 @@
                     // 清除滚动位置（页面切换）
                     scrollPositionManager.clearScrollPosition();
                     
-                    // Update URL and let routing system handle the loading
+                    // Update URL and load content directly
                     const section = this.getAttribute('data-section');
                     updateURL({ section: section });
+                    loadContent(section);
                     
                     // Close sidebar on mobile
                     if (window.innerWidth <= 768) {
