@@ -4101,6 +4101,15 @@
         };
 
         // Initialization after page load
+        // Global error boundary - catch null reference errors before they crash the page
+        window.addEventListener('error', function(event) {
+            if (event.message && event.message.includes('Cannot set properties of null')) {
+                console.warn('Suppressed null reference error:', event.message);
+                event.preventDefault();
+                return true;
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', async function() {
             try {
                 console.log('Starting website initialization...');
@@ -4173,39 +4182,43 @@
                 
                 // Add a manual retry button
                 const contentDiv = document.getElementById('content');
-                const retryButton = contentDiv.querySelector('.btn-primary');
-                if (retryButton) {
-                    retryButton.onclick = async function() {
-                        console.log('Manual retry requested');
-                        contentDiv.innerHTML = `
-                            <div class="loading">
-                                <i class="fas fa-spinner"></i>
-                                <p>Retrying configuration load...</p>
-                                <div class="loading-progress">
-                                    <div class="loading-progress-bar"></div>
+                if (contentDiv) {
+                    const retryButton = contentDiv.querySelector('.btn-primary');
+                    if (retryButton) {
+                        retryButton.onclick = async function() {
+                            console.log('Manual retry requested');
+                            contentDiv.innerHTML = `
+                                <div class="loading">
+                                    <i class="fas fa-spinner"></i>
+                                    <p>Retrying configuration load...</p>
+                                    <div class="loading-progress">
+                                        <div class="loading-progress-bar"></div>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-                        
-                        try {
-                            await loadConfig();
-                            applyConfig();
-                            generateNavigation();
-                            initURLRouting();
-                            loadContentFromURL();
-                        } catch (retryError) {
-                            console.error('Retry failed:', retryError);
-                            showError('Configuration Load Failed', errorMessage, errorDetails);
-                        }
-                    };
+                            `;
+                            
+                            try {
+                                await loadConfig();
+                                applyConfig();
+                                generateNavigation();
+                                initURLRouting();
+                                loadContentFromURL();
+                            } catch (retryError) {
+                                console.error('Retry failed:', retryError);
+                                showError('Configuration Load Failed', errorMessage, errorDetails);
+                            }
+                        };
+                    }
                 }
             }
 
             // Listen for window resize
             window.addEventListener('resize', function() {
                 if (window.innerWidth > 768) {
-                    document.getElementById('sidebar').classList.remove('active');
-                    document.querySelector('.overlay').classList.remove('active');
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar) sidebar.classList.remove('active');
+                    const overlay = document.querySelector('.overlay');
+                    if (overlay) overlay.classList.remove('active');
                 }
             });
             
@@ -4238,7 +4251,9 @@
         // Theme management functions
         function initializeTheme() {
             const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
             const icon = themeToggle.querySelector('i');
+            if (!icon) return;
             
             // Set initial theme
             document.documentElement.setAttribute('data-theme', currentTheme);
@@ -4252,6 +4267,7 @@
 
         function toggleTheme() {
             const themeToggle = document.getElementById('theme-toggle');
+            if (!themeToggle) return;
             const icon = themeToggle.querySelector('i');
             
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -4283,18 +4299,8 @@
         // Initialize URL routing system
         function initURLRouting() {
             console.log('Initializing URL routing system');
-            
-            // Set up URL change detection
-            let currentURL = window.location.href;
-            
-            // Check for URL changes (for cases where pushState might not trigger popstate)
-            setInterval(() => {
-                if (window.location.href !== currentURL) {
-                    currentURL = window.location.href;
-                    console.log('URL changed to:', currentURL);
-                    loadContentFromURL();
-                }
-            }, 100);
+            // popstate event already handles back/forward navigation
+            // No need for setInterval polling
         }
 
         // Load content based on current URL
@@ -4518,7 +4524,7 @@
                 
                 // Scroll to top
                 const mainContent = document.querySelector('.main-content');
-                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 
                 // 尝试恢复滚动位置（如果是页面刷新）
                 setTimeout(() => {
@@ -4695,7 +4701,8 @@
 
             // Set page title
             if (siteConfig.site?.title) {
-                document.getElementById('page-title').textContent = siteConfig.site.title;
+                const pageTitle = document.getElementById('page-title');
+                if (pageTitle) pageTitle.textContent = siteConfig.site.title;
                 document.title = siteConfig.site.title;
             }
 
@@ -4718,22 +4725,27 @@
                 // Avatar
                 if (siteConfig.profile.avatar) {
                     const avatarElement = document.getElementById('profile-avatar');
-                    avatarElement.src = siteConfig.profile.avatar;
-                    avatarElement.style.opacity = '1';
+                    if (avatarElement) {
+                        avatarElement.src = siteConfig.profile.avatar;
+                        avatarElement.style.opacity = '1';
+                    }
                 }
 
                 // Name
                 if (siteConfig.profile.name) {
-                    document.getElementById('profile-name').textContent = siteConfig.profile.name;
+                    const profileName = document.getElementById('profile-name');
+                    if (profileName) profileName.textContent = siteConfig.profile.name;
                 }
 
                 // Position information
                 if (siteConfig.profile.title) {
                     const titleElement = document.getElementById('profile-title');
-                    if (Array.isArray(siteConfig.profile.title)) {
-                        titleElement.innerHTML = siteConfig.profile.title.join('<br>');
-                    } else {
-                        titleElement.textContent = siteConfig.profile.title;
+                    if (titleElement) {
+                        if (Array.isArray(siteConfig.profile.title)) {
+                            titleElement.innerHTML = siteConfig.profile.title.join('<br>');
+                        } else {
+                            titleElement.textContent = siteConfig.profile.title;
+                        }
                     }
                 }
             }
@@ -4745,13 +4757,15 @@
 
             // Set loading text
             if (siteConfig.pages?.loading_text) {
-                document.getElementById('loading-text').textContent = siteConfig.pages.loading_text;
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) loadingText.textContent = siteConfig.pages.loading_text;
             }
         }
 
         // Generate social links
         function generateSocialLinks() {
             const socialContainer = document.getElementById('social-links');
+            if (!socialContainer) return;
             socialContainer.innerHTML = '';
 
             siteConfig.social.forEach(link => {
@@ -4782,6 +4796,7 @@
         // Generate navigation menu
         function generateNavigation() {
             const navContainer = document.getElementById('nav-menu');
+            if (!navContainer) return;
             navContainer.innerHTML = '';
 
             siteConfig.navigation.forEach((item, index) => {
@@ -6896,22 +6911,29 @@
         // Load Markdown content
         async function loadContent(section) {
             // 只隐藏右侧悬浮章节框，不隐藏左侧导航栏
+            const tocContainer = document.getElementById('toc-container');
+            const tocFab = document.getElementById('toc-fab');
+            const tocContent = document.getElementById('toc-content');
             if (section === 'run') {
-                document.getElementById('toc-container').style.display = 'none';
-                document.getElementById('toc-fab').style.display = 'none';
-                document.getElementById('toc-content').innerHTML = '';
+                if (tocContainer) tocContainer.style.display = 'none';
+                if (tocFab) tocFab.style.display = 'none';
+                if (tocContent) tocContent.innerHTML = '';
                 setTimeout(() => {
-                    document.getElementById('toc-container').style.display = 'none';
-                    document.getElementById('toc-fab').style.display = 'none';
-                    document.getElementById('toc-content').innerHTML = '';
+                    const tc = document.getElementById('toc-container');
+                    const tf = document.getElementById('toc-fab');
+                    const tcc = document.getElementById('toc-content');
+                    if (tc) tc.style.display = 'none';
+                    if (tf) tf.style.display = 'none';
+                    if (tcc) tcc.innerHTML = '';
                 }, 100);
             } else {
-                document.getElementById('toc-container').style.display = '';
-                document.getElementById('toc-fab').style.display = '';
+                if (tocContainer) tocContainer.style.display = '';
+                if (tocFab) tocFab.style.display = '';
             }
             
             const contentDiv = document.getElementById('content');
             const runSectionDiv = document.getElementById('run-section');
+            if (!contentDiv) return;
             currentSection = section;
             // Reset currentBlogPost when switching to non-blog sections
             if (section !== 'blogs') {
@@ -6920,18 +6942,20 @@
             // Run页面特殊处理
             if(section === 'run') {
                 contentDiv.style.display = 'none';
-                runSectionDiv.style.display = '';
-                runSectionDiv.innerHTML = `<div class='loading'><i class='fas fa-spinner'></i><p>加载跑步数据...</p></div>`;
-                try {
-                    const res = await fetch('run/run-records.json');
-                    const runData = await res.json();
-                    renderRunSection(runData);
-                } catch(e) {
-                    runSectionDiv.innerHTML = `<div class='text-danger p-4'>无法加载跑步数据</div>`;
+                if (runSectionDiv) {
+                    runSectionDiv.style.display = '';
+                    runSectionDiv.innerHTML = `<div class='loading'><i class='fas fa-spinner'></i><p>加载跑步数据...</p></div>`;
+                    try {
+                        const res = await fetch('run/run-records.json');
+                        const runData = await res.json();
+                        renderRunSection(runData);
+                    } catch(e) {
+                        runSectionDiv.innerHTML = `<div class='text-danger p-4'>无法加载跑步数据</div>`;
+                    }
                 }
                 return;
             } else {
-                runSectionDiv.style.display = 'none';
+                if (runSectionDiv) runSectionDiv.style.display = 'none';
                 contentDiv.style.display = '';
             }
             
@@ -7022,7 +7046,7 @@
                 
                 // Scroll to top with smooth animation
                 const mainContent = document.querySelector('.main-content');
-                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 
                 // 尝试恢复滚动位置（如果是页面刷新）
                 setTimeout(() => {
@@ -7244,7 +7268,7 @@
             
             // Scroll to top
             const mainContent = document.querySelector('.main-content');
-            mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+            if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // Generate tag options
@@ -7571,7 +7595,7 @@
                 
                 // Scroll to top
                 const mainContent = document.querySelector('.main-content');
-                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+                if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 
             } catch (error) {
                 console.error('Error loading blog post:', error);
@@ -7587,6 +7611,10 @@
         // Show error message
         function showError(title, message, details, section) {
             const contentDiv = document.getElementById('content');
+            if (!contentDiv) {
+                console.error(`Error: ${title} - ${message}`, details);
+                return;
+            }
             const retryText = siteConfig?.pages?.retry_button || 'Retry';
             
             contentDiv.innerHTML = `
@@ -7616,6 +7644,10 @@
         // Retry initialization function
         async function retryInitialization() {
             const contentDiv = document.getElementById('content');
+            if (!contentDiv) {
+                console.error('Cannot retry: content div not found');
+                return;
+            }
             
             contentDiv.innerHTML = `
                 <div class="loading">
@@ -7731,10 +7763,13 @@
             });
         });
 
-        observer.observe(document.getElementById('content'), {
-            childList: true,
-            subtree: true
-        });
+        const contentEl = document.getElementById('content');
+        if (contentEl) {
+            observer.observe(contentEl, {
+                childList: true,
+                subtree: true
+            });
+        }
 
         // Share blog post function
         function shareBlogPost(fileName, title) {
@@ -7811,10 +7846,12 @@
             const modalImage = document.getElementById('modal-image');
             const modalInfo = document.getElementById('modal-image-info');
             
+            if (!modal || !modalImage) return;
+            
             // 设置图片源和标题
             modalImage.src = imageSrc;
             modalImage.alt = imageAlt;
-            modalInfo.textContent = imageAlt || '图片';
+            if (modalInfo) modalInfo.textContent = imageAlt || '图片';
             
             // 重置缩放
             currentImageZoom = 1;
@@ -8012,10 +8049,14 @@
         // 全屏沉浸式阅读模式
         function enterFullscreenReading() {
             document.body.classList.add('fullscreen-reading');
-            document.getElementById('sidebar').style.display = 'none';
-            document.getElementById('toc-container').style.display = 'none';
-            document.getElementById('toc-fab').style.display = 'none';
-            document.querySelector('.theme-toggle-fixed').style.display = 'none';
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.style.display = 'none';
+            const tocContainer = document.getElementById('toc-container');
+            if (tocContainer) tocContainer.style.display = 'none';
+            const tocFab = document.getElementById('toc-fab');
+            if (tocFab) tocFab.style.display = 'none';
+            const themeToggle = document.querySelector('.theme-toggle-fixed');
+            if (themeToggle) themeToggle.style.display = 'none';
             syncFullscreenButton();
             document.addEventListener('keydown', escFullscreenHandler);
             
@@ -8030,10 +8071,14 @@
             exitFullscreen();
             
             document.body.classList.remove('fullscreen-reading');
-            document.getElementById('sidebar').style.display = '';
-            document.getElementById('toc-container').style.display = '';
-            document.getElementById('toc-fab').style.display = '';
-            document.querySelector('.theme-toggle-fixed').style.display = '';
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.style.display = '';
+            const tocContainer = document.getElementById('toc-container');
+            if (tocContainer) tocContainer.style.display = '';
+            const tocFab = document.getElementById('toc-fab');
+            if (tocFab) tocFab.style.display = '';
+            const themeToggle = document.querySelector('.theme-toggle-fixed');
+            if (themeToggle) themeToggle.style.display = '';
             syncFullscreenButton();
             document.removeEventListener('keydown', escFullscreenHandler);
         }
@@ -8785,13 +8830,14 @@
             
             // 显示幻灯片模式
             const slidesModeElement = document.getElementById('slides-mode');
+            if (!slidesModeElement) return;
             slidesModeElement.classList.add('active');
             slidesModeElement.setAttribute('data-theme', currentTheme);
             
             // 设置标题
             const slideTitle = document.getElementById('slide-title');
             const blogTitle = document.querySelector('.blog-post-title');
-            if (blogTitle) {
+            if (slideTitle && blogTitle) {
                 slideTitle.textContent = blogTitle.textContent;
             }
             
@@ -8823,7 +8869,7 @@
             
             // 隐藏幻灯片模式
             const slidesModeElement = document.getElementById('slides-mode');
-            slidesModeElement.classList.remove('active');
+            if (slidesModeElement) slidesModeElement.classList.remove('active');
             
             // 移除键盘事件监听
             document.removeEventListener('keydown', handleSlidesKeydown);
@@ -9036,28 +9082,30 @@
             currentSlideIndex = index;
             
             // 更新计数器
-            slideCounter.textContent = `${index + 1} / ${slides.length}`;
+            if (slideCounter) slideCounter.textContent = `${index + 1} / ${slides.length}`;
             
             // 更新按钮状态
-            prevBtn.disabled = index === 0;
-            nextBtn.disabled = index === slides.length - 1;
+            if (prevBtn) prevBtn.disabled = index === 0;
+            if (nextBtn) nextBtn.disabled = index === slides.length - 1;
             
             // 添加过渡动画
-            slideContainer.classList.remove('active');
+            if (slideContainer) slideContainer.classList.remove('active');
             
             setTimeout(() => {
                 // 更新内容
                 const slide = slides[index];
-                slideContainer.innerHTML = slide.content;
-                
-                // 重新激活
-                slideContainer.classList.add('active');
-                
-                // 添加过渡动画类
-                slideContainer.classList.add('slide-transition');
-                setTimeout(() => {
-                    slideContainer.classList.remove('slide-transition');
-                }, 500);
+                if (slideContainer) {
+                    slideContainer.innerHTML = slide.content;
+                    
+                    // 重新激活
+                    slideContainer.classList.add('active');
+                    
+                    // 添加过渡动画类
+                    slideContainer.classList.add('slide-transition');
+                    setTimeout(() => {
+                        if (slideContainer) slideContainer.classList.remove('slide-transition');
+                    }, 500);
+                }
             }, 250);
         }
 
