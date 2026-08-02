@@ -9608,7 +9608,7 @@
                         return acc;
                     }, {});
                     timeKeys = Object.keys(timeData).sort();
-                    xAxisData = timeKeys.map(k => k.slice(5) + '月');
+                    xAxisData = timeKeys.map(k => k.slice(0,4) + '年' + parseInt(k.slice(5)) + '月');
                     xAxisLabel = '月份';
                 } else { // 按日显示
                     timeData = filteredData.reduce((acc, cur) => {
@@ -9623,7 +9623,7 @@
                         return acc;
                     }, {});
                     timeKeys = Object.keys(timeData).sort();
-                    xAxisData = timeKeys.map(k => k.slice(5)); // MM-DD格式
+                    xAxisData = timeKeys.map(k => k.slice(0,4) + '/' + k.slice(5)); // YYYY/MM-DD格式
                     xAxisLabel = '日期';
                 }
                 
@@ -9640,9 +9640,9 @@
                         textStyle:{color:'#222',fontSize:13},
                         extraCssText:'box-shadow:0 2px 12px rgba(52,152,219,0.12);border-radius:8px;',
                         formatter: function(params) {
-                            const timeLabel = displayMode === '年' ? params[0].axisValue : 
-                                            displayMode === '月' ? `${selectedYear !== '全部' ? selectedYear + '年' : ''}${params[0].axisValue}` :
-                                            `${selectedYear !== '全部' ? selectedYear + '年' : ''}${params[0].axisValue}`;
+                            const timeLabel = displayMode === '年' ? params[0].axisValue :
+                                            displayMode === '月' ? params[0].axisValue :
+                                            params[0].axisValue;
                             let result = `<div style="font-weight:600;margin-bottom:6px;">${timeLabel}</div>`;
                             params.forEach(param => {
                                 const unit = param.seriesName === '跑量' ? 'km' : '次';
