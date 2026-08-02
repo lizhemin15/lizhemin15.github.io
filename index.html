@@ -52,31 +52,24 @@
       ]
     }
     </script>
-    <!-- Preload Critical Resources -->
-    <link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <!-- All resources loaded locally for offline support -->
     
-    <!-- Bootstrap CSS - 使用国内CDN -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome - 使用国内CDN -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Highlight.js for syntax highlighting - 使用国内CDN -->
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
-    <!-- KaTeX for math rendering - 使用国内CDN -->
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <!-- Bootstrap CSS - local -->
+    <link href="vendor/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome - local -->
+    <link href="vendor/font-awesome.min.css" rel="stylesheet">
+    <!-- Highlight.js for syntax highlighting - local -->
+    <link rel="stylesheet" href="vendor/highlight-github.min.css">
+    <!-- KaTeX for math rendering - local -->
+    <link rel="stylesheet" href="vendor/katex.min.css">
     
-    <!-- JavaScript Libraries - 核心库需要同步加载 -->
-    <!-- Marked.js for markdown parsing - 使用国内CDN -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js"></script>
-    <!-- Highlight.js for syntax highlighting - 使用国内CDN -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-    <!-- js-yaml for YAML parsing - 使用国内CDN -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-    <!-- KaTeX for math rendering - 使用国内CDN -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
-    <!-- ECharts CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <!-- JavaScript Libraries - local, defer for non-blocking loading -->
+    <script defer src="vendor/marked.min.js"></script>
+    <script defer src="vendor/highlight.min.js"></script>
+    <script defer src="vendor/js-yaml.min.js"></script>
+    <script defer src="vendor/katex.min.js"></script>
+    <script defer src="vendor/auto-render.min.js"></script>
+    <script defer src="vendor/echarts.min.js"></script>
     <style id="dynamic-styles">
         :root {
             --primary-color: #2c3e50;
@@ -3949,8 +3942,28 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <script>
+        // Debug mode - set to true for development logging
+        const DEBUG = false;
+        const log = DEBUG ? console.log.bind(console) : function(){};
+        const warn = DEBUG ? console.warn.bind(console) : function(){};
+
+        // Utility: throttle & debounce
+        function throttle(fn, ms) {
+            let last = 0;
+            return function(...args) {
+                const now = Date.now();
+                if (now - last >= ms) { last = now; fn.apply(this, args); }
+            };
+        }
+        function debounce(fn, ms) {
+            let timer;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), ms);
+            };
+        }
+
         // Global configuration object
         let siteConfig = null;
         let currentSection = null;
@@ -3982,7 +3995,7 @@
                 
                 // 保存到 sessionStorage（页面关闭后清除）
                 sessionStorage.setItem('scrollPosition', JSON.stringify(scrollData));
-                console.log('📍 Scroll position saved:', {
+                log('📍 Scroll position saved:', {
                     scrollTop: scrollData.scrollTop,
                     section: scrollData.section,
                     blogPost: scrollData.blogPost
@@ -4000,7 +4013,7 @@
                     
                     // 检查是否是同一个页面（URL匹配）
                     if (scrollData.url !== currentURL) {
-                        console.log('URL changed, clearing saved scroll position');
+                        log('URL changed, clearing saved scroll position');
                         sessionStorage.removeItem('scrollPosition');
                         return false;
                     }
@@ -4008,7 +4021,7 @@
                     // 检查时间戳（如果超过30分钟，清除保存的位置）
                     const timeDiff = Date.now() - scrollData.timestamp;
                     if (timeDiff > 30 * 60 * 1000) {
-                        console.log('Scroll position too old, clearing');
+                        log('Scroll position too old, clearing');
                         sessionStorage.removeItem('scrollPosition');
                         return false;
                     }
@@ -4023,7 +4036,7 @@
                             left: scrollData.scrollLeft,
                             behavior: 'instant' // 使用 instant 避免动画
                         });
-                        console.log('📍 Scroll position restored:', {
+                        log('📍 Scroll position restored:', {
                             scrollTop: scrollData.scrollTop,
                             section: scrollData.section,
                             blogPost: scrollData.blogPost
@@ -4041,7 +4054,7 @@
             // 清除保存的滚动位置
             clearScrollPosition: function() {
                 sessionStorage.removeItem('scrollPosition');
-                console.log('🗑️ Scroll position cleared');
+                log('🗑️ Scroll position cleared');
             },
             
             // 设置滚动位置保存的防抖
@@ -4091,10 +4104,10 @@
             smartRestore: function() {
                 // 只在页面刷新时恢复滚动位置
                 if (this.isPageRefresh()) {
-                    console.log('🔄 Page refresh detected, attempting to restore scroll position');
+                    log('🔄 Page refresh detected, attempting to restore scroll position');
                     return this.restoreScrollPosition();
                 } else {
-                    console.log('➡️ Not a page refresh, skipping scroll position restoration');
+                    log('➡️ Not a page refresh, skipping scroll position restoration');
                     return false;
                 }
             }
@@ -4104,7 +4117,7 @@
         // Global error boundary - catch null reference errors before they crash the page
         window.addEventListener('error', function(event) {
             if (event.message && event.message.includes('Cannot set properties of null')) {
-                console.warn('Suppressed null reference error:', event.message);
+                warn('Suppressed null reference error:', event.message);
                 event.preventDefault();
                 return true;
             }
@@ -4112,7 +4125,7 @@
 
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                console.log('Starting website initialization...');
+                log('Starting website initialization...');
                 
                 // 设置页面加载时间戳
                 sessionStorage.setItem('pageLoadTime', Date.now().toString());
@@ -4121,7 +4134,7 @@
                 try {
                     checkDependencies();
                 } catch (depError) {
-                    console.warn('Some dependencies missing, attempting to load fallbacks...');
+                    warn('Some dependencies missing, attempting to load fallbacks...');
                     await loadFallbackLibraries();
                     checkDependencies(); // Check again after loading fallbacks
                 }
@@ -4144,7 +4157,7 @@
                 // Load content based on current URL
                 loadContentFromURL();
                 
-                console.log('Website initialization completed successfully');
+                log('Website initialization completed successfully');
                 
                 // 尝试恢复滚动位置
                 setTimeout(() => {
@@ -4152,7 +4165,7 @@
                 }, 200);
                 
                 // 显示功能状态
-                console.log('✅ Scroll position management enabled - your reading progress will be saved and restored on page refresh');
+                log('✅ Scroll position management enabled - your reading progress will be saved and restored on page refresh');
                 
             } catch (error) {
                 console.error('Initialization failed:', error);
@@ -4186,7 +4199,7 @@
                     const retryButton = contentDiv.querySelector('.btn-primary');
                     if (retryButton) {
                         retryButton.onclick = async function() {
-                            console.log('Manual retry requested');
+                            log('Manual retry requested');
                             contentDiv.innerHTML = `
                                 <div class="loading">
                                     <i class="fas fa-spinner"></i>
@@ -4212,28 +4225,28 @@
                 }
             }
 
-            // Listen for window resize
-            window.addEventListener('resize', function() {
+            // Listen for window resize (debounced)
+            window.addEventListener('resize', debounce(function() {
                 if (window.innerWidth > 768) {
                     const sidebar = document.getElementById('sidebar');
                     if (sidebar) sidebar.classList.remove('active');
                     const overlay = document.querySelector('.overlay');
                     if (overlay) overlay.classList.remove('active');
                 }
-            });
+            }, 200));
             
             // Listen for browser back/forward buttons
             window.addEventListener('popstate', function(event) {
-                console.log('Popstate event:', event.state);
+                log('Popstate event:', event.state);
                 loadContentFromURL();
             });
             
             // 添加滚动位置保存监听器
             const mainContent = document.querySelector('.main-content');
             if (mainContent) {
-                mainContent.addEventListener('scroll', function() {
+                mainContent.addEventListener('scroll', throttle(function() {
                     scrollPositionManager.debouncedSave();
-                });
+                }, 100));
             }
             
             // 页面卸载前保存滚动位置
@@ -4298,7 +4311,7 @@
 
         // Initialize URL routing system
         function initURLRouting() {
-            console.log('Initializing URL routing system');
+            log('Initializing URL routing system');
             // popstate event already handles back/forward navigation
             // No need for setInterval polling
         }
@@ -4309,7 +4322,7 @@
             const section = url.searchParams.get('section');
             const blogPost = url.searchParams.get('blog');
             
-            console.log('Loading content from URL - section:', section, 'blog:', blogPost);
+            log('Loading content from URL - section:', section, 'blog:', blogPost);
             
             // Update navigation state based on current URL
             updateNavigationState(section, blogPost);
@@ -4373,7 +4386,7 @@
             });
             
             const newURL = url.toString();
-            console.log('Updating URL:', newURL, 'replace:', replace);
+            log('Updating URL:', newURL, 'replace:', replace);
             
             // 如果不是替换操作（即页面切换），清除滚动位置
             if (!replace) {
@@ -4632,7 +4645,7 @@
             
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
-                    console.log(`Attempting to load config (attempt ${attempt}/${maxRetries})`);
+                    log(`Attempting to load config (attempt ${attempt}/${maxRetries})`);
                     
                     // Add cache-busting parameter to prevent caching issues
                     const timestamp = new Date().getTime();
@@ -4674,7 +4687,7 @@
                         throw new Error('Missing essential configuration sections (site, navigation)');
                     }
                     
-                    console.log('Configuration loaded successfully:', siteConfig);
+                    log('Configuration loaded successfully:', siteConfig);
                     return; // Success, exit the retry loop
                     
                 } catch (error) {
@@ -4684,7 +4697,7 @@
                     if (attempt < maxRetries) {
                         // Wait before retrying (exponential backoff)
                         const waitTime = Math.pow(2, attempt) * 1000;
-                        console.log(`Waiting ${waitTime}ms before retry...`);
+                        log(`Waiting ${waitTime}ms before retry...`);
                         await new Promise(resolve => setTimeout(resolve, waitTime));
                     }
                 }
@@ -4863,7 +4876,7 @@
             let lemmaIndex = 0; // 新增：lemma编号计数器
             let remarkIndex = 0; // 新增：remark编号计数器
             
-            console.log('开始处理数学公式...');
+            log('开始处理数学公式...');
             
             // 新增：图片alt中的$替换为__DOLLAR__
             content = content.replace(/!\[(.*?)\]\((.*?)\)/g, function(match, alt, url) {
@@ -4875,7 +4888,7 @@
             const theoremBlocks = [];
             
             content = content.replace(/```theorem(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, theoremContent) {
-                console.log('处理theorem代码块占位符...');
+                log('处理theorem代码块占位符...');
                 theoremIndex++;
                 const theoremId = `thm${theoremIndex}`;
                 const theoremTitle = title ? 
@@ -4893,8 +4906,8 @@
                     originalContent: theoremContent.trim() // 保存原始内容
                 });
                 
-                console.log(`创建theorem占位符: ${theoremId}, 编号=${theoremIndex}, 标题=${theoremTitle}`);
-                console.log('原始定理内容:', theoremContent.substring(0, 100) + '...');
+                log(`创建theorem占位符: ${theoremId}, 编号=${theoremIndex}, 标题=${theoremTitle}`);
+                log('原始定理内容:', theoremContent.substring(0, 100) + '...');
                 return placeholder;
             });
             
@@ -4902,7 +4915,7 @@
             const assumptionBlocks = [];
             
             content = content.replace(/```assumption(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, assumptionContent) {
-                console.log('处理assumption代码块占位符...');
+                log('处理assumption代码块占位符...');
                 assumptionIndex++;
                 const assumptionId = `asmp${assumptionIndex}`;
                 const assumptionTitle = title ? 
@@ -4919,7 +4932,7 @@
                     originalContent: assumptionContent.trim()
                 });
                 
-                console.log(`创建assumption占位符: ${assumptionId}, 编号=${assumptionIndex}, 标题=${assumptionTitle}`);
+                log(`创建assumption占位符: ${assumptionId}, 编号=${assumptionIndex}, 标题=${assumptionTitle}`);
                 return placeholder;
             });
 
@@ -4927,7 +4940,7 @@
             const definitionBlocks = [];
             
             content = content.replace(/```definition(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, definitionContent) {
-                console.log('处理definition代码块占位符...');
+                log('处理definition代码块占位符...');
                 definitionIndex++;
                 const definitionId = `def${definitionIndex}`;
                 const definitionTitle = title ? 
@@ -4944,7 +4957,7 @@
                     originalContent: definitionContent.trim()
                 });
                 
-                console.log(`创建definition占位符: ${definitionId}, 编号=${definitionIndex}, 标题=${definitionTitle}`);
+                log(`创建definition占位符: ${definitionId}, 编号=${definitionIndex}, 标题=${definitionTitle}`);
                 return placeholder;
             });
 
@@ -4952,7 +4965,7 @@
             const corollaryBlocks = [];
             
             content = content.replace(/```corollary(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, corollaryContent) {
-                console.log('处理corollary代码块占位符...');
+                log('处理corollary代码块占位符...');
                 corollaryIndex++;
                 const corollaryId = `cor${corollaryIndex}`;
                 const corollaryTitle = title ? 
@@ -4969,7 +4982,7 @@
                     originalContent: corollaryContent.trim()
                 });
                 
-                console.log(`创建corollary占位符: ${corollaryId}, 编号=${corollaryIndex}, 标题=${corollaryTitle}`);
+                log(`创建corollary占位符: ${corollaryId}, 编号=${corollaryIndex}, 标题=${corollaryTitle}`);
                 return placeholder;
             });
 
@@ -4977,7 +4990,7 @@
             const propositionBlocks = [];
             
             content = content.replace(/```proposition(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, propositionContent) {
-                console.log('处理proposition代码块占位符...');
+                log('处理proposition代码块占位符...');
                 propositionIndex++;
                 const propositionId = `prop${propositionIndex}`;
                 const propositionTitle = title ? 
@@ -4994,7 +5007,7 @@
                     originalContent: propositionContent.trim()
                 });
                 
-                console.log(`创建proposition占位符: ${propositionId}, 编号=${propositionIndex}, 标题=${propositionTitle}`);
+                log(`创建proposition占位符: ${propositionId}, 编号=${propositionIndex}, 标题=${propositionTitle}`);
                 return placeholder;
             });
 
@@ -5002,7 +5015,7 @@
             const lemmaBlocks = [];
             
             content = content.replace(/```lemma(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, lemmaContent) {
-                console.log('处理lemma代码块占位符...');
+                log('处理lemma代码块占位符...');
                 lemmaIndex++;
                 const lemmaId = `lem${lemmaIndex}`;
                 const lemmaTitle = title ? 
@@ -5019,7 +5032,7 @@
                     originalContent: lemmaContent.trim()
                 });
                 
-                console.log(`创建lemma占位符: ${lemmaId}, 编号=${lemmaIndex}, 标题=${lemmaTitle}`);
+                log(`创建lemma占位符: ${lemmaId}, 编号=${lemmaIndex}, 标题=${lemmaTitle}`);
                 return placeholder;
             });
 
@@ -5027,7 +5040,7 @@
             const remarkBlocks = [];
             
             content = content.replace(/```remark(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, remarkContent) {
-                console.log('处理remark代码块占位符...');
+                log('处理remark代码块占位符...');
                 remarkIndex++;
                 const remarkId = `rem${remarkIndex}`;
                 const remarkTitle = title ? 
@@ -5044,7 +5057,7 @@
                     originalContent: remarkContent.trim()
                 });
                 
-                console.log(`创建remark占位符: ${remarkId}, 编号=${remarkIndex}, 标题=${remarkTitle}`);
+                log(`创建remark占位符: ${remarkId}, 编号=${remarkIndex}, 标题=${remarkTitle}`);
                 return placeholder;
             });
             
@@ -5062,7 +5075,7 @@
             
             // 新增：处理equation代码块，直接替换成HTML div格式
             content = content.replace(/```equation\s*\n([\s\S]*?)\n```/g, function(match, formula) {
-                console.log('找到equation代码块:', formula.substring(0, 50) + '...');
+                log('找到equation代码块:', formula.substring(0, 50) + '...');
                 equationIndex++;
                 const equationId = `eq${equationIndex}`;
                 // 给公式末尾添加编号（在$$符号内部）
@@ -5070,13 +5083,13 @@
                     return `$$${content} \\quad \\color{red}{(${equationIndex})}$$`;
                 });
                 const divHtml = `<div id="${equationId}" class="math-container katex-display" style="display: block; text-align: center; margin: 12px 0; width: 100%;">${numberedFormula}</div>`;
-                console.log(`创建equation div: ${equationId}, 编号=${equationIndex}`);
+                log(`创建equation div: ${equationId}, 编号=${equationIndex}`);
                 return divHtml;
             });
             
             // 处理带有HTML锚点的块级公式 - 修复正则表达式
             content = content.replace(/<div id="([^"]+)"[^>]*>\s*\$\$([\s\S]*?)\$\$\s*<\/div>/g, function(match, id, formula) {
-                console.log('找到带ID的公式:', id, formula.substring(0, 50) + '...');
+                log('找到带ID的公式:', id, formula.substring(0, 50) + '...');
                 const placeholder = `[[[MATH_BLOCK_${blockIndex}]]]`;
                 mathBlocks.push({
                     placeholder: placeholder,
@@ -5091,7 +5104,7 @@
             
             // 处理普通的块级公式
             content = content.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
-                console.log('找到普通公式:', formula.substring(0, 50) + '...');
+                log('找到普通公式:', formula.substring(0, 50) + '...');
                 const placeholder = `[[[MATH_BLOCK_${blockIndex}]]]`;
                 mathBlocks.push({
                     placeholder: placeholder,
@@ -5120,7 +5133,7 @@
             const tableBlocks = [];
             
             content = content.replace(/```table(?:\s+(.*?))?\s*\n([\s\S]*?)\n```/g, function(match, title, tableContent) {
-                console.log('处理table代码块占位符...');
+                log('处理table代码块占位符...');
                 tableIndex++;
                 const tableId = `tab${tableIndex}`;
                 const tableTitle = title ? 
@@ -5139,8 +5152,8 @@
                     tableContent: originalTable ? originalTable.content : tableContent.trim()
                 });
                 
-                console.log(`创建table占位符: ${tableId}, 编号=${tableIndex}, 标题=${tableTitle}`);
-                console.log('原始表格内容:', originalTable ? originalTable.content.substring(0, 100) + '...' : '未找到');
+                log(`创建table占位符: ${tableId}, 编号=${tableIndex}, 标题=${tableTitle}`);
+                log('原始表格内容:', originalTable ? originalTable.content.substring(0, 100) + '...' : '未找到');
                 return placeholder;
             });
 
@@ -5148,10 +5161,10 @@
             const figureBlocks = [];
             
             content = content.replace(/```figure(?:\s+(.*?))?\s*\n((?:(?!```)[\s\S])*?)\n```/g, function(match, title, figureContent) {
-                console.log('处理figure代码块占位符...'); 
-                console.log('完整匹配:', match);
-                console.log('标题:', title);
-                console.log('内容:', figureContent);
+                log('处理figure代码块占位符...'); 
+                log('完整匹配:', match);
+                log('标题:', title);
+                log('内容:', figureContent);
                 figureIndex++;
                 const figureId = `fig${figureIndex}`;
                 const figureTitle = title ? 
@@ -5167,15 +5180,15 @@
                     figureContent: figureContent.trim()
                 });
                 
-                console.log(`创建figure占位符: ${figureId}, 编号=${figureIndex}, 标题=${figureTitle}`);
-                console.log('原始图片内容:', figureContent.substring(0, 100) + '...');
+                log(`创建figure占位符: ${figureId}, 编号=${figureIndex}, 标题=${figureTitle}`);
+                log('原始图片内容:', figureContent.substring(0, 100) + '...');
                 return placeholder;
             });
 
-            console.log('数学公式处理完成，共找到', mathBlocks.length, '个公式');
+            log('数学公式处理完成，共找到', mathBlocks.length, '个公式');
             mathBlocks.forEach((block, index) => {
                 if (block.id) {
-                    console.log(`公式${index}: ID=${block.id}`);
+                    log(`公式${index}: ID=${block.id}`);
                 }
             });
             
@@ -5188,11 +5201,11 @@
         }
 
         function renderMathFormulas(htmlContent, mathBlocks) {
-            console.log('开始渲染数学公式，共', mathBlocks.length, '个');
+            log('开始渲染数学公式，共', mathBlocks.length, '个');
             
             mathBlocks.forEach(function(mathBlock, index) {
                 try {
-                    console.log(`渲染公式${index}:`, mathBlock.id ? `ID=${mathBlock.id}` : '无ID');
+                    log(`渲染公式${index}:`, mathBlock.id ? `ID=${mathBlock.id}` : '无ID');
                     
                     const rendered = katex.renderToString(mathBlock.formula, { 
                         throwOnError: false,
@@ -5206,7 +5219,7 @@
                         if (mathBlock.id) {
                             // 保留锚点的块级公式
                             mathHtml = `<div id="${mathBlock.id}" class="math-container katex-display" style="display: block; text-align: center; margin: 12px 0; width: 100%;">${rendered}<span class="math-source">${mathBlock.original}</span></div>`;
-                            console.log(`创建带ID的公式: ${mathBlock.id}`);
+                            log(`创建带ID的公式: ${mathBlock.id}`);
                         } else {
                             // 普通块级公式
                             mathHtml = `<div class="math-container katex-display" style="display: block; text-align: center; margin: 12px 0; width: 100%;">${rendered}<span class="math-source">${mathBlock.original}</span></div>`;
@@ -5218,14 +5231,14 @@
                     
                     // 用全字匹配替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathHtml);
-                    console.log(`公式${index}渲染完成: ${mathBlock.placeholder} -> ${mathHtml.substring(0, 50)}...`);
+                    log(`公式${index}渲染完成: ${mathBlock.placeholder} -> ${mathHtml.substring(0, 50)}...`);
                 } catch (e) {
                     console.error('渲染公式失败:', e);
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathBlock.original);
                 }
             });
             
-            console.log('数学公式渲染完成');
+            log('数学公式渲染完成');
             return htmlContent;
         }
 
@@ -5235,7 +5248,7 @@
             let inlineIndex = 0;
             let blockIndex = 0;
             
-            console.log('开始处理表格内数学公式...');
+            log('开始处理表格内数学公式...');
             
             // 处理行内公式 - 修复：允许换行符，支持多行公式
             content = content.replace(/(?<!\$)\$([^$]*?)\$(?!\$)/g, function(match, formula) {
@@ -5263,16 +5276,16 @@
                 return placeholder;
             });
             
-            console.log(`表格内公式处理完成，共找到 ${mathBlocks.length} 个公式`);
+            log(`表格内公式处理完成，共找到 ${mathBlocks.length} 个公式`);
             return { content, mathBlocks };
         }
         
         function renderTableMathFormulas(htmlContent, mathBlocks) {
-            console.log('开始渲染表格内数学公式，共', mathBlocks.length, '个');
+            log('开始渲染表格内数学公式，共', mathBlocks.length, '个');
             
             mathBlocks.forEach(function(mathBlock, index) {
                 try {
-                    console.log(`渲染表格内公式${index}:`, mathBlock.formula.substring(0, 30) + '...');
+                    log(`渲染表格内公式${index}:`, mathBlock.formula.substring(0, 30) + '...');
                     
                     const rendered = katex.renderToString(mathBlock.formula, { 
                         throwOnError: false,
@@ -5290,20 +5303,20 @@
                     
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathHtml);
-                    console.log(`表格内公式${index}渲染完成`);
+                    log(`表格内公式${index}渲染完成`);
                 } catch (e) {
                     console.error('渲染表格内公式失败:', e);
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(mathBlock.placeholder), 'g'), mathBlock.original);
                 }
             });
             
-            console.log('表格内数学公式渲染完成');
+            log('表格内数学公式渲染完成');
             return htmlContent;
         }
         
         // 后处理表格中的数学公式（直接在HTML中查找并替换）
         function postProcessTableMath(htmlContent) {
-            console.log('开始后处理表格数学公式...');
+            log('开始后处理表格数学公式...');
             
             // 辅助函数：解码HTML实体并修复换行符
             function decodeAndFixFormula(text) {
@@ -5324,7 +5337,7 @@
             // 处理行内公式 $...$，注意这里要匹配可能包含换行的内容
             htmlContent = htmlContent.replace(/\$([^$]*?)\$/g, function(match, formula) {
                 try {
-                    console.log('处理行内公式:', formula);
+                    log('处理行内公式:', formula);
                     // 解码HTML实体并修复换行符
                     const decodedFormula = decodeAndFixFormula(formula.trim());
                     
@@ -5354,7 +5367,7 @@
             // 处理块级公式 $$...$$
             htmlContent = htmlContent.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
                 try {
-                    console.log('处理块级公式:', formula.substring(0, 50) + '...');
+                    log('处理块级公式:', formula.substring(0, 50) + '...');
                     // 解码HTML实体并修复换行符
                     const decodedFormula = decodeAndFixFormula(formula.trim());
                     
@@ -5369,7 +5382,7 @@
                 }
             });
             
-            console.log('表格数学公式后处理完成');
+            log('表格数学公式后处理完成');
             return htmlContent;
         }
 
@@ -5379,18 +5392,18 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染表格，共', tableBlocks.length, '个');
+            log('开始渲染表格，共', tableBlocks.length, '个');
             
             tableBlocks.forEach(function(tableBlock, index) {
                 try {
-                    console.log(`渲染表格${index}:`, tableBlock.tableId);
+                    log(`渲染表格${index}:`, tableBlock.tableId);
                     
                     // 直接处理原始表格内容，包含公式
                     let originalTableContent = tableBlock.tableContent;
                     
                     // 直接渲染markdown，然后后处理数学公式
                     let renderedTable = marked.parse(originalTableContent);
-                    console.log('Markdown渲染后，开始处理数学公式...');
+                    log('Markdown渲染后，开始处理数学公式...');
                     
                     // 辅助函数：解码HTML实体
                     function decodeHtmlEntities(text) {
@@ -5402,11 +5415,11 @@
                     // 处理行内公式，支持多行内容
                     renderedTable = renderedTable.replace(/\$([^$]*?)\$/g, function(match, formula) {
                         try {
-                            console.log('原始公式:', JSON.stringify(formula));
+                            log('原始公式:', JSON.stringify(formula));
                             
                             // 解码HTML实体
                             let decodedFormula = decodeHtmlEntities(formula.trim());
-                            console.log('解码后公式:', JSON.stringify(decodedFormula));
+                            log('解码后公式:', JSON.stringify(decodedFormula));
                             
                             // 特别处理：修复可能被破坏的换行符
                             // 在表格中，\\ 可能变成 \\\\，或者被转义成其他形式
@@ -5414,7 +5427,7 @@
                                 // 确保换行符正确
                                 decodedFormula = decodedFormula.replace(/\\\s+/g, '\\\\'); // 修复空格问题
                                 decodedFormula = decodedFormula.replace(/\\\\\\\\/g, '\\\\'); // 修复双重转义
-                                console.log('cases公式修复后:', JSON.stringify(decodedFormula));
+                                log('cases公式修复后:', JSON.stringify(decodedFormula));
                             }
                             
                             // 检查是否是多行公式
@@ -5422,7 +5435,7 @@
                             const hasLineBreaks = decodedFormula.includes('\\\\');
                             const isMultiline = hasCases || hasLineBreaks;
                             
-                            console.log('多行检测:', { hasCases, hasLineBreaks, isMultiline });
+                            log('多行检测:', { hasCases, hasLineBreaks, isMultiline });
                             
                             const rendered = katex.renderToString(decodedFormula, { 
                                 throwOnError: false,
@@ -5466,7 +5479,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(tableBlock.placeholder), 'g'), tableHtml);
                     
-                    console.log(`表格${index}渲染完成: ${tableBlock.tableId}`);
+                    log(`表格${index}渲染完成: ${tableBlock.tableId}`);
                 } catch (e) {
                     console.error('渲染表格失败:', e);
                     // 失败时保留原始内容
@@ -5474,7 +5487,7 @@
                 }
             });
             
-            console.log('表格渲染完成');
+            log('表格渲染完成');
             return htmlContent;
         }
 
@@ -5484,15 +5497,15 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染图片，共', figureBlocks.length, '个');
+            log('开始渲染图片，共', figureBlocks.length, '个');
             
             figureBlocks.forEach(function(figureBlock, index) {
                 try {
-                    console.log(`渲染图片${index}:`, figureBlock.figureId);
+                    log(`渲染图片${index}:`, figureBlock.figureId);
                     
                     // 处理原始图片内容
                     let originalFigureContent = figureBlock.figureContent;
-                    console.log(`原始图片内容: ${originalFigureContent}`);
+                    log(`原始图片内容: ${originalFigureContent}`);
                     
                     // 直接解析markdown图片语法：![alt](url) 或 ![alt](url){width=xx%}
                     const imgMarkdownMatch = originalFigureContent.match(/!\[([^\]]*)\]\(([^)]+)\)(\{[^}]*\})?/);
@@ -5502,23 +5515,23 @@
                         const imgSrc = imgMarkdownMatch[2] || '';
                         const imgOptions = imgMarkdownMatch[3] || '';
                         
-                        console.log(`匹配到图片: src="${imgSrc.substring(0, 100)}..."`);
-                        console.log(`完整的alt文本长度: ${imgAlt.length}`);
-                        console.log(`完整的alt文本: "${imgAlt}"`);
-                        console.log(`options: "${imgOptions}"`);
+                        log(`匹配到图片: src="${imgSrc.substring(0, 100)}..."`);
+                        log(`完整的alt文本长度: ${imgAlt.length}`);
+                        log(`完整的alt文本: "${imgAlt}"`);
+                        log(`options: "${imgOptions}"`);
                         
                         // 检测alt文本中的{width=xx%}语法 - 从alt中提取并移除
                         let widthMatch = imgAlt.match(/\{.*?width\s*=\s*([0-9]{1,3})%.*?\}/i);
                         let customWidth = null;
                         if (widthMatch) {
                             customWidth = widthMatch[1] + '%';
-                            console.log(`发现width设置在alt中: ${customWidth}, 原alt长度: ${imgAlt.length}`);
-                            console.log(`原alt内容: "${imgAlt}"`);
+                            log(`发现width设置在alt中: ${customWidth}, 原alt长度: ${imgAlt.length}`);
+                            log(`原alt内容: "${imgAlt}"`);
                             // 从alt文本中移除width语法 - 使用更精确的匹配
                             imgAlt = imgAlt.replace(/\{[^}]*?width\s*=\s*[0-9]{1,3}%[^}]*?\}/i, '').trim();
-                            console.log(`移除width后alt长度: ${imgAlt.length}, 内容: "${imgAlt}"`);
+                            log(`移除width后alt长度: ${imgAlt.length}, 内容: "${imgAlt}"`);
                         } else {
-                            console.log(`alt文本中没有发现width设置`);
+                            log(`alt文本中没有发现width设置`);
                         }
                         
                         // 如果options中也有width，优先使用options中的
@@ -5531,16 +5544,16 @@
                         
                         // 处理alt中的公式 - 先还原__DOLLAR__为$，然后渲染
                         let processedAlt = imgAlt;
-                        console.log(`原始alt文本: ${processedAlt}`);
+                        log(`原始alt文本: ${processedAlt}`);
                         
                         // 先还原__DOLLAR__为$
                         processedAlt = processedAlt.replace(/__DOLLAR__/g, '$');
-                        console.log(`还原$符号后的alt文本: ${processedAlt}`);
+                        log(`还原$符号后的alt文本: ${processedAlt}`);
                         
                         if (/\$[^$]+\$/.test(processedAlt)) {
-                            console.log(`发现数学公式，开始渲染...`);
+                            log(`发现数学公式，开始渲染...`);
                             processedAlt = processedAlt.replace(/\$([^$]+)\$/g, function(match, formula) {
-                                console.log(`正在处理公式: "${formula}"`);
+                                log(`正在处理公式: "${formula}"`);
                                 try {
                                     const rendered = katex.renderToString(formula, {
                                         throwOnError: false, 
@@ -5548,25 +5561,25 @@
                                         strict: false,
                                         trust: true
                                     });
-                                    console.log(`数学公式渲染成功: ${formula} -> ${rendered.substring(0, 100)}...`);
+                                    log(`数学公式渲染成功: ${formula} -> ${rendered.substring(0, 100)}...`);
                                     return rendered;
                                 } catch (e) {
                                     console.error(`数学公式渲染失败: ${formula}`, e);
-                                    console.log(`使用原始公式文本: ${match}`);
+                                    log(`使用原始公式文本: ${match}`);
                                     return match;
                                 }
                             });
-                            console.log(`公式处理完成，最终alt文本: ${processedAlt.substring(0, 200)}...`);
+                            log(`公式处理完成，最终alt文本: ${processedAlt.substring(0, 200)}...`);
                         } else {
-                            console.log(`没有发现数学公式`);
+                            log(`没有发现数学公式`);
                         }
                         
                         // 创建带编号的图片HTML
-                        console.log(`准备创建figureHtml，figureTitle: ${figureBlock.figureTitle}`);
-                        console.log(`processedAlt: ${processedAlt ? processedAlt.substring(0, 200) + '...' : 'null'}`);
+                        log(`准备创建figureHtml，figureTitle: ${figureBlock.figureTitle}`);
+                        log(`processedAlt: ${processedAlt ? processedAlt.substring(0, 200) + '...' : 'null'}`);
                         
                         const captionText = figureBlock.figureTitle + (processedAlt ? '：' + processedAlt : '');
-                        console.log(`最终caption文本: ${captionText.substring(0, 200)}...`);
+                        log(`最终caption文本: ${captionText.substring(0, 200)}...`);
                         
                         const figureHtml = `<div id="${figureBlock.figureId}" class="figure-container" data-figure-number="${figureBlock.figureId.replace('fig', '')}" data-figure-title="${figureBlock.figureTitle}">
                             <figure class="image-container" style="width: ${customWidth || '100%'}; max-width: ${customWidth || '800px'}; margin: 0 auto;">
@@ -5580,7 +5593,7 @@
                         // 替换占位符
                         htmlContent = htmlContent.replace(new RegExp(escapeRegExp(figureBlock.placeholder), 'g'), figureHtml);
                         
-                        console.log(`图片${index}渲染完成: ${figureBlock.figureId}`);
+                        log(`图片${index}渲染完成: ${figureBlock.figureId}`);
                     } else {
                         console.error('未找到markdown图片语法');
                         htmlContent = htmlContent.replace(new RegExp(escapeRegExp(figureBlock.placeholder), 'g'), figureBlock.figureContent);
@@ -5592,7 +5605,7 @@
                 }
             });
             
-            console.log('图片渲染完成');
+            log('图片渲染完成');
             return htmlContent;
         }
 
@@ -5602,11 +5615,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染定理，共', theoremBlocks.length, '个');
+            log('开始渲染定理，共', theoremBlocks.length, '个');
             
             theoremBlocks.forEach(function(theoremBlock, index) {
                 try {
-                    console.log(`渲染定理${index}:`, theoremBlock.theoremId);
+                    log(`渲染定理${index}:`, theoremBlock.theoremId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let theoremContent = theoremBlock.originalContent || theoremBlock.theoremContent;
@@ -5630,7 +5643,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(theoremBlock.placeholder), 'g'), theoremHtml);
                     
-                    console.log(`定理${index}渲染完成: ${theoremBlock.theoremId}`);
+                    log(`定理${index}渲染完成: ${theoremBlock.theoremId}`);
                 } catch (e) {
                     console.error('渲染定理失败:', e);
                     // 失败时保留原始内容
@@ -5638,7 +5651,7 @@
                 }
             });
             
-            console.log('定理渲染完成');
+            log('定理渲染完成');
             return htmlContent;
         }
 
@@ -5648,11 +5661,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染假设，共', assumptionBlocks.length, '个');
+            log('开始渲染假设，共', assumptionBlocks.length, '个');
             
             assumptionBlocks.forEach(function(assumptionBlock, index) {
                 try {
-                    console.log(`渲染假设${index}:`, assumptionBlock.assumptionId);
+                    log(`渲染假设${index}:`, assumptionBlock.assumptionId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let assumptionContent = assumptionBlock.originalContent || assumptionBlock.assumptionContent;
@@ -5676,7 +5689,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(assumptionBlock.placeholder), 'g'), assumptionHtml);
                     
-                    console.log(`假设${index}渲染完成: ${assumptionBlock.assumptionId}`);
+                    log(`假设${index}渲染完成: ${assumptionBlock.assumptionId}`);
                 } catch (e) {
                     console.error('渲染假设失败:', e);
                     // 失败时保留原始内容
@@ -5684,7 +5697,7 @@
                 }
             });
             
-            console.log('假设渲染完成');
+            log('假设渲染完成');
             return htmlContent;
         }
 
@@ -5694,11 +5707,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染定义，共', definitionBlocks.length, '个');
+            log('开始渲染定义，共', definitionBlocks.length, '个');
             
             definitionBlocks.forEach(function(definitionBlock, index) {
                 try {
-                    console.log(`渲染定义${index}:`, definitionBlock.definitionId);
+                    log(`渲染定义${index}:`, definitionBlock.definitionId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let definitionContent = definitionBlock.originalContent || definitionBlock.definitionContent;
@@ -5722,7 +5735,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(definitionBlock.placeholder), 'g'), definitionHtml);
                     
-                    console.log(`定义${index}渲染完成: ${definitionBlock.definitionId}`);
+                    log(`定义${index}渲染完成: ${definitionBlock.definitionId}`);
                 } catch (e) {
                     console.error('渲染定义失败:', e);
                     // 失败时保留原始内容
@@ -5730,7 +5743,7 @@
                 }
             });
             
-            console.log('定义渲染完成');
+            log('定义渲染完成');
             return htmlContent;
         }
 
@@ -5740,11 +5753,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染推论，共', corollaryBlocks.length, '个');
+            log('开始渲染推论，共', corollaryBlocks.length, '个');
             
             corollaryBlocks.forEach(function(corollaryBlock, index) {
                 try {
-                    console.log(`渲染推论${index}:`, corollaryBlock.corollaryId);
+                    log(`渲染推论${index}:`, corollaryBlock.corollaryId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let corollaryContent = corollaryBlock.originalContent || corollaryBlock.corollaryContent;
@@ -5768,7 +5781,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(corollaryBlock.placeholder), 'g'), corollaryHtml);
                     
-                    console.log(`推论${index}渲染完成: ${corollaryBlock.corollaryId}`);
+                    log(`推论${index}渲染完成: ${corollaryBlock.corollaryId}`);
                 } catch (e) {
                     console.error('渲染推论失败:', e);
                     // 失败时保留原始内容
@@ -5776,7 +5789,7 @@
                 }
             });
             
-            console.log('推论渲染完成');
+            log('推论渲染完成');
             return htmlContent;
         }
 
@@ -5786,11 +5799,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染命题，共', propositionBlocks.length, '个');
+            log('开始渲染命题，共', propositionBlocks.length, '个');
             
             propositionBlocks.forEach(function(propositionBlock, index) {
                 try {
-                    console.log(`渲染命题${index}:`, propositionBlock.propositionId);
+                    log(`渲染命题${index}:`, propositionBlock.propositionId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let propositionContent = propositionBlock.originalContent || propositionBlock.propositionContent;
@@ -5814,7 +5827,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(propositionBlock.placeholder), 'g'), propositionHtml);
                     
-                    console.log(`命题${index}渲染完成: ${propositionBlock.propositionId}`);
+                    log(`命题${index}渲染完成: ${propositionBlock.propositionId}`);
                 } catch (e) {
                     console.error('渲染命题失败:', e);
                     // 失败时保留原始内容
@@ -5822,7 +5835,7 @@
                 }
             });
             
-            console.log('命题渲染完成');
+            log('命题渲染完成');
             return htmlContent;
         }
 
@@ -5832,11 +5845,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染引理，共', lemmaBlocks.length, '个');
+            log('开始渲染引理，共', lemmaBlocks.length, '个');
             
             lemmaBlocks.forEach(function(lemmaBlock, index) {
                 try {
-                    console.log(`渲染引理${index}:`, lemmaBlock.lemmaId);
+                    log(`渲染引理${index}:`, lemmaBlock.lemmaId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let lemmaContent = lemmaBlock.originalContent || lemmaBlock.lemmaContent;
@@ -5860,7 +5873,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(lemmaBlock.placeholder), 'g'), lemmaHtml);
                     
-                    console.log(`引理${index}渲染完成: ${lemmaBlock.lemmaId}`);
+                    log(`引理${index}渲染完成: ${lemmaBlock.lemmaId}`);
                 } catch (e) {
                     console.error('渲染引理失败:', e);
                     // 失败时保留原始内容
@@ -5868,7 +5881,7 @@
                 }
             });
             
-            console.log('引理渲染完成');
+            log('引理渲染完成');
             return htmlContent;
         }
 
@@ -5878,11 +5891,11 @@
                 return htmlContent;
             }
             
-            console.log('开始渲染备注，共', remarkBlocks.length, '个');
+            log('开始渲染备注，共', remarkBlocks.length, '个');
             
             remarkBlocks.forEach(function(remarkBlock, index) {
                 try {
-                    console.log(`渲染备注${index}:`, remarkBlock.remarkId);
+                    log(`渲染备注${index}:`, remarkBlock.remarkId);
                     
                     // 使用原始内容（包含原始的数学公式）
                     let remarkContent = remarkBlock.originalContent || remarkBlock.remarkContent;
@@ -5906,7 +5919,7 @@
                     // 替换占位符
                     htmlContent = htmlContent.replace(new RegExp(escapeRegExp(remarkBlock.placeholder), 'g'), remarkHtml);
                     
-                    console.log(`备注${index}渲染完成: ${remarkBlock.remarkId}`);
+                    log(`备注${index}渲染完成: ${remarkBlock.remarkId}`);
                 } catch (e) {
                     console.error('渲染备注失败:', e);
                     // 失败时保留原始内容
@@ -5914,7 +5927,7 @@
                 }
             });
             
-            console.log('备注渲染完成');
+            log('备注渲染完成');
             return htmlContent;
         }
 
@@ -6453,7 +6466,7 @@
         }
 
         function showSectionTooltip(event, sectionId) {
-            console.log('showSectionTooltip called with:', sectionId);
+            log('showSectionTooltip called with:', sectionId);
             
             // Create section tooltip element if it doesn't exist
             let tooltip = document.getElementById('section-tooltip');
@@ -6462,20 +6475,20 @@
                 tooltip.id = 'section-tooltip';
                 tooltip.className = 'section-tooltip';
                 document.body.appendChild(tooltip);
-                console.log('Created new section tooltip element');
+                log('Created new section tooltip element');
             }
 
             // Find the target section element
             const sectionElement = document.getElementById(sectionId);
             if (!sectionElement) {
-                console.log('Section element not found:', sectionId);
+                log('Section element not found:', sectionId);
                 // 调试：显示所有可用的section ID
                 const allSectionIds = Array.from(document.querySelectorAll('[id^="sec"]')).map(el => el.id);
-                console.log('Available section IDs:', allSectionIds);
+                log('Available section IDs:', allSectionIds);
                 
                 // 调试：显示所有包含section的ID
                 const allIds = Array.from(document.querySelectorAll('[id]')).map(el => ({id: el.id, text: el.textContent.substring(0,50)}));
-                console.log('All elements with IDs:', allIds.filter(item => item.id.includes('sec') || item.text.includes('Feature Learning')));
+                log('All elements with IDs:', allIds.filter(item => item.id.includes('sec') || item.text.includes('Feature Learning')));
                 
                 // 调试：显示所有标题及其ID  
                 const allHeadings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6')).map(h => ({
@@ -6483,11 +6496,11 @@
                     id: h.id,
                     text: h.textContent.substring(0,50)
                 }));
-                console.log('All headings with IDs:', allHeadings);
+                log('All headings with IDs:', allHeadings);
                 return;
             }
             
-            console.log('Found section element:', sectionElement);
+            log('Found section element:', sectionElement);
 
             // Extract section number and title
             const sectionNumberSpan = sectionElement.querySelector('.section-number');
@@ -6604,7 +6617,7 @@
             
             document.body.appendChild(tooltip);
             
-            console.log('显示简单tooltip:', tooltipContent, 'for:', targetId);
+            log('显示简单tooltip:', tooltipContent, 'for:', targetId);
         }
 
         // 隐藏简单tooltip
@@ -6664,15 +6677,15 @@
             const tocContainer = document.getElementById('toc-container');
             const tocFab = document.getElementById('toc-fab');
             
-            console.log('Toggling TOC, current state:', tocVisible);
+            log('Toggling TOC, current state:', tocVisible);
             tocVisible = !tocVisible;
             
             if (tocVisible) {
-                console.log('Showing TOC container');
+                log('Showing TOC container');
                 tocContainer.classList.add('show');
                 tocFab.classList.remove('show');
             } else {
-                console.log('Hiding TOC container, showing button');
+                log('Hiding TOC container, showing button');
                 tocContainer.classList.remove('show');
                 tocFab.classList.add('show');
                 tocFab.style.display = 'flex'; // Force display
@@ -6681,7 +6694,7 @@
 
         function generateTableOfContents() {
             const url = new URL(window.location.href);
-            console.log('generateTableOfContents called, currentSection=', typeof currentSection !== 'undefined' ? currentSection : 'undefined', 'section param=', url.searchParams.get('section'));
+            log('generateTableOfContents called, currentSection=', typeof currentSection !== 'undefined' ? currentSection : 'undefined', 'section param=', url.searchParams.get('section'));
             if ((typeof currentSection !== 'undefined' && currentSection === 'run') || url.searchParams.get('section') === 'run') {
                 document.getElementById('toc-container').style.display = 'none';
                 document.getElementById('toc-fab').style.display = 'none';
@@ -6692,20 +6705,20 @@
             const tocContent = document.getElementById('toc-content');
             const tocFab = document.getElementById('toc-fab');
             
-            console.log('Generating TOC, content found:', !!content);
+            log('Generating TOC, content found:', !!content);
             
             if (!content) {
-                console.log('No markdown content found, hiding TOC');
+                log('No markdown content found, hiding TOC');
                 tocContent.innerHTML = '<div class="toc-empty">No headings found on this page</div>';
                 tocFab.classList.remove('show');
                 return;
             }
             
             const headings = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
-            console.log('Found headings:', headings.length);
+            log('Found headings:', headings.length);
             
             if (headings.length === 0) {
-                console.log('No headings found, hiding TOC');
+                log('No headings found, hiding TOC');
                 tocContent.innerHTML = '<div class="toc-empty">No headings found on this page</div>';
                 tocFab.classList.remove('show');
                 return;
@@ -6771,7 +6784,7 @@
                 // 设置标题ID
                 const oldId = heading.id;
                 heading.id = sectionId;
-                console.log('Generated ID for heading:', heading.textContent.trim(), 'old ID:', oldId, '-> new ID:', sectionId, 'numbering enabled:', shouldEnableSectionNumbering);
+                log('Generated ID for heading:', heading.textContent.trim(), 'old ID:', oldId, '-> new ID:', sectionId, 'numbering enabled:', shouldEnableSectionNumbering);
                 
                 // 只对blog页面添加section编号
                 if (shouldEnableSectionNumbering) {
@@ -6809,11 +6822,11 @@
                     const targetId = this.getAttribute('data-target');
                     const targetElement = document.getElementById(targetId);
                     
-                    console.log('TOC item clicked, target ID:', targetId);
-                    console.log('Target element found:', !!targetElement);
+                    log('TOC item clicked, target ID:', targetId);
+                    log('Target element found:', !!targetElement);
                     
                     if (targetElement) {
-                        console.log('Scrolling to element:', targetElement);
+                        log('Scrolling to element:', targetElement);
                         
                         // Use scrollIntoView - the most reliable method
                         targetElement.scrollIntoView({
@@ -6822,7 +6835,7 @@
                             inline: 'nearest'
                         });
                         
-                        console.log('ScrollIntoView called successfully');
+                        log('ScrollIntoView called successfully');
                         
                         // Update active state
                         updateActiveTocItem(targetId);
@@ -6838,7 +6851,7 @@
             });
             
             // Show TOC container by default
-            console.log('Showing TOC container by default');
+            log('Showing TOC container by default');
             const tocContainer = document.getElementById('toc-container');
             tocContainer.classList.add('show');
             tocFab.classList.remove('show');
@@ -6893,8 +6906,8 @@
             
             // Remove existing scroll listener if any
             mainContent.removeEventListener('scroll', scrollHandler);
-            // Add new scroll listener
-            mainContent.addEventListener('scroll', scrollHandler);
+            // Add new scroll listener (throttled)
+            mainContent.addEventListener('scroll', throttle(scrollHandler, 100));
             
             // Initial call
             scrollHandler();
@@ -7090,7 +7103,7 @@
             const contentDiv = document.getElementById('content');
             
             try {
-                console.log('Loading blogs content from JSON...');
+                log('Loading blogs content from JSON...');
                 
                 // Load blog file list from JSON
                 const response = await fetch('./blogs.json');
@@ -7101,7 +7114,7 @@
                 const blogsData = await response.json();
                 const blogFiles = blogsData.blogs;
                 
-                console.log(`Found ${blogFiles.length} blog files in JSON:`, blogFiles);
+                log(`Found ${blogFiles.length} blog files in JSON:`, blogFiles);
                 
                 // Load and parse each blog file
                 blogPosts = [];
@@ -7119,10 +7132,10 @@
                                 }
                             }
                         } else {
-                            console.warn(`Failed to load blog file: ${fileName} (${fileResponse.status})`);
+                            warn(`Failed to load blog file: ${fileName} (${fileResponse.status})`);
                         }
                     } catch (error) {
-                        console.warn(`Error loading blog file: ${fileName}`, error);
+                        warn(`Error loading blog file: ${fileName}`, error);
                     }
                 }
                 
@@ -7131,7 +7144,7 @@
                 applySorting('date-desc'); // Use the sorting function that handles pinned posts
                 blogPosts = [...filteredPosts]; // Update the main array to maintain consistency
                 
-                console.log(`Successfully loaded ${blogPosts.length} visible blog posts`);
+                log(`Successfully loaded ${blogPosts.length} visible blog posts`);
                 
                 // Render blogs page
                 renderBlogsPage();
@@ -7162,7 +7175,7 @@
                         excerpt: generateExcerpt(content)
                 };
             } catch (error) {
-                    console.warn(`Failed to parse front matter for ${fileName}:`, error);
+                    warn(`Failed to parse front matter for ${fileName}:`, error);
                 }
             }
             
@@ -7675,7 +7688,7 @@
                 initURLRouting();
                 loadContentFromURL();
                 
-                console.log('Retry successful');
+                log('Retry successful');
                 
             } catch (error) {
                 console.error('Retry failed:', error);
@@ -7785,7 +7798,7 @@
                     title: title,
                     url: shareURL
                 }).catch(err => {
-                    console.log('Share failed:', err);
+                    log('Share failed:', err);
                     copyToClipboard(shareURL);
                 });
             } else {
@@ -7975,7 +7988,7 @@
                 throw new Error(`Required libraries not loaded: ${missing.join(', ')}`);
             }
             
-            console.log('All dependencies loaded successfully');
+            log('All dependencies loaded successfully');
         }
 
         // Load fallback libraries if CDN fails
@@ -7984,8 +7997,8 @@
                 {
                     name: 'jsyaml',
                     urls: [
+                        'vendor/js-yaml.min.js',
                         'https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js',
-                        'https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js',
                         'https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js'
                     ],
                     check: () => typeof jsyaml !== 'undefined'
@@ -7993,8 +8006,8 @@
                 {
                     name: 'marked',
                     urls: [
+                        'vendor/marked.min.js',
                         'https://cdn.bootcdn.net/ajax/libs/marked/4.3.0/marked.min.js',
-                        'https://unpkg.com/marked@4.3.0/marked.min.js',
                         'https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js'
                     ],
                     check: () => typeof marked !== 'undefined'
@@ -8002,8 +8015,8 @@
                 {
                     name: 'highlight.js',
                     urls: [
+                        'vendor/highlight.min.js',
                         'https://cdn.bootcdn.net/ajax/libs/highlight.js/11.8.0/highlight.min.js',
-                        'https://unpkg.com/highlight.js@11.8.0/lib/highlight.min.js',
                         'https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/highlight.min.js'
                     ],
                     check: () => typeof hljs !== 'undefined'
@@ -8011,8 +8024,8 @@
                 {
                     name: 'katex',
                     urls: [
+                        'vendor/katex.min.js',
                         'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js',
-                        'https://unpkg.com/katex@0.16.9/dist/katex.min.js',
                         'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js'
                     ],
                     check: () => typeof katex !== 'undefined'
@@ -8021,16 +8034,16 @@
             
             for (const lib of fallbacks) {
                 if (!lib.check()) {
-                    console.log(`Loading fallback for ${lib.name}...`);
+                    log(`Loading fallback for ${lib.name}...`);
                     
                     // Try each URL until one works
                     for (const url of lib.urls) {
                         try {
                             await loadScript(url);
-                            console.log(`${lib.name} loaded from ${url}`);
+                            log(`${lib.name} loaded from ${url}`);
                             break; // Success, stop trying other URLs
                         } catch (error) {
-                            console.warn(`Failed to load ${lib.name} from ${url}:`, error);
+                            warn(`Failed to load ${lib.name} from ${url}:`, error);
                             continue; // Try next URL
                         }
                     }
@@ -8171,12 +8184,12 @@
                     const id = e.target.getAttribute('href').slice(1);
                     const el = document.getElementById(id);
                     if (el) {
-                        console.log('直接滚动到公式:', id);
+                        log('直接滚动到公式:', id);
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         el.style.background = 'rgba(52,152,219,0.08)';
                         setTimeout(() => el.style.background = '', 800);
                     } else {
-                        console.log('未找到公式元素:', id);
+                        log('未找到公式元素:', id);
                     }
                 }
                 // 检查是否是表格引用链接
@@ -8188,12 +8201,12 @@
                         const id = href.startsWith('#') ? href.slice(1) : href;
                         const el = document.getElementById(id);
                         if (el) {
-                            console.log('直接滚动到表格:', id);
+                            log('直接滚动到表格:', id);
                             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             el.style.background = 'rgba(52,152,219,0.08)';
                             setTimeout(() => el.style.background = '', 800);
                         } else {
-                            console.log('未找到表格元素:', id);
+                            log('未找到表格元素:', id);
                         }
                     }
                 }
@@ -8203,12 +8216,12 @@
                     const id = e.target.getAttribute('href').slice(1);
                     const el = document.getElementById(id);
                     if (el) {
-                        console.log('直接滚动到图片:', id);
+                        log('直接滚动到图片:', id);
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         el.style.background = 'rgba(52,152,219,0.08)';
                         setTimeout(() => el.style.background = '', 800);
                     } else {
-                        console.log('未找到图片元素:', id);
+                        log('未找到图片元素:', id);
                     }
                 }
             });
@@ -8216,20 +8229,20 @@
 
         // 统一的内部链接点击处理
         function handleInternalLinkClick(e) {
-            console.log('=== 内部链接点击事件开始 ===');
+            log('=== 内部链接点击事件开始 ===');
             e.preventDefault();
             e.stopPropagation();
             
             const href = this.getAttribute('href');
             const targetId = href.startsWith('#') ? href.substring(1) : href;
             
-            console.log('检测到内部链接点击:', href, '-> target:', targetId);
-            console.log('点击的元素:', this);
+            log('检测到内部链接点击:', href, '-> target:', targetId);
+            log('点击的元素:', this);
             
             const targetElement = document.getElementById(targetId);
             if (targetElement) {
-                console.log('找到目标元素，准备滚动到:', targetId, targetElement);
-                console.log('目标元素位置:', targetElement.getBoundingClientRect());
+                log('找到目标元素，准备滚动到:', targetId, targetElement);
+                log('目标元素位置:', targetElement.getBoundingClientRect());
                 
                 try {
                     targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -8244,20 +8257,20 @@
                         targetElement.style.background = '';
                         targetElement.style.borderRadius = '';
                         targetElement.style.padding = '';
-                        console.log('高亮效果已清除');
+                        log('高亮效果已清除');
                     }, 1500);
                     
-                    console.log('滚动和高亮效果已应用');
+                    log('滚动和高亮效果已应用');
                 } catch (error) {
                     console.error('滚动或高亮时出错:', error);
                 }
             } else {
-                console.warn('未找到目标元素:', targetId);
+                warn('未找到目标元素:', targetId);
                 // 显示所有可用的ID供调试
                 const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
-                console.log('页面中所有可用的ID:', allIds.filter(id => id.includes(targetId) || targetId.includes(id.substring(0, 3))));
+                log('页面中所有可用的ID:', allIds.filter(id => id.includes(targetId) || targetId.includes(id.substring(0, 3))));
             }
-            console.log('=== 内部链接点击事件结束 ===');
+            log('=== 内部链接点击事件结束 ===');
         }
         
         // 统一的内部链接鼠标悬停处理
@@ -8265,7 +8278,7 @@
             const href = this.getAttribute('href');
             const targetId = href.startsWith('#') ? href.substring(1) : href;
             
-            console.log('鼠标悬停在链接上:', href, '-> target:', targetId);
+            log('鼠标悬停在链接上:', href, '-> target:', targetId);
             
             try {
                 // 根据不同类型显示不同的tooltip
@@ -8273,14 +8286,14 @@
                     if (typeof showSectionTooltip === 'function') {
                         showSectionTooltip(e, targetId);
                     } else {
-                        console.warn('showSectionTooltip function not available');
+                        warn('showSectionTooltip function not available');
                     }
                 } else if (targetId.startsWith('fig')) {
                     if (typeof showFigureTooltip === 'function') {
                         const targetElement = document.getElementById(targetId);
                         showFigureTooltip(e, targetElement);
                     } else {
-                        console.warn('showFigureTooltip function not available');
+                        warn('showFigureTooltip function not available');
                     }
                 } else {
                     // 为其他类型的引用显示简单的tooltip
@@ -8301,25 +8314,25 @@
 
         // 只为章节链接绑定事件
         function bindAllInternalLinkEvents() {
-            console.log('=== 开始绑定章节链接事件 ===');
+            log('=== 开始绑定章节链接事件 ===');
             
             // 只查找章节链接，不干扰表格、公式、图片的原有机制
             const sectionLinks = document.querySelectorAll('a[href^="#sec"], a[href^="sec"]');
-            console.log('找到章节链接数量:', sectionLinks.length);
+            log('找到章节链接数量:', sectionLinks.length);
             
             let boundCount = 0;
             
             sectionLinks.forEach((link, index) => {
                 const href = link.getAttribute('href');
                 if (!href || href === '#') {
-                    console.log(`跳过无效链接 ${index}:`, href);
+                    log(`跳过无效链接 ${index}:`, href);
                     return;
                 }
                 
                 // 获取目标ID（处理带#和不带#的情况）
                 const targetId = href.startsWith('#') ? href.substring(1) : href;
                 
-                console.log(`绑定事件到章节链接 ${index}:`, href, '-> target:', targetId, '文本:', link.textContent.trim());
+                log(`绑定事件到章节链接 ${index}:`, href, '-> target:', targetId, '文本:', link.textContent.trim());
                 
                 // 移除可能存在的旧事件监听器
                 link.removeEventListener('click', handleInternalLinkClick);
@@ -8337,15 +8350,15 @@
                 boundCount++;
             });
             
-            console.log(`成功绑定 ${boundCount} 个章节链接的事件`);
-            console.log('=== 章节链接事件绑定完成 ===');
+            log(`成功绑定 ${boundCount} 个章节链接的事件`);
+            log('=== 章节链接事件绑定完成 ===');
         }
 
         // 处理章节引用链接的全局事件处理器
         let sectionLinksHandlerAdded = false;
         
         function setupSectionLinks() {
-            console.log('设置章节引用链接处理器');
+            log('设置章节引用链接处理器');
             
             // 首先清理之前的事件监听器，避免重复绑定
             const existingLinks = document.querySelectorAll('a[href^="#sec"]');
@@ -8363,14 +8376,14 @@
 
         // 自动填充空的链接标签
         function autoFillEmptyLinks() {
-            console.log('开始自动填充空的链接标签');
+            log('开始自动填充空的链接标签');
             
             // 查找所有空的链接标签，包括 <a href="#xxx"></a> 和 <a href="xxx"></a>
             const emptyLinksWithHash = document.querySelectorAll('a[href^="#"]:empty');
             const emptyLinksWithoutHash = document.querySelectorAll('a[href]:empty:not([href^="#"]):not([href^="http"]):not([href^="mailto"]):not([href^="tel"])');
             
             const allEmptyLinks = [...emptyLinksWithHash, ...emptyLinksWithoutHash];
-            console.log(`发现 ${allEmptyLinks.length} 个空链接标签`);
+            log(`发现 ${allEmptyLinks.length} 个空链接标签`);
             
             if (allEmptyLinks.length === 0) {
                 return;
@@ -8387,24 +8400,24 @@
                 
                 // 处理带#和不带#的情况
                 const id = href.startsWith('#') ? href.substring(1) : href;
-                console.log(`处理空链接: ${href} -> ID: ${id}`);
+                log(`处理空链接: ${href} -> ID: ${id}`);
                 
                 // 查找对应的内容
                 const content = findContentForId(id, contentMap);
                 if (content) {
                     link.textContent = content;
-                    console.log(`已填充链接 ${href} 内容: ${content}`);
+                    log(`已填充链接 ${href} 内容: ${content}`);
                     hasFilledLinks = true;
                 } else {
                     // 如果找不到内容，添加一个占位符
                     link.innerHTML = `<span style="color: #dc3545; font-style: italic;"><!-- 链接 ${id} 待填充 --></span>`;
-                    console.warn(`未找到 ${href} 对应的内容`);
+                    warn(`未找到 ${href} 对应的内容`);
                 }
             });
             
             // 总是重新绑定所有内部链接的事件，确保功能正常
             if (typeof bindAllInternalLinkEvents === 'function') {
-                console.log('绑定所有内部链接事件...');
+                log('绑定所有内部链接事件...');
                 bindAllInternalLinkEvents();
             } else {
                 console.error('bindAllInternalLinkEvents function not found!');
@@ -8491,7 +8504,7 @@
                 }
             });
             
-            console.log('内容映射表:', contentMap);
+            log('内容映射表:', contentMap);
             return contentMap;
         }
         
@@ -8604,11 +8617,11 @@
 
         // 博客引用预览功能
         function setupBlogReferencePreview() {
-            console.log('设置博客引用预览功能');
+            log('设置博客引用预览功能');
             
             // 查找所有博客引用链接 (?blog=xxx.md)
             const blogLinks = document.querySelectorAll('a[href*="?blog="]');
-            console.log(`发现 ${blogLinks.length} 个博客引用链接`);
+            log(`发现 ${blogLinks.length} 个博客引用链接`);
             
             blogLinks.forEach(link => {
                 const href = link.getAttribute('href');
@@ -8616,7 +8629,7 @@
                 
                 if (blogMatch) {
                     const fileName = decodeURIComponent(blogMatch[1]);
-                    console.log(`为博客链接添加预览功能: ${fileName}`);
+                    log(`为博客链接添加预览功能: ${fileName}`);
                     
                     // 添加悬停事件
                     link.addEventListener('mouseenter', (e) => showBlogPreview(e, fileName));
@@ -8770,18 +8783,18 @@
         function scrollToHashTarget() {
             if (window.location.hash) {
                 const id = window.location.hash.slice(1);
-                console.log('尝试跳转到ID:', id);
+                log('尝试跳转到ID:', id);
                 const el = document.getElementById(id);
                 if (el) {
-                    console.log('找到目标元素:', el);
+                    log('找到目标元素:', el);
                     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     el.style.background = 'rgba(52,152,219,0.08)';
                     setTimeout(() => el.style.background = '', 800);
                 } else {
-                    console.log('未找到ID为', id, '的元素');
+                    log('未找到ID为', id, '的元素');
                     // 调试：显示页面上所有的ID
                     const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
-                    console.log('页面上所有的ID:', allIds);
+                    log('页面上所有的ID:', allIds);
                 }
             }
         }
@@ -8801,7 +8814,7 @@
                     const id = window.location.hash.slice(1);
                     const el = document.getElementById(id);
                     if (el) {
-                        console.log('定时检测找到目标元素:', id);
+                        log('定时检测找到目标元素:', id);
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         el.style.background = 'rgba(52,152,219,0.08)';
                         setTimeout(() => el.style.background = '', 800);
@@ -8825,7 +8838,7 @@
                 return;
             }
 
-            console.log('进入幻灯片模式');
+            log('进入幻灯片模式');
             slidesMode = true;
             
             // 生成幻灯片
@@ -8864,7 +8877,7 @@
 
         // 退出幻灯片模式
         function exitSlidesMode() {
-            console.log('退出幻灯片模式');
+            log('退出幻灯片模式');
             slidesMode = false;
             
             // 先退出全屏
@@ -8914,9 +8927,9 @@
                     }
                 }, 100);
                 
-                console.log('已尝试进入全屏模式');
+                log('已尝试进入全屏模式');
             } catch (error) {
-                console.warn('进入全屏失败:', error);
+                warn('进入全屏失败:', error);
             }
         }
 
@@ -8945,9 +8958,9 @@
                     }
                 }, 100);
                 
-                console.log('已尝试退出全屏模式');
+                log('已尝试退出全屏模式');
             } catch (error) {
-                console.warn('退出全屏失败:', error);
+                warn('退出全屏失败:', error);
             }
         }
 
@@ -9003,7 +9016,7 @@
             // 根据标题层级分割内容
             slides = splitContentIntoSections(contentClone);
             
-            console.log(`生成了 ${slides.length} 张幻灯片`);
+            log(`生成了 ${slides.length} 张幻灯片`);
         }
 
         // 根据标题层级分割内容
@@ -9153,17 +9166,17 @@
                                    document.mozFullScreenElement || 
                                    document.msFullscreenElement);
             
-            console.log('全屏状态变化:', isFullscreen ? '进入全屏' : '退出全屏');
+            log('全屏状态变化:', isFullscreen ? '进入全屏' : '退出全屏');
             
             // 如果退出全屏且当前在幻灯片模式，则退出幻灯片模式
             if (!isFullscreen && slidesMode) {
-                console.log('检测到退出全屏，自动退出幻灯片模式');
+                log('检测到退出全屏，自动退出幻灯片模式');
                 exitSlidesMode();
             }
             
             // 如果退出全屏且当前在全屏阅读模式，则退出全屏阅读模式
             if (!isFullscreen && document.body.classList.contains('fullscreen-reading')) {
-                console.log('检测到退出全屏，自动退出全屏阅读模式');
+                log('检测到退出全屏，自动退出全屏阅读模式');
                 exitFullscreenReading();
             }
         }
@@ -9344,9 +9357,9 @@
                 document.getElementById('run-table').innerHTML = html;
             }
             function renderCalendar() {
-                console.log('=== renderCalendar 开始 ===');
-                console.log('selectedYear:', selectedYear, 'selectedMonth:', selectedMonth);
-                console.log('filteredData:', filteredData);
+                log('=== renderCalendar 开始 ===');
+                log('selectedYear:', selectedYear, 'selectedMonth:', selectedMonth);
+                log('filteredData:', filteredData);
                 const calendar = echarts.init(document.getElementById('run-calendar'));
                 
                 if (filteredData.length === 0) {
@@ -9387,7 +9400,7 @@
                     calendarRange = [minDate, maxDate];
                 }
                 
-                console.log('calendarRange:', calendarRange, 'minDate:', minDate, 'maxDate:', maxDate);
+                log('calendarRange:', calendarRange, 'minDate:', minDate, 'maxDate:', maxDate);
                 
                 // 生成日历数据，空天也要有
                 function getDateArray(start, end) {
@@ -9474,7 +9487,7 @@
                             if (d.squats >= goalStandard.squats) score++;
                             
                             if (d.distance > 0 || d.pushups > 0 || d.situps > 0 || d.squats > 0) {
-                                console.log(`${d.date}: score=${score}, data=${d.distance},${d.pushups},${d.situps},${d.squats}`);
+                                log(`${d.date}: score=${score}, data=${d.distance},${d.pushups},${d.situps},${d.squats}`);
                             }
                             // Return full object so tooltip can access all fields
                             return { value: [d.date, score], date: d.date, distance: d.distance, pushups: d.pushups, situps: d.situps, squats: d.squats };
@@ -9566,10 +9579,10 @@
                     }
                 }, { passive: false });
                 
-                console.log('=== renderCalendar 完成 ===');
-                console.log('calendarData sample:', calendarData.slice(0,3));
-                console.log('日历日期范围:', minDate, 'to', maxDate);
-                console.log('总数据条数:', calendarData.length);
+                log('=== renderCalendar 完成 ===');
+                log('calendarData sample:', calendarData.slice(0,3));
+                log('日历日期范围:', minDate, 'to', maxDate);
+                log('总数据条数:', calendarData.length);
             }
             function renderCharts() {
                 const charts = echarts.init(document.getElementById('run-charts'));
