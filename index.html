@@ -4255,6 +4255,41 @@
                 loadContentFromURL();
             });
             
+            // 拦截站内导航链接的点击，使用SPA导航而非整页刷新
+            // 处理 <a href="?section=xxx"> 和 <a href="https://lizhemin15.github.io/?section=xxx"> 等链接
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[href]');
+                if (!link) return;
+                
+                const href = link.getAttribute('href');
+                if (!href) return;
+                
+                // 跳过外部链接、锚点链接、非导航链接
+                if (href.startsWith('#') || href.startsWith('javascript:') || 
+                    href.startsWith('mailto:') || href.startsWith('tel:') ||
+                    link.target === '_blank') return;
+                
+                // 检查是否是站内导航链接（包含 section 或 blog 参数）
+                const hasSectionParam = href.includes('section=') || href.includes('blog=');
+                if (!hasSectionParam) return;
+                
+                // 检查是否是同源链接
+                try {
+                    const linkUrl = new URL(href, window.location.origin);
+                    if (linkUrl.origin !== window.location.origin) return;
+                } catch(err) { return; }
+                
+                // 拦截点击，使用SPA导航
+                e.preventDefault();
+                const targetUrl = new URL(href, window.location.origin);
+                const section = targetUrl.searchParams.get('section');
+                const blog = targetUrl.searchParams.get('blog');
+                
+                scrollPositionManager.clearScrollPosition();
+                updateURL({ section: section, blog: blog });
+                loadContentFromURL();
+            });
+            
             // 添加滚动位置保存监听器
             const mainContent = document.querySelector('.main-content');
             if (mainContent) {
@@ -7478,16 +7513,18 @@
 
         // View single blog post
         async function viewBlogPost(fileName) {
-            // Update URL and let the routing system handle the loading
+            // Update URL and load the blog post content
             updateURL({ blog: fileName });
+            loadContentFromURL();
         }
 
         // View blog post with scroll position clearing
         function viewBlogPostWithScrollClear(fileName) {
             // 清除滚动位置（页面切换）
             scrollPositionManager.clearScrollPosition();
-            // Update URL and let the routing system handle the loading
+            // Update URL and load the blog post content
             updateURL({ blog: fileName });
+            loadContentFromURL();
         }
 
         // Direct blog post loading (for internal use)
@@ -8641,6 +8678,12 @@
                     link.addEventListener('mouseenter', (e) => showBlogPreview(e, fileName));
                     link.addEventListener('mouseleave', hideBlogPreview);
                     link.addEventListener('mousemove', updateBlogPreviewPosition);
+                    
+                    // 拦截点击，使用SPA导航而非整页刷新
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        viewBlogPostWithScrollClear(fileName);
+                    });
                     
                     // 添加样式类
                     link.classList.add('blog-reference-link');
