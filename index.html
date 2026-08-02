@@ -4139,6 +4139,20 @@
                     checkDependencies(); // Check again after loading fallbacks
                 }
                 
+                // Configure marked after dependencies are confirmed loaded
+                if (typeof marked !== 'undefined' && typeof hljs !== 'undefined') {
+                    marked.setOptions({
+                        highlight: function(code, lang) {
+                            if (lang && hljs.getLanguage(lang)) {
+                                return hljs.highlight(code, { language: lang }).value;
+                            }
+                            return hljs.highlightAuto(code).value;
+                        },
+                        breaks: true,
+                        gfm: true
+                    });
+                }
+                
                 // Initialize theme
                 initializeTheme();
                 
@@ -4848,17 +4862,9 @@
             });
         }
 
-        // Markdown configuration
-        marked.setOptions({
-            highlight: function(code, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    return hljs.highlight(code, { language: lang }).value;
-                }
-                return hljs.highlightAuto(code).value;
-            },
-            breaks: true,
-            gfm: true
-        });
+        // Markdown configuration - moved to DOMContentLoaded callback to ensure
+        // marked and hljs are loaded (they are deferred scripts)
+        // marked.setOptions is now called after checkDependencies() in the init handler
 
         // Fixed mathematical formula processing system
         function preprocessMathFormulas(content) {
