@@ -4763,7 +4763,7 @@
             `;
             
             try {
-                const response = await fetch(`./blogs/${fileName}`);
+                const response = await fetch(`./blogs/${fileName}?t=${Date.now()}`);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
@@ -7300,7 +7300,7 @@
                     runSectionDiv.style.display = '';
                     runSectionDiv.innerHTML = `<div class='loading'><i class='fas fa-spinner'></i><p>加载跑步数据...</p></div>`;
                     try {
-                        const res = await fetch('run/run-records.json');
+                        const res = await fetch('run/run-records.json?t=' + Date.now());
                         const runData = await res.json();
                         renderRunSection(runData);
                     } catch(e) {
@@ -7337,7 +7337,7 @@
                 const fileName = navItem ? navItem.file : `${section}.md`;
                 const markdownFolder = siteConfig?.misc?.markdown_folder || './md/';
                 
-                const response = await fetch(`${markdownFolder}${fileName}`);
+                const response = await fetch(`${markdownFolder}${fileName}?t=${Date.now()}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -7443,10 +7443,22 @@
             try {
                 log('Loading blogs content from JSON...');
                 
-                // Load blog file list from JSON
-                const response = await fetch('./blogs.json');
-                if (!response.ok) {
-                    throw new Error(`Failed to load blogs.json: ${response.status} ${response.statusText}`);
+                // Load blog file list from JSON (with cache-busting and retry)
+                let response;
+                for (let attempt = 1; attempt <= 3; attempt++) {
+                    try {
+                        const ts = new Date().getTime();
+                        response = await fetch(`./blogs.json?t=${ts}`, {
+                            headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+                        });
+                        if (response.ok) break;
+                        if (attempt === 3) throw new Error(`Failed to load blogs.json: ${response.status} ${response.statusText}`);
+                        await new Promise(r => setTimeout(r, 1000 * attempt));
+                    } catch (fetchErr) {
+                        if (attempt === 3) throw fetchErr;
+                        console.warn(`blogs.json fetch attempt ${attempt} failed, retrying...`, fetchErr);
+                        await new Promise(r => setTimeout(r, 1000 * attempt));
+                    }
                 }
                 
                 const blogsData = await response.json();
@@ -7458,7 +7470,7 @@
                 blogPosts = [];
                 for (const fileName of blogFiles) {
                     try {
-                        const fileResponse = await fetch(`./blogs/${fileName}`);
+                        const fileResponse = await fetch(`./blogs/${fileName}?t=${Date.now()}`);
                         if (fileResponse.ok) {
                             const markdownText = await fileResponse.text();
                             const post = parseBlogPost(markdownText, fileName);
@@ -7837,7 +7849,7 @@
             `;
             
             try {
-                const response = await fetch(`./blogs/${fileName}`);
+                const response = await fetch(`./blogs/${fileName}?t=${Date.now()}`);
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
@@ -9015,7 +9027,7 @@
                 
                 // 如果没找到，尝试加载
                 if (!blogPost) {
-                    const response = await fetch(`./blogs/${fileName}`);
+                    const response = await fetch(`./blogs/${fileName}?t=${Date.now()}`);
                     if (response.ok) {
                         const markdownText = await response.text();
                         blogPost = parseBlogPost(markdownText, fileName);
