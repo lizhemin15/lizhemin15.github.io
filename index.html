@@ -7776,7 +7776,7 @@
                 };
                 cancelBtn.onclick = () => close(null);
                 overlay.onclick = (e) => { if (e.target === overlay) close(null); };
-                input.onkeydown = (e) => { if (e.key === 'Enter') confirmBtn.click(); if (e.key === 'Escape') close(null); };
+                input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmBtn.click(); } if (e.key === 'Escape') close(null); };
                 input.focus();
             });
         }
