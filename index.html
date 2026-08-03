@@ -5463,43 +5463,121 @@
 
         // === Hidden diary unlock logic ===
         // Encrypted diary files (not shown in blog list, only accessible via hidden button)
+        // Auto-discovered from _decryptedPosts __cipher__ entries + DIARY_FILES fallback
         const DIARY_FILES = ['private-diary-001.md.enc'];
+
+        function getDiaryFiles() {
+            // Merge static list with any .enc files pre-cached by loadBlogsContent
+            const files = new Set(DIARY_FILES);
+            _decryptedPosts.forEach((v, k) => {
+                if (k.startsWith('__cipher__')) files.add(k.replace('__cipher__', ''));
+            });
+            return Array.from(files);
+        }
 
         function initDiaryUnlock() {
             const btn = document.getElementById('diary-unlock-btn');
             if (!btn) return;
 
             btn.addEventListener('click', async function() {
-                // If already unlocked this session, go directly to diary
-                const allUnlocked = DIARY_FILES.every(f => _decryptedPosts.has(f));
-                if (allUnlocked) {
-                    viewDiaryPost(DIARY_FILES[0]);
+                const diaryFiles = getDiaryFiles();
+                if (diaryFiles.length === 0) return;
+
+                // If already unlocked, show diary list directly
+                const unlockedFiles = diaryFiles.filter(f => _decryptedPosts.has(f) && !_decryptedPosts.get(f).startsWith?.('U2FsdGVk'));
+                if (unlockedFiles.length > 0) {
+                    showDiaryList(unlockedFiles, diaryFiles);
                     return;
                 }
 
-                // Get ciphertext: prefer pre-cached, else fetch
+                // Collect ciphertext for all diary files
                 try {
-                    const fileName = DIARY_FILES[0];
-                    let rawText = _decryptedPosts.get('__cipher__' + fileName);
-                    if (!rawText) {
-                        const resp = await fetch('./blogs/' + fileName + '?t=' + Date.now());
-                        if (!resp.ok) return;
-                        rawText = await resp.text();
+                    const cipherMap = new Map();
+                    for (const fileName of diaryFiles) {
+                        let rawText = _decryptedPosts.get('__cipher__' + fileName);
+                        if (!rawText) {
+                            const resp = await fetch('./blogs/' + fileName + '?t=' + Date.now());
+                            if (resp.ok) rawText = await resp.text();
+                        }
+                        if (rawText) cipherMap.set(fileName, rawText);
                     }
 
+                    if (cipherMap.size === 0) return;
+
+                    // Single password prompt — try to decrypt all files with same password
+                    const firstFile = cipherMap.keys().next().value;
+                    const firstCipher = cipherMap.get(firstFile);
+                    let savedPwd = '';
+
                     const decrypted = await showDecryptModal('加密日记', async (pwd) => {
-                        return await decryptBlogContent(rawText, pwd);
+                        savedPwd = pwd; // save for batch decrypt
+                        const result = await decryptBlogContent(firstCipher, pwd);
+                        if (result === null) return null;
+                        return result;
                     });
 
                     if (decrypted !== null) {
-                        _decryptedPosts.set(fileName, decrypted);
+                        // First file decrypted, try the rest with same password
+                        _decryptedPosts.set(firstFile, decrypted);
+                        for (const [fn, cipher] of cipherMap) {
+                            if (fn === firstFile) continue;
+                            try {
+                                const d = await decryptBlogContent(cipher, savedPwd);
+                                if (d !== null) _decryptedPosts.set(fn, d);
+                            } catch(e) { /* skip */ }
+                        }
                         btn.classList.add('unlocked');
-                        viewDiaryPost(fileName);
+                        const allUnlocked = diaryFiles.filter(f => _decryptedPosts.has(f) && !_decryptedPosts.get(f).startsWith?.('U2FsdGVk'));
+                        showDiaryList(allUnlocked, diaryFiles);
                     }
                 } catch (e) {
                     console.warn('Diary unlock failed:', e);
                 }
             });
+        }
+
+        function showDiaryList(unlockedFiles, allDiaryFiles) {
+            const contentDiv = document.getElementById('content');
+            const posts = unlockedFiles.map(fn => {
+                const md = _decryptedPosts.get(fn);
+                const post = parseBlogPost(md, fn);
+                return post ? { ...post, fileName: fn } : null;
+            }).filter(Boolean);
+
+            // Sort by date descending
+            posts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+            let html = '<div class="blog-posts content-fade-in">' +
+                '<h1 style="margin-bottom:0.5em">🔒 日记</h1>' +
+                '<p style="color:var(--text-secondary);margin-bottom:2em">私密日记，仅自己可见</p>' +
+                '<div class="blog-grid">';
+
+            posts.forEach(post => {
+                const date = formatDate(post.date);
+                const tags = post.tags && Array.isArray(post.tags)
+                    ? post.tags.map(t => '<span class="blog-tag">' + t + '</span>').join('')
+                    : '';
+                const excerpt = post.excerpt || post.content?.substring(0, 120) + '...' || '';
+
+                html += '<article class="blog-card" onclick="viewDiaryPost(\'' + post.fileName + '\')">' +
+                    '<div class="blog-card-date"><i class="fas fa-calendar"></i> ' + date + '</div>' +
+                    (tags ? '<div class="blog-card-tags">' + tags + '</div>' : '') +
+                    '<h3 class="blog-card-title">' + (post.title || '日记') + '</h3>' +
+                    '<p class="blog-card-excerpt">' + excerpt + '</p>' +
+                    '<span class="blog-read-more">阅读 <i class="fas fa-arrow-right"></i></span>' +
+                '</article>';
+            });
+
+            html += '</div></div>';
+            contentDiv.innerHTML = html;
+
+            // Update nav active state
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const blogsNav = document.querySelector('.nav-link[data-section="blogs"]');
+            if (blogsNav) blogsNav.classList.add('active');
+
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function viewDiaryPost(fileName) {
