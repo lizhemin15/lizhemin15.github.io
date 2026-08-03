@@ -842,6 +842,26 @@
         }
 
         /* 运动仪表盘响应式样式 */
+        .dashboard-charts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-charts > div {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+        }
+        
+        .dashboard-charts h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+        }
+
         @media (max-width: 768px) {
             .dashboard-charts {
                 grid-template-columns: 1fr !important;
@@ -3814,6 +3834,283 @@
                 max-width: 75vw;
             }
         }
+
+        /* ===== Comprehensive Mobile Optimization ===== */
+        @media (max-width: 768px) {
+            /* Blog post action buttons */
+            .blog-post-action-btns {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .blog-post-actions-bar {
+                flex-direction: column !important;
+                gap: 10px !important;
+                align-items: stretch !important;
+            }
+            .blog-post-actions-bar .btn-outline-secondary {
+                width: 100%;
+            }
+            .blog-post-action-btns {
+                justify-content: flex-end;
+            }
+
+            /* Blog list: search/filter stack vertically */
+            .search-section .row {
+                flex-direction: column;
+            }
+            .search-section .row > div {
+                width: 100% !important;
+                margin-bottom: 10px;
+            }
+            .search-section .row > div:last-child {
+                margin-bottom: 0;
+            }
+
+            /* Blog card: remove hover transform on touch */
+            .blog-card:hover {
+                transform: none;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                border-color: #e1e4e8;
+            }
+            .blog-card:active {
+                transform: scale(0.98);
+                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            }
+            .blog-card::before {
+                display: none;
+            }
+
+            /* Blog post detail: action buttons wrap */
+            .blog-post .d-flex {
+                flex-direction: column;
+                gap: 10px !important;
+            }
+            .blog-post .d-flex > div {
+                flex-wrap: wrap;
+                gap: 6px !important;
+            }
+            .blog-post .btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+
+            /* Code blocks: smaller padding, always show copy */
+            .markdown-content pre {
+                padding: 12px;
+                font-size: 0.85rem;
+                border-radius: 6px;
+            }
+            .copy-code-btn {
+                opacity: 1;
+                padding: 2px 6px;
+                font-size: 11px;
+            }
+
+            /* Tables: horizontal scroll wrapper */
+            .markdown-content table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .markdown-content th,
+            .markdown-content td {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+
+            /* Images: responsive */
+            .markdown-content img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* Math formulas: smaller */
+            .markdown-content .katex-display {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 8px 0;
+            }
+
+            /* Blockquotes: less padding */
+            .markdown-content blockquote {
+                padding: 12px 16px;
+                margin: 15px 0;
+            }
+
+            /* Run section: single column charts */
+            .dashboard-charts {
+                grid-template-columns: 1fr !important;
+            }
+            .dashboard-charts > div {
+                padding: 12px !important;
+            }
+            .dashboard-charts h3 {
+                font-size: 1rem !important;
+            }
+            #run-calendar,
+            #run-charts {
+                height: 280px !important;
+            }
+
+            /* Run stats cards: 2 columns on small screens */
+            .run-stats > div {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            /* Run table: scrollable */
+            #run-table {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            #run-table table {
+                min-width: 500px;
+            }
+
+            /* Run filter: stack vertically */
+            .run-filter > div {
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+
+            /* TOC: full width overlay on mobile */
+            .toc-container {
+                width: 90% !important;
+                right: 5% !important;
+                left: 5% !important;
+                top: 70px !important;
+                max-height: 70vh !important;
+            }
+
+            /* Theme toggle: smaller, avoid overlap with TOC FAB */
+            .theme-toggle-fixed {
+                bottom: 80px !important;
+                right: 16px !important;
+            }
+            .theme-toggle-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1rem;
+            }
+
+            /* TOC FAB: smaller */
+            .toc-fab {
+                bottom: 16px !important;
+                right: 16px !important;
+                width: 44px;
+                height: 44px;
+                font-size: 1rem;
+            }
+
+            /* Mobile menu button: avoid content overlap */
+            .mobile-menu-btn {
+                top: 12px;
+                left: 12px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.1rem;
+            }
+
+            /* Content wrapper: less padding */
+            .content-wrapper {
+                padding: 16px 12px !important;
+            }
+
+            /* Blog post title: smaller */
+            .blog-post-title {
+                font-size: 1.5rem !important;
+                line-height: 1.3;
+            }
+
+            /* Blog post content: smaller base */
+            .blog-post-content {
+                font-size: 1rem;
+                line-height: 1.7;
+            }
+
+            /* Headings in markdown: smaller */
+            .markdown-content h1 {
+                font-size: 1.6rem !important;
+            }
+            .markdown-content h2 {
+                font-size: 1.3rem !important;
+            }
+            .markdown-content h3 {
+                font-size: 1.15rem !important;
+            }
+
+            /* Inline code: smaller */
+            .markdown-content code {
+                font-size: 0.82em;
+                padding: 2px 5px;
+            }
+
+            /* QR modal: smaller */
+            .qr-content {
+                padding: 20px;
+                max-width: 90vw;
+            }
+        }
+
+        @media (max-width: 576px) {
+            /* Blog card: compact */
+            .blog-card {
+                padding: 14px !important;
+                margin-bottom: 14px !important;
+                border-radius: 8px;
+            }
+            .blog-title {
+                font-size: 1.05rem !important;
+                margin-bottom: 8px;
+            }
+            .blog-excerpt {
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 10px;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            .blog-meta {
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            .blog-tag {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+            }
+            .blog-date {
+                font-size: 0.8rem;
+            }
+
+            /* Blog post title: even smaller */
+            .blog-post-title {
+                font-size: 1.3rem !important;
+            }
+
+            /* Run stats: 2 columns */
+            .run-stats > div {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+
+            /* Content wrapper: minimal padding */
+            .content-wrapper {
+                padding: 12px 8px !important;
+            }
+
+            /* Search section: compact */
+            .search-section {
+                padding: 12px !important;
+            }
+
+            /* Blog header: smaller */
+            .blogs-header h1 {
+                font-size: 1.5rem !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -4500,11 +4797,11 @@
                 contentDiv.innerHTML = `
                     <div class="blog-post content-fade-in">
                         <div class="blog-post-header">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-3 blog-post-actions-bar">
                                 <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
                                     <i class="fas fa-arrow-left"></i> Back to Blog List
                                 </button>
-                                <div style="display: flex; gap: 10px;">
+                                <div class="blog-post-action-btns">
                                     <button class="btn btn-outline-info" id="slides-btn" onclick="enterSlidesMode()" title="幻灯片模式">
                                         <i class="fas fa-film"></i> Slides
                                     </button>
@@ -7574,11 +7871,11 @@
                 contentDiv.innerHTML = `
                     <div class="blog-post content-fade-in">
                         <div class="blog-post-header">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex justify-content-between align-items-start mb-3 blog-post-actions-bar">
                                 <button class="btn btn-outline-secondary" onclick="navigateToBlogs()">
                                     <i class="fas fa-arrow-left"></i> Back to Blog List
                                 </button>
-                                <div style="display: flex; gap: 10px;">
+                                <div class="blog-post-action-btns">
                                     <button class="btn btn-outline-info" id="slides-btn" onclick="enterSlidesMode()" title="幻灯片模式">
                                         <i class="fas fa-film"></i> Slides
                                     </button>
@@ -9254,7 +9551,7 @@
                 </div>
                 
                 <!-- 紧凑的可视化区域 -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;" class="dashboard-charts">
+                <div class="dashboard-charts">
                     <div style="background:#f8f9fa;padding:16px;border-radius:8px;">
                         <h3 style="font-size:1.1rem;font-weight:600;margin:0 0 8px 0;color:#2c3e50;">运动热度图</h3>
                         <div style="font-size:11px;color:#999;margin-bottom:8px;">💡 Ctrl+滚轮 或 双指捏合 可缩放</div>
