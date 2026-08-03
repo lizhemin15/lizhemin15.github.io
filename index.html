@@ -2043,6 +2043,122 @@
 
          /* Pinned post styles */
          .pinned-post {
+
+         /* === Encrypted blog styles === */
+         .blog-card.encrypted-card {
+             position: relative;
+             overflow: hidden;
+         }
+         .blog-card.encrypted-card::after {
+             content: '';
+             position: absolute;
+             inset: 0;
+             background: linear-gradient(135deg, rgba(128,128,128,0.08) 0%, rgba(128,128,128,0.15) 100%);
+             pointer-events: none;
+             z-index: 1;
+         }
+         .encrypted-badge {
+             display: inline-flex;
+             align-items: center;
+             gap: 4px;
+             background: rgba(128,128,128,0.15);
+             color: var(--text-muted);
+             font-size: 0.75rem;
+             padding: 2px 8px;
+             border-radius: 4px;
+             margin-left: 8px;
+         }
+         .encrypted-badge i { font-size: 0.7rem; }
+         .blog-card.encrypted-card .blog-excerpt {
+             filter: blur(4px);
+             user-select: none;
+         }
+         .blog-card.encrypted-card .read-more::after {
+             content: ' 🔒';
+         }
+
+         /* Password modal */
+         .decrypt-modal-overlay {
+             position: fixed;
+             inset: 0;
+             background: rgba(0,0,0,0.5);
+             backdrop-filter: blur(4px);
+             z-index: 10000;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             animation: fadeIn 0.2s ease;
+         }
+         .decrypt-modal {
+             background: var(--bg-color);
+             border: 1px solid var(--border-color);
+             border-radius: 12px;
+             padding: 32px;
+             max-width: 380px;
+             width: 90%;
+             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+             animation: slideUp 0.3s ease;
+         }
+         .decrypt-modal h3 {
+             margin: 0 0 8px;
+             font-size: 1.2rem;
+             display: flex;
+             align-items: center;
+             gap: 8px;
+         }
+         .decrypt-modal p {
+             color: var(--text-muted);
+             font-size: 0.85rem;
+             margin: 0 0 20px;
+         }
+         .decrypt-modal input {
+             width: 100%;
+             padding: 10px 14px;
+             border: 1px solid var(--border-color);
+             border-radius: 8px;
+             background: var(--bg-secondary);
+             color: var(--text-color);
+             font-size: 1rem;
+             outline: none;
+             transition: border-color 0.2s;
+             box-sizing: border-box;
+         }
+         .decrypt-modal input:focus {
+             border-color: var(--accent-color);
+         }
+         .decrypt-modal .decrypt-error {
+             color: #e74c3c;
+             font-size: 0.8rem;
+             margin-top: 8px;
+             display: none;
+         }
+         .decrypt-modal .decrypt-actions {
+             display: flex;
+             gap: 10px;
+             margin-top: 16px;
+             justify-content: flex-end;
+         }
+         .decrypt-modal .btn-decrypt {
+             padding: 8px 20px;
+             border-radius: 8px;
+             border: none;
+             cursor: pointer;
+             font-size: 0.9rem;
+             transition: all 0.2s;
+         }
+         .decrypt-modal .btn-cancel {
+             background: transparent;
+             color: var(--text-muted);
+             border: 1px solid var(--border-color);
+         }
+         .decrypt-modal .btn-confirm {
+             background: var(--accent-color);
+             color: #fff;
+         }
+         .decrypt-modal .btn-confirm:hover { opacity: 0.9; }
+         .decrypt-modal .btn-cancel:hover { background: var(--bg-secondary); }
+         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
              border: 2px solid var(--warning-color);
              background: linear-gradient(135deg, rgba(243, 156, 18, 0.05), rgba(243, 156, 18, 0.02));
              position: relative;
@@ -4750,6 +4866,7 @@
         async function loadBlogPostByURL(fileName) {
             const contentDiv = document.getElementById('content');
             currentBlogPost = fileName;
+            const isEncrypted = fileName.endsWith('.md.enc');
             
             // Show loading state
             contentDiv.innerHTML = `
@@ -4768,7 +4885,30 @@
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
                 
-                const markdownText = await response.text();
+                const rawText = await response.text();
+                let markdownText;
+                
+                if (isEncrypted) {
+                    // Check session cache first
+                    if (_decryptedPosts.has(fileName)) {
+                        markdownText = _decryptedPosts.get(fileName);
+                    } else {
+                        // Show password modal
+                        const decrypted = await showDecryptModal('加密日记', async (pwd) => {
+                            return await decryptBlogContent(rawText, pwd);
+                        });
+                        if (decrypted === null) {
+                            // User cancelled
+                            navigateToBlogs();
+                            return;
+                        }
+                        markdownText = decrypted;
+                        _decryptedPosts.set(fileName, decrypted);
+                    }
+                } else {
+                    markdownText = rawText;
+                }
+                
                 const post = parseBlogPost(markdownText, fileName);
                 
                 if (!post) {
@@ -7470,15 +7610,28 @@
                 blogPosts = [];
                 for (const fileName of blogFiles) {
                     try {
+                        const isEncrypted = fileName.endsWith('.md.enc');
                         const fileResponse = await fetch(`./blogs/${fileName}?t=${Date.now()}`);
                         if (fileResponse.ok) {
-                            const markdownText = await fileResponse.text();
-                            const post = parseBlogPost(markdownText, fileName);
+                            const rawText = await fileResponse.text();
                             
-                            if (post) {
-                                // Only include visible posts (default is visible if not specified)
-                                if (post.visible !== false) {
-                                    blogPosts.push(post);
+                            if (isEncrypted) {
+                                // Encrypted post: store raw ciphertext, show lock icon in list
+                                blogPosts.push({
+                                    title: '加密日记',
+                                    date: new Date().toISOString().split('T')[0],
+                                    tags: ['私密'],
+                                    excerpt: '这是一篇加密内容，需要密码才能查看',
+                                    fileName: fileName,
+                                    encrypted: true,
+                                    _ciphertext: rawText
+                                });
+                            } else {
+                                const post = parseBlogPost(rawText, fileName);
+                                if (post) {
+                                    if (post.visible !== false) {
+                                        blogPosts.push(post);
+                                    }
                                 }
                             }
                         } else {
@@ -7558,6 +7711,74 @@
             return plainText.length > maxLength 
                 ? plainText.substring(0, maxLength) + '...'
                 : plainText;
+        }
+
+        // === Encrypted blog utilities ===
+        // Session-level cache: once unlocked, stay unlocked
+        const _decryptedPosts = new Map();
+
+        async function decryptBlogContent(encryptedBase64, password) {
+            try {
+                const encoder = new TextEncoder();
+                const keyMaterial = await crypto.subtle.importKey(
+                    'raw', encoder.encode(password), 'PBKDF2', false, ['deriveKey']
+                );
+                const key = await crypto.subtle.deriveKey(
+                    { name: 'PBKDF2', salt: encoder.encode('lizhemin15-blog-enc'), iterations: 100000, hash: 'SHA-256' },
+                    keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['decrypt']
+                );
+                const raw = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+                const iv = raw.slice(0, 12);
+                const ciphertext = raw.slice(12);
+                const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+                return new TextDecoder().decode(decrypted);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function showDecryptModal(blogTitle, onDecrypt) {
+            return new Promise((resolve) => {
+                const overlay = document.createElement('div');
+                overlay.className = 'decrypt-modal-overlay';
+                overlay.innerHTML = `
+                    <div class="decrypt-modal">
+                        <h3><i class="fas fa-lock"></i> 加密文章</h3>
+                        <p>「${blogTitle}」是加密内容，请输入密码查看</p>
+                        <input type="password" id="decrypt-password-input" placeholder="输入密码" autofocus>
+                        <div class="decrypt-error" id="decrypt-error">密码错误，请重试</div>
+                        <div class="decrypt-actions">
+                            <button class="btn-decrypt btn-cancel" id="decrypt-cancel">取消</button>
+                            <button class="btn-decrypt btn-confirm" id="decrypt-confirm">解锁</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+
+                const input = overlay.querySelector('#decrypt-password-input');
+                const errorEl = overlay.querySelector('#decrypt-error');
+                const confirmBtn = overlay.querySelector('#decrypt-confirm');
+                const cancelBtn = overlay.querySelector('#decrypt-cancel');
+
+                const close = (result) => { overlay.remove(); resolve(result); };
+
+                confirmBtn.onclick = async () => {
+                    const pwd = input.value;
+                    if (!pwd) return;
+                    const decrypted = await onDecrypt(pwd);
+                    if (decrypted !== null) {
+                        close(decrypted);
+                    } else {
+                        errorEl.style.display = 'block';
+                        input.value = '';
+                        input.focus();
+                    }
+                };
+                cancelBtn.onclick = () => close(null);
+                overlay.onclick = (e) => { if (e.target === overlay) close(null); };
+                input.onkeydown = (e) => { if (e.key === 'Enter') confirmBtn.click(); if (e.key === 'Escape') close(null); };
+                input.focus();
+            });
         }
 
         // Render blogs page
@@ -7676,22 +7897,28 @@
                 const pinnedIndicator = isPinned ? '<i class="fas fa-thumbtack pinned-icon" title="置顶文章"></i>' : '';
                 const pinnedClass = isPinned ? 'pinned-post' : '';
                 
+                // Check if post is encrypted
+                const isEncrypted = post.encrypted === true;
+                const encryptedClass = isEncrypted ? 'encrypted-card' : '';
+                const encryptedBadge = isEncrypted ? '<span class="encrypted-badge"><i class="fas fa-lock"></i> 加密</span>' : '';
+                
                 // Create URL for the blog post
                 const blogURL = `?blog=${encodeURIComponent(post.fileName)}`;
                 
                 return `
-                    <article class="blog-card ${pinnedClass}" onclick="viewBlogPostWithScrollClear('${post.fileName}')">
+                    <article class="blog-card ${pinnedClass} ${encryptedClass}" onclick="viewBlogPostWithScrollClear('${post.fileName}')">
                         <div class="blog-meta">
                             <span class="blog-date">
                                 <i class="fas fa-calendar"></i> ${date}
                             </span>
                             ${pinnedIndicator}
                             ${tags}
+                            ${encryptedBadge}
                         </div>
                         <h3 class="blog-title">${post.title || 'Untitled'}</h3>
                         <p class="blog-excerpt">${post.excerpt}</p>
                         <div class="blog-actions">
-                            <span class="read-more">Read More <i class="fas fa-arrow-right"></i></span>
+                            <span class="read-more">${isEncrypted ? '解锁阅读' : 'Read More'} <i class="fas fa-${isEncrypted ? 'lock' : 'arrow-right'}"></i></span>
                         </div>
                     </article>
                 `;

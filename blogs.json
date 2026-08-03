@@ -1,9 +1,10 @@
 {
-    "blogs": [
-      "blog-welcome.md",
-      "notes-tp4.md",
-      "blog-research-thoughts.md",
-      "blog-run.md",
-      "blog-product.md"
-    ]
-  }
+  "blogs": [
+    "blog-welcome.md",
+    "notes-tp4.md",
+    "blog-research-thoughts.md",
+    "blog-run.md",
+    "blog-product.md",
+    "private-diary-001.md.enc"
+  ]
+}
