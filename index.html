@@ -7588,15 +7588,15 @@
                 for (let attempt = 1; attempt <= 3; attempt++) {
                     try {
                         const ts = new Date().getTime();
-                        response = await fetch(`./blogs.json?t=${ts}`, {
+                        response = await fetch(`./blog-index.json?t=${ts}`, {
                             headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
                         });
                         if (response.ok) break;
-                        if (attempt === 3) throw new Error(`Failed to load blogs.json: ${response.status} ${response.statusText}`);
+                        if (attempt === 3) throw new Error(`Failed to load blog-index.json: ${response.status} ${response.statusText}`);
                         await new Promise(r => setTimeout(r, 1000 * attempt));
                     } catch (fetchErr) {
                         if (attempt === 3) throw fetchErr;
-                        console.warn(`blogs.json fetch attempt ${attempt} failed, retrying...`, fetchErr);
+                        console.warn(`blog-index.json fetch attempt ${attempt} failed, retrying...`, fetchErr);
                         await new Promise(r => setTimeout(r, 1000 * attempt));
                     }
                 }
@@ -7654,7 +7654,7 @@
                 
             } catch (error) {
                 console.error('Error loading blogs from JSON:', error);
-                showError('Blog Loading Failed', 'Unable to load blog content from blogs.json', error.message, 'blogs');
+                showError('Blog Loading Failed', 'Unable to load blog content from blog-index.json', error.message, 'blogs');
             }
             // 内容切换后保证全屏状态
             setTimeout(ensureFullscreenState, 0);
