@@ -5479,6 +5479,10 @@
             const btn = document.getElementById('diary-unlock-btn');
             if (!btn) return;
 
+            // Prevent duplicate listeners — initDiaryUnlock may be called multiple times
+            if (btn.dataset.diaryInit === '1') return;
+            btn.dataset.diaryInit = '1';
+
             btn.addEventListener('click', async function() {
                 const diaryFiles = getDiaryFiles();
                 if (diaryFiles.length === 0) return;
@@ -5580,6 +5584,16 @@
             if (mainContent) mainContent.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function backToDiaryList() {
+            const diaryFiles = getDiaryFiles();
+            const unlockedFiles = diaryFiles.filter(f => _decryptedPosts.has(f) && !_decryptedPosts.get(f).startsWith?.('U2FsdGVk'));
+            if (unlockedFiles.length > 0) {
+                showDiaryList(unlockedFiles, diaryFiles);
+            } else {
+                navigateToBlogs();
+            }
+        }
+
         async function viewDiaryPost(fileName) {
             const contentDiv = document.getElementById('content');
             if (!_decryptedPosts.has(fileName)) return;
@@ -5610,8 +5624,8 @@
             contentDiv.innerHTML = '<div class="blog-post content-fade-in">' +
                 '<div class="blog-post-header">' +
                     '<div class="d-flex justify-content-between align-items-start mb-3 blog-post-actions-bar">' +
-                        '<button class="btn btn-outline-secondary" onclick="navigateToBlogs()">' +
-                            '<i class="fas fa-arrow-left"></i> Back to Blog List' +
+                        '<button class="btn btn-outline-secondary" onclick="backToDiaryList()">' +
+                            '<i class="fas fa-arrow-left"></i> 返回日记列表' +
                         '</button>' +
                     '</div>' +
                     '<h1 class="blog-post-title">' + (post.title || '加密日记') + '</h1>' +
