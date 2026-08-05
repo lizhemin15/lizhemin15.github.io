@@ -10392,29 +10392,22 @@
                 let monthPushups = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.pushups||0),0);
                 let monthSitups = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.situps||0),0);
                 let monthSquats = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.squats||0),0);
-                let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">';
+                let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;">';
                 
-                // 总计统计
-                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
-                    <div style="font-size:1.4rem;font-weight:700;color:#e74c3c;">${total.toFixed(1)}</div>
-                    <div style="font-size:0.8rem;color:#666;">总跑量(km)</div>
-                </div>`;
-                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
-                    <div style="font-size:1.4rem;font-weight:700;color:#3498db;">${totalPushups}</div>
-                    <div style="font-size:0.8rem;color:#666;">总俯卧撑</div>
-                </div>`;
-                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
-                    <div style="font-size:1.4rem;font-weight:700;color:#f39c12;">${totalSitups}</div>
-                    <div style="font-size:0.8rem;color:#666;">总仰卧起坐</div>
-                </div>`;
-                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
-                    <div style="font-size:1.4rem;font-weight:700;color:#27ae60;">${totalSquats}</div>
-                    <div style="font-size:0.8rem;color:#666;">总深蹲</div>
-                </div>`;
-                html += `<div style="background:#fff;padding:12px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.1);text-align:center;">
-                    <div style="font-size:1.4rem;font-weight:700;color:#8e44ad;">${filteredData.length}</div>
-                    <div style="font-size:0.8rem;color:#666;">记录数</div>
-                </div>`;
+                // 统计卡片 - 黑白灰极简
+                const stats = [
+                    { value: total.toFixed(1), label: '跑量(km)' },
+                    { value: totalPushups, label: '俯卧撑' },
+                    { value: totalSitups, label: '仰卧起坐' },
+                    { value: totalSquats, label: '深蹲' },
+                    { value: filteredData.length, label: '记录' }
+                ];
+                stats.forEach(s => {
+                    html += `<div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #e8e8e8;text-align:center;">
+                        <div style="font-size:1.3rem;font-weight:700;color:#111;">${s.value}</div>
+                        <div style="font-size:0.75rem;color:#999;margin-top:2px;">${s.label}</div>
+                    </div>`;
+                });
                 
                 html += '</div>';
                 document.getElementById('run-stats').innerHTML = html;
