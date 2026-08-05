@@ -7771,9 +7771,7 @@
                     runSectionDiv.style.display = '';
                     runSectionDiv.innerHTML = `<div class='loading'><i class='fas fa-spinner'></i><p>加载跑步数据...</p></div>`;
                     try {
-                        const res = await fetch('run/run-records.json?t=' + Date.now());
-                        const runData = await res.json();
-                        renderRunSection(runData);
+                        await loadAndRenderRunSection();
                     } catch(e) {
                         runSectionDiv.innerHTML = `<div class='text-danger p-4'>无法加载跑步数据</div>`;
                     }
@@ -10100,8 +10098,34 @@
             }
         }
 
+        // 跑步记录按年加载缓存
+        const runDataCache = {};
+        let runIndexData = null;
+
+        // 加载跑步数据（按年分文件）
+        async function loadRunYear(year) {
+            if (runDataCache[year]) return runDataCache[year];
+            const res = await fetch(`run/run-${year}.json?t=${Date.now()}`);
+            if (!res.ok) throw new Error(`Failed to load run-${year}.json`);
+            const data = await res.json();
+            runDataCache[year] = data;
+            return data;
+        }
+
+        // 加载 index 并渲染
+        async function loadAndRenderRunSection() {
+            const res = await fetch('run/run-index.json?t=' + Date.now());
+            runIndexData = await res.json();
+            // 默认加载当年
+            const currentYear = runIndexData.currentYear || new Date().getFullYear().toString();
+            await loadRunYear(currentYear);
+            // 合并所有已缓存数据渲染
+            const allData = Object.values(runDataCache).flat();
+            renderRunSection(allData, runIndexData);
+        }
+
         // 跑步记录页面渲染函数
-        function renderRunSection(runData) {
+        function renderRunSection(runData, runIndex) {
             let selectedYear = '全部';
             let selectedMonth = '全部';
             let displayMode = '日'; // 年/月/日
@@ -10110,7 +10134,7 @@
             runSectionDiv.innerHTML = `
                 <div class="run-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
                     <h1 style="font-size:1.5rem;margin:0;">运动仪表盘</h1>
-                    <span style="color:#888;font-size:0.9rem;">数据来源：run/run-records.json</span>
+                    <span style="color:#888;font-size:0.9rem;">数据来源：run/run-{year}.json</span>
                 </div>
                 
                 <!-- 筛选控件 -->
@@ -10143,7 +10167,7 @@
                 </div>
             `;
             function renderFilter() {
-                const years = Array.from(new Set(runData.map(r => r.date.slice(0,4)))).sort((a,b)=>b-a);
+                const years = runIndex ? runIndex.years : Array.from(new Set(runData.map(r => r.date.slice(0,4)))).sort((a,b)=>b-a);
                 // 根据选中的年份动态获取月份
                 let monthsData = runData;
                 if (selectedYear !== '全部') {
@@ -10193,9 +10217,28 @@
                     renderFilter(); // 重新渲染筛选器以更新月份选择器状态
                     applyFilter();
                 };
-                document.getElementById('year-select').onchange = e => {
+                document.getElementById('year-select').onchange = async e => {
                     selectedYear = e.target.value;
                     selectedMonth = '全部'; // 切换年份时重置月份选择
+                    // 按需加载年份数据
+                    if (selectedYear !== '全部' && !runDataCache[selectedYear]) {
+                        try {
+                            await loadRunYear(selectedYear);
+                        } catch(err) {
+                            console.error('加载' + selectedYear + '年数据失败:', err);
+                        }
+                    } else if (selectedYear === '全部') {
+                        // 加载所有未缓存的年份
+                        if (runIndex) {
+                            for (const y of runIndex.years) {
+                                if (!runDataCache[y]) {
+                                    try { await loadRunYear(y); } catch(err) { console.error('加载' + y + '年数据失败:', err); }
+                                }
+                            }
+                        }
+                    }
+                    // 重新合并已缓存数据
+                    runData = Object.values(runDataCache).flat();
                     renderFilter(); // 重新渲染以更新月份选项
                     applyFilter();
                 };
@@ -10721,13 +10764,7 @@
         // 初始化跑步记录页面
         async function initRunSection() {
             try {
-                const response = await fetch('run/run-records.json');
-                if (response.ok) {
-                    const runData = await response.json();
-                    renderRunSection(runData);
-                } else {
-                    console.error('加载跑步记录失败:', response.statusText);
-                }
+                await loadAndRenderRunSection();
             } catch (error) {
                 console.error('加载跑步记录失败:', error);
             }
