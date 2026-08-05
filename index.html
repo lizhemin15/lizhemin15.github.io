@@ -10121,12 +10121,12 @@
             await loadRunYear(currentYear);
             // 合并所有已缓存数据渲染
             const allData = Object.values(runDataCache).flat();
-            renderRunSection(allData, runIndexData);
+            renderRunSection(allData, runIndexData, currentYear);
         }
 
         // 跑步记录页面渲染函数
-        function renderRunSection(runData, runIndex) {
-            let selectedYear = '全部';
+        function renderRunSection(runData, runIndex, defaultYear) {
+            let selectedYear = defaultYear || '全部';
             let selectedMonth = '全部';
             let displayMode = '日'; // 年/月/日
             let filteredData = runData;
