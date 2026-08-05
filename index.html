@@ -862,20 +862,180 @@
             color: #2c3e50;
         }
 
+        /* 运动时间线 - 微博风格 */
+        .run-timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+        .run-timeline-month {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 24px 0 12px 0;
+            padding-left: 20px;
+        }
+        .run-timeline-month:first-child {
+            margin-top: 0;
+        }
+        .run-timeline-item {
+            position: relative;
+            padding: 0 0 20px 20px;
+        }
+        .run-timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .run-timeline-dot {
+            position: absolute;
+            left: -5px;
+            top: 8px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #ddd;
+            z-index: 1;
+        }
+        .run-timeline-rest .run-timeline-dot {
+            background: #ccc;
+            box-shadow: 0 0 0 2px #eee;
+        }
+        .run-timeline-line {
+            position: absolute;
+            left: -1px;
+            top: 18px;
+            bottom: 0;
+            width: 2px;
+            background: #e8e8e8;
+        }
+        .run-timeline-item:last-child .run-timeline-line {
+            display: none;
+        }
+        .run-timeline-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 14px 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .run-timeline-card:hover {
+            border-color: #ccc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .run-timeline-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .run-timeline-date {
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 500;
+        }
+        .run-timeline-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .run-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .run-tag-run {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .run-tag-pushup {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .run-tag-situp {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .run-tag-squat {
+            background: #f0f0f0;
+            color: #555;
+        }
+        .run-timeline-note {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #333;
+        }
+        .run-timeline-rest .run-timeline-note {
+            color: #888;
+        }
+        .run-charts-toggle:hover {
+            color: #555;
+        }
+        .run-charts-toggle.open svg {
+            transform: rotate(90deg);
+        }
+
+        /* Dark theme for timeline */
+        [data-theme="dark"] .run-timeline-dot {
+            background: #aaa;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 2px #444;
+        }
+        [data-theme="dark"] .run-timeline-rest .run-timeline-dot {
+            background: #555;
+            box-shadow: 0 0 0 2px #333;
+        }
+        [data-theme="dark"] .run-timeline-line {
+            background: #333;
+        }
+        [data-theme="dark"] .run-timeline-card {
+            background: #1a1a1a;
+            border-color: #333;
+        }
+        [data-theme="dark"] .run-timeline-card:hover {
+            border-color: #444;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        [data-theme="dark"] .run-timeline-date {
+            color: #888;
+        }
+        [data-theme="dark"] .run-tag {
+            background: #2a2a2a;
+            color: #bbb;
+        }
+        [data-theme="dark"] .run-timeline-note {
+            color: #ccc;
+        }
+        [data-theme="dark"] .run-timeline-rest .run-timeline-note {
+            color: #666;
+        }
+        [data-theme="dark"] .run-timeline-month {
+            color: #666;
+        }
+
         @media (max-width: 768px) {
-            .dashboard-charts {
-                grid-template-columns: 1fr !important;
-                gap: 16px !important;
+            .run-timeline {
+                padding-left: 16px;
             }
-            
-            .dashboard-charts > div {
-                padding: 12px !important;
+            .run-timeline-item {
+                padding-left: 16px;
             }
-            
-            .dashboard-charts h3 {
-                font-size: 1rem !important;
+            .run-timeline-card {
+                padding: 10px 12px;
+            }
+            .run-timeline-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
             }
         }
+
+        @media (max-width: 768px) {
 
          [data-theme="dark"] .table-container {
              background: #2d3748;
@@ -4193,15 +4353,6 @@
             /* Run stats cards: 2 columns on small screens */
             .run-stats > div {
                 grid-template-columns: repeat(2, 1fr) !important;
-            }
-
-            /* Run table: scrollable */
-            #run-table {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            #run-table table {
-                min-width: 500px;
             }
 
             /* Run filter: stack vertically */
@@ -10132,39 +10283,32 @@
             let filteredData = runData;
             const runSectionDiv = document.getElementById('run-section');
             runSectionDiv.innerHTML = `
-                <div class="run-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-                    <h1 style="font-size:1.5rem;margin:0;">运动仪表盘</h1>
-                    <span style="color:#888;font-size:0.9rem;">数据来源：run/run-{year}.json</span>
-                </div>
-                
-                <!-- 筛选控件 -->
-                <div style="background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:20px;">
+                <div class="run-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+                    <h1 style="font-size:1.5rem;margin:0;">运动记录</h1>
                     <div class="run-filter" id="run-filter"></div>
                 </div>
                 
                 <!-- 统计卡片 -->
-                <div style="margin-bottom:20px;">
+                <div style="margin-bottom:24px;">
                     <div class="run-stats" id="run-stats"></div>
                 </div>
                 
-                <!-- 紧凑的可视化区域 -->
-                <div class="dashboard-charts">
-                    <div style="background:#f8f9fa;padding:16px;border-radius:8px;">
-                        <h3 style="font-size:1.1rem;font-weight:600;margin:0 0 8px 0;color:#2c3e50;">运动热度图</h3>
-                        <div style="font-size:11px;color:#999;margin-bottom:8px;">💡 Ctrl+滚轮 或 双指捏合 可缩放</div>
+                <!-- 可视化区域（可折叠） -->
+                <div class="run-charts-toggle" id="run-charts-toggle" style="display:flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:12px;color:#888;font-size:0.85rem;user-select:none;">
+                    <svg id="run-charts-arrow" width="12" height="12" viewBox="0 0 12 12" style="transition:transform 0.2s;"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <span>数据图表</span>
+                </div>
+                <div class="dashboard-charts" id="run-charts-panel" style="display:none;">
+                    <div style="background:#fafafa;padding:16px;border-radius:8px;">
                         <div id="run-calendar" style="width:100%;height:380px;overflow:auto;position:relative;"></div>
                     </div>
-                    <div style="background:#f8f9fa;padding:16px;border-radius:8px;">
-                        <h3 style="font-size:1.1rem;font-weight:600;margin:0 0 12px 0;color:#2c3e50;">运动趋势</h3>
+                    <div style="background:#fafafa;padding:16px;border-radius:8px;">
                         <div id="run-charts" style="width:100%;height:380px;"></div>
                     </div>
                 </div>
                 
-                <!-- 紧凑的表格 -->
-                <div style="background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-                    <h3 style="font-size:1.1rem;font-weight:600;margin:0;padding:16px 16px 12px 16px;color:#2c3e50;border-bottom:1px solid #eee;">运动记录</h3>
-                    <div class="run-table" id="run-table" style="max-height:400px;overflow:auto;-webkit-overflow-scrolling:touch;"></div>
-                </div>
+                <!-- 微博风格时间线 -->
+                <div class="run-timeline" id="run-timeline"></div>
             `;
             function renderFilter() {
                 const years = runIndex ? runIndex.years : Array.from(new Set(runData.map(r => r.date.slice(0,4)))).sort((a,b)=>b-a);
@@ -10176,47 +10320,21 @@
                 const months = Array.from(new Set(monthsData.map(r => r.date.slice(5,7)))).sort();
                 
                 let html = '';
-                html += '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">';
-                html += '<div style="display:flex;align-items:center;gap:8px;">';
-                html += '<span style="color:#2c3e50;font-weight:600;font-size:1rem;">📅 数据分析</span>';
-                html += '</div>';
-                html += '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">';
-                
-                // 显示模式选择器
-                html += '<div style="display:flex;align-items:center;gap:8px;">';
-                html += '<label style="color:#666;font-size:0.9rem;">显示模式:</label>';
-                html += '<select id="display-mode-select" style="padding:8px 12px;border:2px solid #f3e5f5;border-radius:6px;font-size:0.9rem;background:#fff;color:#2c3e50;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#9c27b0\'" onmouseout="this.style.borderColor=\'#f3e5f5\'">';
-                html += '<option value="年"' + (displayMode==='年'?' selected':'') + '>按年显示</option>';
-                html += '<option value="月"' + (displayMode==='月'?' selected':'') + '>按月显示</option>';
-                html += '<option value="日"' + (displayMode==='日'?' selected':'') + '>按日显示</option>';
-                html += '</select>';
-                html += '</div>';
-                
-                html += '<div style="display:flex;align-items:center;gap:12px;">';
+                html += '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">';
                 html += '<div style="display:flex;align-items:center;gap:6px;">';
-                html += '<label style="color:#666;font-size:0.9rem;">年份:</label>';
-                html += '<select id="year-select" style="padding:8px 12px;border:2px solid #e3f2fd;border-radius:6px;font-size:0.9rem;background:#fff;color:#2c3e50;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#2196f3\'" onmouseout="this.style.borderColor=\'#e3f2fd\'">';
-                html += '<option value="全部">全部年份</option>';
-                years.forEach(y => html += `<option value="${y}"${y===selectedYear?' selected':''}>${y}年</option>`);
+                html += '<select id="year-select" style="padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:0.85rem;background:#fff;color:#333;cursor:pointer;">';
+                html += '<option value="全部">全部</option>';
+                years.forEach(y => html += `<option value="${y}"${y===selectedYear?' selected':''}>${y}</option>`);
                 html += '</select>';
                 html += '</div>';
-                
-                // 月份选择器（在按年显示时隐藏）
-                html += '<div id="month-filter-container" style="display:flex;align-items:center;gap:6px;' + (displayMode === '年' ? 'opacity:0.5;pointer-events:none;' : '') + '">';
-                html += '<label style="color:#666;font-size:0.9rem;">月份:</label>';
-                html += '<select id="month-select" style="padding:8px 12px;border:2px solid #e8f5e8;border-radius:6px;font-size:0.9rem;background:#fff;color:#2c3e50;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor=\'#4caf50\'" onmouseout="this.style.borderColor=\'#e8f5e8\'">';
+                html += '<div style="display:flex;align-items:center;gap:6px;">';
+                html += '<select id="month-select" style="padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:0.85rem;background:#fff;color:#333;cursor:pointer;">';
                 html += '<option value="全部">全部月份</option>';
                 months.forEach(m => html += `<option value="${m}"${m===selectedMonth?' selected':''}>${parseInt(m)}月</option>`);
                 html += '</select>';
                 html += '</div>';
                 html += '</div>';
-                html += '</div>';
                 document.getElementById('run-filter').innerHTML = html;
-                document.getElementById('display-mode-select').onchange = e => {
-                    displayMode = e.target.value;
-                    renderFilter(); // 重新渲染筛选器以更新月份选择器状态
-                    applyFilter();
-                };
                 document.getElementById('year-select').onchange = async e => {
                     selectedYear = e.target.value;
                     selectedMonth = '全部'; // 切换年份时重置月份选择
@@ -10254,8 +10372,12 @@
                 });
                 renderStats();
                 renderTable();
-                renderCalendar();
-                renderCharts();
+                // 图表仅在展开时渲染
+                const chartsPanel = document.getElementById('run-charts-panel');
+                if (chartsPanel && chartsPanel.style.display !== 'none') {
+                    renderCalendar();
+                    renderCharts();
+                }
             }
             function renderStats() {
                 let total = runData.reduce((s,r)=>s+Number(r.distance_km),0);
@@ -10299,24 +10421,51 @@
             }
             function renderTable() {
                 if(filteredData.length===0) {
-                    document.getElementById('run-table').innerHTML = '<div class="p-4 text-muted">无记录</div>';
+                    document.getElementById('run-timeline').innerHTML = '<div style="text-align:center;padding:40px 0;color:#999;">暂无记录</div>';
                     return;
                 }
-                let html = '<table style="width:100%;min-width:700px;border-collapse:separate;border-spacing:0;"><thead><tr><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">日期</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">跑量 (km)</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">俯卧撑</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">仰卧起坐</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">深蹲</th><th style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;background:#f8f9fa;font-weight:600;color:#34495e;border-top:1px solid #e0e0e0;">感想</th></tr></thead><tbody>';
-                // 按最新日期到旧日期排序
                 const sortedData = [...filteredData].sort((a, b) => new Date(b.date) - new Date(a.date));
-                sortedData.forEach(r => {
-                    html += `<tr style="transition:background 0.2s;" onmouseover="this.style.background='#f4faff'" onmouseout="this.style.background=''">
-                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.date}</td>
-                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.distance_km}</td>
-                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.pushups||0}</td>
-                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.situps||0}</td>
-                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:center;color:#2c3e50;">${r.squats||0}</td>
-                        <td style="padding:12px 18px;border-bottom:1px solid #f0f0f0;text-align:left;color:#2c3e50;">${r.note||''}</td>
-                    </tr>`;
+                let html = '';
+                let lastMonth = '';
+                sortedData.forEach((r, idx) => {
+                    const d = new Date(r.date);
+                    const monthKey = r.date.slice(0,7);
+                    const dayNames = ['日','一','二','三','四','五','六'];
+                    const dayStr = dayNames[d.getDay()];
+                    const dateDisplay = `${d.getMonth()+1}月${d.getDate()}日 周${dayStr}`;
+                    const yearDisplay = d.getFullYear();
+                    
+                    // 月份分隔
+                    const monthLabel = `${yearDisplay}年${d.getMonth()+1}月`;
+                    if(monthKey !== lastMonth) {
+                        html += `<div class="run-timeline-month">${monthLabel}</div>`;
+                        lastMonth = monthKey;
+                    }
+                    
+                    // 运动数据标签
+                    let tags = '';
+                    if(Number(r.distance_km) > 0) tags += `<span class="run-tag run-tag-run">${r.distance_km}km</span>`;
+                    if(Number(r.pushups||0) > 0) tags += `<span class="run-tag run-tag-pushup">${r.pushups}俯卧撑</span>`;
+                    if(Number(r.situps||0) > 0) tags += `<span class="run-tag run-tag-situp">${r.situps}仰卧起坐</span>`;
+                    if(Number(r.squats||0) > 0) tags += `<span class="run-tag run-tag-squat">${r.squats}深蹲</span>`;
+                    
+                    // 判断是否为"休息日"（只有感想没有运动数据）
+                    const isRest = Number(r.distance_km) === 0 && Number(r.pushups||0) === 0 && Number(r.situps||0) === 0 && Number(r.squats||0) === 0;
+                    
+                    html += `
+                    <div class="run-timeline-item${isRest ? ' run-timeline-rest' : ''}">
+                        <div class="run-timeline-dot"></div>
+                        <div class="run-timeline-line"></div>
+                        <div class="run-timeline-card">
+                            <div class="run-timeline-header">
+                                <span class="run-timeline-date">${dateDisplay}</span>
+                                ${tags ? `<div class="run-timeline-tags">${tags}</div>` : ''}
+                            </div>
+                            ${r.note ? `<div class="run-timeline-note">${r.note}</div>` : ''}
+                        </div>
+                    </div>`;
                 });
-                html += '</tbody></table>';
-                document.getElementById('run-table').innerHTML = html;
+                document.getElementById('run-timeline').innerHTML = html;
             }
             function renderCalendar() {
                 log('=== renderCalendar 开始 ===');
@@ -10759,6 +10908,21 @@
             }
             renderFilter();
             applyFilter();
+            // 图表折叠切换
+            const chartsToggle = document.getElementById('run-charts-toggle');
+            const chartsPanel = document.getElementById('run-charts-panel');
+            if (chartsToggle && chartsPanel) {
+                chartsToggle.onclick = () => {
+                    const isOpen = chartsPanel.style.display !== 'none';
+                    chartsPanel.style.display = isOpen ? 'none' : 'grid';
+                    chartsToggle.classList.toggle('open', !isOpen);
+                    if (!isOpen) {
+                        // 首次展开时渲染图表
+                        renderCalendar();
+                        renderCharts();
+                    }
+                };
+            }
         }
 
         // 初始化跑步记录页面
