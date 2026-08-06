@@ -862,151 +862,181 @@
             color: #2c3e50;
         }
 
-        /* 运动时间线 - 微博风格 */
+        /* 运动时间线 - 微博/朋友圈风格 */
         .run-timeline {
             position: relative;
-            padding-left: 24px;
+            max-width: 640px;
         }
         .run-timeline-month {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 24px 0 12px 0;
-            padding-left: 20px;
+            letter-spacing: 1px;
+            margin: 32px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
         }
         .run-timeline-month:first-child {
             margin-top: 0;
         }
         .run-timeline-item {
             position: relative;
-            padding: 0 0 20px 20px;
+            padding: 0 0 24px 0;
         }
         .run-timeline-item:last-child {
             padding-bottom: 0;
         }
-        .run-timeline-dot {
-            position: absolute;
-            left: -5px;
-            top: 8px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #333;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 2px #ddd;
-            z-index: 1;
-        }
-        .run-timeline-rest .run-timeline-dot {
-            background: #ccc;
-            box-shadow: 0 0 0 2px #eee;
-        }
-        .run-timeline-line {
-            position: absolute;
-            left: -1px;
-            top: 18px;
-            bottom: 0;
-            width: 2px;
-            background: #e8e8e8;
-        }
-        .run-timeline-item:last-child .run-timeline-line {
-            display: none;
-        }
         .run-timeline-card {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 8px;
-            padding: 14px 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            gap: 14px;
         }
-        .run-timeline-card:hover {
-            border-color: #ccc;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        .run-timeline-avatar {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #999;
+            border: 1px solid #e8e8e8;
+        }
+        .run-timeline-rest .run-timeline-avatar {
+            background: #fafafa;
+            color: #ccc;
+        }
+        .run-timeline-body {
+            flex: 1;
+            min-width: 0;
         }
         .run-timeline-header {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .run-timeline-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
         }
         .run-timeline-date {
-            font-size: 0.85rem;
-            color: #666;
-            font-weight: 500;
+            font-size: 0.75rem;
+            color: #bbb;
         }
         .run-timeline-tags {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+            margin-bottom: 8px;
         }
         .run-tag {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 10px;
+            border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 500;
-            line-height: 1.5;
+            line-height: 1.4;
+            transition: background 0.15s;
         }
         .run-tag-run {
-            background: #f0f0f0;
+            background: #f5f5f5;
             color: #333;
         }
+        .run-tag-run:hover {
+            background: #eee;
+        }
         .run-tag-pushup {
-            background: #f0f0f0;
+            background: #f5f5f5;
             color: #555;
         }
         .run-tag-situp {
-            background: #f0f0f0;
+            background: #f5f5f5;
             color: #555;
         }
         .run-tag-squat {
-            background: #f0f0f0;
+            background: #f5f5f5;
             color: #555;
         }
         .run-timeline-note {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            line-height: 1.7;
+            font-size: 0.88rem;
+            line-height: 1.8;
             color: #333;
+            word-break: break-word;
         }
         .run-timeline-rest .run-timeline-note {
-            color: #888;
+            color: #999;
+            font-style: italic;
+        }
+        .run-timeline-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 0 0 0 54px;
+        }
+        .run-timeline-item:last-child .run-timeline-divider {
+            display: none;
+        }
+        .run-charts-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #eee;
+            background: #fafafa;
         }
         .run-charts-toggle:hover {
             color: #555;
+            border-color: #ddd;
+            background: #f5f5f5;
+        }
+        .run-charts-toggle.open {
+            color: #555;
+            border-color: #ddd;
+        }
+        .run-charts-toggle svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s;
         }
         .run-charts-toggle.open svg {
             transform: rotate(90deg);
         }
 
         /* Dark theme for timeline */
-        [data-theme="dark"] .run-timeline-dot {
-            background: #aaa;
-            border-color: #1a1a1a;
-            box-shadow: 0 0 0 2px #444;
+        [data-theme="dark"] .run-timeline-month {
+            color: #666;
+            border-bottom-color: #2a2a2a;
         }
-        [data-theme="dark"] .run-timeline-rest .run-timeline-dot {
-            background: #555;
-            box-shadow: 0 0 0 2px #333;
-        }
-        [data-theme="dark"] .run-timeline-line {
-            background: #333;
-        }
-        [data-theme="dark"] .run-timeline-card {
-            background: #1a1a1a;
+        [data-theme="dark"] .run-timeline-avatar {
+            background: #2a2a2a;
             border-color: #333;
+            color: #666;
         }
-        [data-theme="dark"] .run-timeline-card:hover {
-            border-color: #444;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        [data-theme="dark"] .run-timeline-rest .run-timeline-avatar {
+            background: #222;
+            color: #444;
+        }
+        [data-theme="dark"] .run-timeline-name {
+            color: #ddd;
         }
         [data-theme="dark"] .run-timeline-date {
-            color: #888;
+            color: #555;
         }
         [data-theme="dark"] .run-tag {
             background: #2a2a2a;
             color: #bbb;
+        }
+        [data-theme="dark"] .run-tag-run:hover {
+            background: #333;
         }
         [data-theme="dark"] .run-timeline-note {
             color: #ccc;
@@ -1014,24 +1044,34 @@
         [data-theme="dark"] .run-timeline-rest .run-timeline-note {
             color: #666;
         }
-        [data-theme="dark"] .run-timeline-month {
+        [data-theme="dark"] .run-timeline-divider {
+            background: #2a2a2a;
+        }
+        [data-theme="dark"] .run-charts-toggle {
             color: #666;
+            border-color: #333;
+            background: #1a1a1a;
+        }
+        [data-theme="dark"] .run-charts-toggle:hover {
+            color: #999;
+            border-color: #444;
+            background: #222;
         }
 
         @media (max-width: 768px) {
-            .run-timeline {
-                padding-left: 16px;
-            }
-            .run-timeline-item {
-                padding-left: 16px;
-            }
             .run-timeline-card {
-                padding: 10px 12px;
+                gap: 10px;
             }
-            .run-timeline-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
+            .run-timeline-avatar {
+                width: 34px;
+                height: 34px;
+                font-size: 0.95rem;
+            }
+            .run-timeline-note {
+                font-size: 0.85rem;
+            }
+            .run-timeline-divider {
+                margin-left: 44px;
             }
         }
 
@@ -4350,11 +4390,6 @@
                 height: 280px !important;
             }
 
-            /* Run stats cards: 2 columns on small screens */
-            .run-stats > div {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-
             /* Run filter: stack vertically */
             .run-filter > div {
                 flex-direction: column !important;
@@ -4475,12 +4510,6 @@
             /* Blog post title: even smaller */
             .blog-post-title {
                 font-size: 1.3rem !important;
-            }
-
-            /* Run stats: 2 columns */
-            .run-stats > div {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px !important;
             }
 
             /* Content wrapper: minimal padding */
@@ -10283,32 +10312,34 @@
             let filteredData = runData;
             const runSectionDiv = document.getElementById('run-section');
             runSectionDiv.innerHTML = `
-                <div class="run-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
-                    <h1 style="font-size:1.5rem;margin:0;">运动记录</h1>
-                    <div class="run-filter" id="run-filter"></div>
-                </div>
-                
-                <!-- 统计卡片 -->
-                <div style="margin-bottom:24px;">
-                    <div class="run-stats" id="run-stats"></div>
-                </div>
-                
-                <!-- 可视化区域（可折叠） -->
-                <div class="run-charts-toggle" id="run-charts-toggle" style="display:flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:12px;color:#888;font-size:0.85rem;user-select:none;">
-                    <svg id="run-charts-arrow" width="12" height="12" viewBox="0 0 12 12" style="transition:transform 0.2s;"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-                    <span>数据图表</span>
-                </div>
-                <div class="dashboard-charts" id="run-charts-panel" style="display:none;">
-                    <div style="background:#fafafa;padding:16px;border-radius:8px;">
-                        <div id="run-calendar" style="width:100%;height:380px;overflow:auto;position:relative;"></div>
+                <div style="max-width:640px;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                        <h1 style="font-size:1.3rem;margin:0;font-weight:600;">运动记录</h1>
+                        <div class="run-filter" id="run-filter"></div>
                     </div>
-                    <div style="background:#fafafa;padding:16px;border-radius:8px;">
-                        <div id="run-charts" style="width:100%;height:380px;"></div>
+                    
+                    <!-- 统计药丸 -->
+                    <div style="margin-bottom:20px;">
+                        <div class="run-stats" id="run-stats"></div>
                     </div>
+                    
+                    <!-- 可视化区域（可折叠） -->
+                    <div class="run-charts-toggle" id="run-charts-toggle">
+                        <svg width="14" height="14" viewBox="0 0 12 12"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                        <span>数据图表</span>
+                    </div>
+                    <div class="dashboard-charts" id="run-charts-panel" style="display:none;">
+                        <div style="background:#fafafa;padding:16px;border-radius:8px;">
+                            <div id="run-calendar" style="width:100%;height:380px;overflow:auto;position:relative;"></div>
+                        </div>
+                        <div style="background:#fafafa;padding:16px;border-radius:8px;">
+                            <div id="run-charts" style="width:100%;height:380px;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 微博风格时间线 -->
+                    <div class="run-timeline" id="run-timeline"></div>
                 </div>
-                
-                <!-- 微博风格时间线 -->
-                <div class="run-timeline" id="run-timeline"></div>
             `;
             function renderFilter() {
                 const years = runIndex ? runIndex.years : Array.from(new Set(runData.map(r => r.date.slice(0,4)))).sort((a,b)=>b-a);
@@ -10392,20 +10423,20 @@
                 let monthPushups = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.pushups||0),0);
                 let monthSitups = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.situps||0),0);
                 let monthSquats = (selectedYear==='全部'||selectedMonth==='全部')?null:runData.filter(r=>r.date.slice(0,4)===selectedYear&&r.date.slice(5,7)===selectedMonth).reduce((s,r)=>s+Number(r.squats||0),0);
-                let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;">';
+                let html = '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
                 
-                // 统计卡片 - 黑白灰极简
+                // 统计药丸 - 极简
                 const stats = [
-                    { value: total.toFixed(1), label: '跑量(km)' },
+                    { value: total.toFixed(1), label: 'km' },
                     { value: totalPushups, label: '俯卧撑' },
                     { value: totalSitups, label: '仰卧起坐' },
                     { value: totalSquats, label: '深蹲' },
-                    { value: filteredData.length, label: '记录' }
+                    { value: filteredData.length, label: '天' }
                 ];
                 stats.forEach(s => {
-                    html += `<div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #e8e8e8;text-align:center;">
-                        <div style="font-size:1.3rem;font-weight:700;color:#111;">${s.value}</div>
-                        <div style="font-size:0.75rem;color:#999;margin-top:2px;">${s.label}</div>
+                    html += `<div style="display:flex;align-items:baseline;gap:4px;padding:6px 12px;background:#f7f7f7;border-radius:16px;">
+                        <span style="font-size:1rem;font-weight:700;color:#111;">${s.value}</span>
+                        <span style="font-size:0.7rem;color:#999;">${s.label}</span>
                     </div>`;
                 });
                 
@@ -10445,17 +10476,23 @@
                     // 判断是否为"休息日"（只有感想没有运动数据）
                     const isRest = Number(r.distance_km) === 0 && Number(r.pushups||0) === 0 && Number(r.situps||0) === 0 && Number(r.squats||0) === 0;
                     
+                    // 运动类型图标
+                    const icon = Number(r.distance_km) > 0 ? '🏃' : (Number(r.squats||0) > 0 || Number(r.pushups||0) > 0 || Number(r.situps||0) > 0) ? '💪' : '💭';
+                    
                     html += `
                     <div class="run-timeline-item${isRest ? ' run-timeline-rest' : ''}">
-                        <div class="run-timeline-dot"></div>
-                        <div class="run-timeline-line"></div>
                         <div class="run-timeline-card">
-                            <div class="run-timeline-header">
-                                <span class="run-timeline-date">${dateDisplay}</span>
+                            <div class="run-timeline-avatar">${icon}</div>
+                            <div class="run-timeline-body">
+                                <div class="run-timeline-header">
+                                    <span class="run-timeline-name">哲民</span>
+                                    <span class="run-timeline-date">${dateDisplay}</span>
+                                </div>
                                 ${tags ? `<div class="run-timeline-tags">${tags}</div>` : ''}
+                                ${r.note ? `<div class="run-timeline-note">${r.note}</div>` : ''}
                             </div>
-                            ${r.note ? `<div class="run-timeline-note">${r.note}</div>` : ''}
                         </div>
+                        <div class="run-timeline-divider"></div>
                     </div>`;
                 });
                 document.getElementById('run-timeline').innerHTML = html;
