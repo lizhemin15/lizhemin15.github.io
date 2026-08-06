@@ -10476,16 +10476,17 @@
                     // 判断是否为"休息日"（只有感想没有运动数据）
                     const isRest = Number(r.distance_km) === 0 && Number(r.pushups||0) === 0 && Number(r.situps||0) === 0 && Number(r.squats||0) === 0;
                     
-                    // 运动类型图标
-                    const icon = Number(r.distance_km) > 0 ? '🏃' : (Number(r.squats||0) > 0 || Number(r.pushups||0) > 0 || Number(r.situps||0) > 0) ? '💪' : '💭';
+                    // 心情emoji和名字（从数据读取，无则fallback）
+                    const moodEmoji = r.emoji || (Number(r.distance_km) > 0 ? '🏃' : '💭');
+                    const moodName = r.mood_name || '哲民';
                     
                     html += `
                     <div class="run-timeline-item${isRest ? ' run-timeline-rest' : ''}">
                         <div class="run-timeline-card">
-                            <div class="run-timeline-avatar">${icon}</div>
+                            <div class="run-timeline-avatar">${moodEmoji}</div>
                             <div class="run-timeline-body">
                                 <div class="run-timeline-header">
-                                    <span class="run-timeline-name">哲民</span>
+                                    <span class="run-timeline-name">${moodName}</span>
                                     <span class="run-timeline-date">${dateDisplay}</span>
                                 </div>
                                 ${tags ? `<div class="run-timeline-tags">${tags}</div>` : ''}
