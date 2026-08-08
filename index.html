@@ -2149,88 +2149,128 @@
              box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
          }
 
-         .blog-card {
-             background: white;
-             border: 1.5px solid #d0d7de;
-             border-radius: 8px;
-             padding: 20px 24px;
-             margin-bottom: 16px;
-             cursor: pointer;
-             transition: border-color 0.2s ease, box-shadow 0.2s ease;
-             box-shadow: none;
+         /* 博客时间线 - 微博/朋友圈风格（与run模块一致） */
+         .blog-timeline {
              position: relative;
+             max-width: 640px;
          }
-
+         .blog-card {
+             position: relative;
+             padding: 0 0 24px 0;
+             background: none;
+             border: none;
+             border-radius: 0;
+             margin-bottom: 0;
+             cursor: pointer;
+             transition: none;
+             box-shadow: none;
+         }
          .blog-card::before {
              display: none;
          }
-
          .blog-card:hover {
-             border-color: #999;
-             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+             border-color: transparent;
+             box-shadow: none;
          }
-
+         .blog-card-inner {
+             display: flex;
+             gap: 14px;
+         }
+         .blog-avatar {
+             flex-shrink: 0;
+             width: 40px;
+             height: 40px;
+             border-radius: 50%;
+             background: #f5f5f5;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             font-size: 1.1rem;
+             color: #999;
+             border: 1px solid #e8e8e8;
+         }
+         .blog-body {
+             flex: 1;
+             min-width: 0;
+         }
          .blog-meta {
              display: flex;
-             align-items: center;
-             gap: 15px;
-             margin-bottom: 15px;
+             align-items: baseline;
+             gap: 8px;
+             margin-bottom: 4px;
              flex-wrap: wrap;
          }
-
-         .blog-date {
-             color: var(--secondary-color);
+         .blog-author {
              font-size: 0.9rem;
-             display: flex;
-             align-items: center;
-             gap: 5px;
-         }
-
-         .blog-tag {
-             background: var(--accent-color);
-             color: white;
-             padding: 3px 8px;
-             border-radius: 4px;
-             font-size: 0.8rem;
-             font-weight: 500;
-         }
-
-         .blog-title {
-             color: var(--primary-color);
-             margin-bottom: 15px;
-             font-size: 1.4rem;
              font-weight: 600;
-             line-height: 1.4;
+             color: #333;
          }
-
-         .blog-excerpt {
-             color: var(--text-color);
-             line-height: 1.6;
-             margin-bottom: 15px;
+         .blog-date {
+             font-size: 0.75rem;
+             color: #bbb;
          }
-
-         .blog-actions {
+         .blog-tags-row {
              display: flex;
-             justify-content: flex-end;
+             gap: 6px;
+             flex-wrap: wrap;
+             margin-bottom: 8px;
          }
-
-         .read-more {
-             color: var(--accent-color);
-             font-weight: 500;
-             display: flex;
+         .blog-tag {
+             display: inline-flex;
              align-items: center;
-             gap: 5px;
-             transition: all 0.3s ease;
+             gap: 3px;
+             padding: 3px 10px;
+             border-radius: 12px;
+             font-size: 0.75rem;
+             font-weight: 500;
+             line-height: 1.4;
+             background: #f5f5f5;
+             color: #555;
+             transition: background 0.15s;
          }
-
+         .blog-tag:hover {
+             background: #eee;
+         }
+         .blog-title {
+             color: #333;
+             margin-bottom: 6px;
+             font-size: 0.95rem;
+             font-weight: 600;
+             line-height: 1.5;
+         }
+         .blog-excerpt {
+             color: #666;
+             font-size: 0.88rem;
+             line-height: 1.8;
+             margin-bottom: 0;
+             word-break: break-word;
+         }
+         .blog-actions {
+             display: none;
+         }
+         .read-more {
+             display: none;
+         }
          .blog-card:hover .read-more {
-             transform: translateX(5px);
+             transform: none;
+         }
+         .blog-divider {
+             height: 1px;
+             background: #f0f0f0;
+             margin: 0 0 0 54px;
+         }
+         .blog-card:last-child .blog-divider {
+             display: none;
          }
 
          /* Pinned post styles */
          .pinned-post {
              position: relative;
-             border-left: 3px solid var(--accent-color);
+             border-left: none;
+         }
+         .pinned-post .blog-avatar {
+             border-color: #e0c36a;
+             background: #fef9e7;
          }
 
          /* === Encrypted blog styles === */
@@ -2251,11 +2291,11 @@
              align-items: center;
              gap: 4px;
              background: rgba(128,128,128,0.15);
-             color: var(--text-muted);
+             color: #999;
              font-size: 0.75rem;
              padding: 2px 8px;
-             border-radius: 4px;
-             margin-left: 8px;
+             border-radius: 12px;
+             margin-left: 0;
          }
          .encrypted-badge i { font-size: 0.7rem; }
          .blog-card.encrypted-card .blog-excerpt {
@@ -2585,11 +2625,25 @@
              }
 
              .blog-card {
-                 padding: 20px;
+                 padding: 0 0 20px 0;
+             }
+
+             .blog-card-inner {
+                 gap: 10px;
+             }
+
+             .blog-avatar {
+                 width: 34px;
+                 height: 34px;
+                 font-size: 0.95rem;
+             }
+
+             .blog-divider {
+                 margin-left: 44px;
              }
 
              .blog-title {
-                 font-size: 1.2rem;
+                 font-size: 0.9rem;
              }
 
              .blog-post-title {
@@ -2597,8 +2651,8 @@
              }
 
              .blog-meta {
-                 flex-direction: column;
-                 align-items: flex-start;
+                 gap: 6px;
+                 margin-bottom: 4px;
              }
          }
 
@@ -2910,24 +2964,54 @@
         }
 
         [data-theme="dark"] .blog-card {
-            background: #161b22;
-            border-color: #30363d;
+            background: none;
+            border-color: transparent;
             color: var(--dark-text-color);
         }
 
         [data-theme="dark"] .blog-card:hover {
-            border-color: #555;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            border-color: transparent;
+            box-shadow: none;
+        }
+        [data-theme="dark"] .blog-avatar {
+            background: #2a2a2a;
+            border-color: #333;
+            color: #666;
+        }
+        [data-theme="dark"] .blog-author {
+            color: #ddd;
+        }
+        [data-theme="dark"] .blog-date {
+            color: #555;
+        }
+        [data-theme="dark"] .blog-tag {
+            background: #2a2a2a;
+            color: #bbb;
+        }
+        [data-theme="dark"] .blog-tag:hover {
+            background: #333;
+        }
+        [data-theme="dark"] .blog-title {
+            color: #ccc;
+        }
+        [data-theme="dark"] .blog-excerpt {
+            color: #888;
+        }
+        [data-theme="dark"] .blog-divider {
+            background: #2a2a2a;
+        }
+        [data-theme="dark"] .encrypted-badge {
+            background: rgba(128,128,128,0.2);
+            color: #777;
         }
 
         /* Dark theme pinned post styles */
         [data-theme="dark"] .pinned-post {
-            border-color: #ff9f43;
-            background: linear-gradient(135deg, rgba(255, 159, 67, 0.08), rgba(255, 159, 67, 0.03));
+            border-color: transparent;
         }
-
-        [data-theme="dark"] .pinned-post::before {
-            background: linear-gradient(90deg, #ff9f43, #ffdb4a, #ffcc02);
+        [data-theme="dark"] .pinned-post .blog-avatar {
+            border-color: #8a7230;
+            background: #2a2518;
         }
 
         [data-theme="dark"] .pinned-icon {
@@ -3217,7 +3301,7 @@
             }
 
             .blog-card {
-                margin-bottom: 14px;
+                padding: 0 0 20px 0;
             }
 
             .blog-card:hover {
@@ -3331,7 +3415,7 @@
         }
 
         [data-theme="dark"] .blog-title {
-            color: var(--dark-text-color);
+            color: #ccc;
         }
 
         [data-theme="dark"] .blog-post-title {
@@ -3355,7 +3439,7 @@
         }
 
         [data-theme="dark"] .blog-date {
-            color: rgba(232, 232, 232, 0.8);
+            color: #555;
         }
 
         [data-theme="dark"] .read-more {
@@ -4270,14 +4354,14 @@
                 margin-bottom: 0;
             }
 
-            /* Blog card: no hover transform on touch */
+            /* Blog card: no hover on touch */
             .blog-card:hover {
                 transform: none;
                 box-shadow: none;
-                border-color: #d0d7de;
+                border-color: transparent;
             }
             .blog-card:active {
-                border-color: #999;
+                border-color: transparent;
             }
 
             /* Blog post detail: action buttons wrap */
@@ -4439,32 +4523,39 @@
         }
 
         @media (max-width: 576px) {
-            /* Blog card: compact */
+            /* Blog card: compact timeline */
             .blog-card {
-                padding: 14px !important;
-                margin-bottom: 14px !important;
-                border-radius: 8px;
+                padding: 0 0 16px 0 !important;
+                margin-bottom: 0 !important;
+            }
+            .blog-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            .blog-divider {
+                margin-left: 44px;
             }
             .blog-title {
-                font-size: 1.05rem !important;
-                margin-bottom: 8px;
+                font-size: 0.88rem !important;
+                margin-bottom: 4px;
             }
             .blog-excerpt {
-                font-size: 0.9rem;
-                line-height: 1.5;
-                margin-bottom: 10px;
+                font-size: 0.82rem;
+                line-height: 1.6;
+                margin-bottom: 0;
                 display: -webkit-box;
                 -webkit-line-clamp: 3;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
             .blog-meta {
-                gap: 8px !important;
-                margin-bottom: 10px !important;
+                gap: 6px !important;
+                margin-bottom: 4px !important;
             }
             .blog-tag {
                 font-size: 0.7rem;
-                padding: 2px 6px;
+                padding: 2px 8px;
             }
             .blog-date {
                 font-size: 0.8rem;
@@ -5707,11 +5798,16 @@
                 const excerpt = post.excerpt || post.content?.substring(0, 120) + '...' || '';
 
                 html += '<article class="blog-card" onclick="viewDiaryPost(\'' + post.fileName + '\')">' +
-                    '<div class="blog-card-date"><i class="fas fa-calendar"></i> ' + date + '</div>' +
-                    (tags ? '<div class="blog-card-tags">' + tags + '</div>' : '') +
-                    '<h3 class="blog-card-title">' + (post.title || '日记') + '</h3>' +
-                    '<p class="blog-card-excerpt">' + excerpt + '</p>' +
-                    '<span class="blog-read-more">阅读 <i class="fas fa-arrow-right"></i></span>' +
+                    '<div class="blog-card-inner">' +
+                        '<div class="blog-avatar">📖</div>' +
+                        '<div class="blog-body">' +
+                            '<div class="blog-meta"><span class="blog-author">哲民</span><span class="blog-date">' + date + '</span></div>' +
+                            (tags ? '<div class="blog-tags-row">' + tags + '</div>' : '') +
+                            '<div class="blog-title">' + (post.title || '日记') + '</div>' +
+                            '<div class="blog-excerpt">' + excerpt + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="blog-divider"></div>' +
                 '</article>';
             });
 
@@ -8301,7 +8397,7 @@
                         <small class="text-muted">Found <span id="results-count">0</span> articles</small>
                     </div>
                     
-                    <div class="blogs-list mt-4" id="blogs-list">
+                    <div class="blogs-list blog-timeline mt-4" id="blogs-list">
                         ${renderBlogsList(filteredPosts)}
                     </div>
                 </div>
@@ -8381,19 +8477,21 @@
                 
                 return `
                     <article class="blog-card ${pinnedClass} ${encryptedClass}" onclick="viewBlogPostWithScrollClear('${post.fileName}')">
-                        <div class="blog-meta">
-                            <span class="blog-date">
-                                <i class="fas fa-calendar"></i> ${date}
-                            </span>
-                            ${pinnedIndicator}
-                            ${tags}
-                            ${encryptedBadge}
+                        <div class="blog-card-inner">
+                            <div class="blog-avatar">${isPinned ? '📌' : (isEncrypted ? '🔒' : '📝')}</div>
+                            <div class="blog-body">
+                                <div class="blog-meta">
+                                    <span class="blog-author">哲民</span>
+                                    <span class="blog-date">${date}</span>
+                                    ${pinnedIndicator}
+                                    ${encryptedBadge}
+                                </div>
+                                ${tags ? `<div class="blog-tags-row">${tags}</div>` : ''}
+                                <div class="blog-title">${post.title || 'Untitled'}</div>
+                                ${post.excerpt ? `<div class="blog-excerpt">${post.excerpt}</div>` : ''}
+                            </div>
                         </div>
-                        <h3 class="blog-title">${post.title || 'Untitled'}</h3>
-                        <p class="blog-excerpt">${post.excerpt}</p>
-                        <div class="blog-actions">
-                            <span class="read-more">${isEncrypted ? '解锁阅读' : 'Read More'} <i class="fas fa-${isEncrypted ? 'lock' : 'arrow-right'}"></i></span>
-                        </div>
+                        <div class="blog-divider"></div>
                     </article>
                 `;
             }).join('');
