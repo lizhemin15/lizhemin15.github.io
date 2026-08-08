@@ -2151,37 +2151,23 @@
 
          .blog-card {
              background: white;
-             border: 1px solid #e1e4e8;
-             border-radius: 12px;
-             padding: 25px;
-             margin-bottom: 25px;
+             border: 1.5px solid #d0d7de;
+             border-radius: 8px;
+             padding: 20px 24px;
+             margin-bottom: 16px;
              cursor: pointer;
-             transition: all 0.3s cubic-bezier(.4,2,.6,1);
-             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+             box-shadow: none;
              position: relative;
-             overflow: hidden;
-             /* 新增动画属性 */
-             will-change: transform, box-shadow, border;
          }
 
          .blog-card::before {
-             content: '';
-             position: absolute;
-             left: 0; top: 0; right: 0; height: 4px;
-             background: linear-gradient(90deg, var(--accent-color), #6dd5fa, #fffde4);
-             opacity: 0;
-             transition: opacity 0.3s cubic-bezier(.4,2,.6,1);
-             z-index: 2;
+             display: none;
          }
 
          .blog-card:hover {
-             transform: translateY(-8px) scale(1.025);
-             box-shadow: 0 12px 32px rgba(52,152,219,0.18), 0 2px 8px rgba(0,0,0,0.08);
-             border-color: var(--accent-color);
-         }
-
-         .blog-card:hover::before {
-             opacity: 1;
+             border-color: #999;
+             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
          }
 
          .blog-meta {
@@ -2924,13 +2910,14 @@
         }
 
         [data-theme="dark"] .blog-card {
-            background: var(--dark-card-bg);
-            border-color: var(--dark-border-color);
+            background: #161b22;
+            border-color: #30363d;
             color: var(--dark-text-color);
         }
 
         [data-theme="dark"] .blog-card:hover {
-            box-shadow: 0 12px 32px rgba(15, 52, 96, 0.3), 0 2px 8px rgba(0,0,0,0.2);
+            border-color: #555;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         /* Dark theme pinned post styles */
@@ -3074,27 +3061,7 @@
             }
         }
 
-        /* Enhanced card hover effects */
-        .blog-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .blog-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .blog-card:hover::after {
-            left: 100%;
-        }
+        /* Enhanced card hover effects - removed, blog-card uses clean border style */
 
         /* Academic decoration elements */
         .academic-decoration {
@@ -3250,11 +3217,11 @@
             }
 
             .blog-card {
-                margin-bottom: 20px;
+                margin-bottom: 14px;
             }
 
             .blog-card:hover {
-                transform: translateY(-4px) scale(1.02);
+                transform: none;
             }
         }
 
@@ -4303,18 +4270,14 @@
                 margin-bottom: 0;
             }
 
-            /* Blog card: remove hover transform on touch */
+            /* Blog card: no hover transform on touch */
             .blog-card:hover {
                 transform: none;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-                border-color: #e1e4e8;
+                box-shadow: none;
+                border-color: #d0d7de;
             }
             .blog-card:active {
-                transform: scale(0.98);
-                box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            }
-            .blog-card::before {
-                display: none;
+                border-color: #999;
             }
 
             /* Blog post detail: action buttons wrap */
