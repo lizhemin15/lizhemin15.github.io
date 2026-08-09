@@ -10584,7 +10584,7 @@
                                     <span class="run-timeline-date">${dateDisplay}</span>
                                 </div>
                                 ${tags ? `<div class="run-timeline-tags">${tags}</div>` : ''}
-                                ${r.note ? `<div class="run-timeline-note">${r.note}</div>` : ''}
+                                ${r.note ? `<div class="run-timeline-note">${r.note.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')}</div>` : ''}
                             </div>
                         </div>
                         <div class="run-timeline-divider"></div>
