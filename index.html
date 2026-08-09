@@ -1081,735 +1081,736 @@
              background: #2d3748;
              border-color: #4a5568;
          }
+        }
 
-         /* Theorem container styles */
-         .theorem-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid var(--accent-color);
-             background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .theorem-container::before {
-             content: attr(data-theorem-title);
-             display: block;
-             font-weight: bold;
-             color: var(--accent-color);
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(52, 152, 219, 0.3);
-         }
-
-         .theorem-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for theorem container */
-         [data-theme="dark"] .theorem-container {
-             background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.15));
-             border-left-color: var(--accent-color);
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .theorem-container::before {
-             color: #4fd1c7;
-         }
-
-         /* Assumption container styles */
-         .assumption-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid #f39c12;
-             background: linear-gradient(135deg, rgba(243, 156, 18, 0.05), rgba(243, 156, 18, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .assumption-container::before {
-             content: attr(data-assumption-title);
-             display: block;
-             font-weight: bold;
-             color: #f39c12;
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(243, 156, 18, 0.3);
-         }
-
-         .assumption-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for assumption container */
-         [data-theme="dark"] .assumption-container {
-             background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(243, 156, 18, 0.15));
-             border-left-color: #f39c12;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .assumption-container::before {
-             color: #f1c40f;
-         }
-
-         /* Definition container styles */
-         .definition-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid #27ae60;
-             background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(39, 174, 96, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .definition-container::before {
-             content: attr(data-definition-title);
-             display: block;
-             font-weight: bold;
-             color: #27ae60;
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(39, 174, 96, 0.3);
-         }
-
-         .definition-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for definition container */
-         [data-theme="dark"] .definition-container {
-             background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.15));
-             border-left-color: #27ae60;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .definition-container::before {
-             color: #2ecc71;
-         }
-
-         /* Corollary container styles */
-         .corollary-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid #9b59b6;
-             background: linear-gradient(135deg, rgba(155, 89, 182, 0.05), rgba(155, 89, 182, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .corollary-container::before {
-             content: attr(data-corollary-title);
-             display: block;
-             font-weight: bold;
-             color: #9b59b6;
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(155, 89, 182, 0.3);
-         }
-
-         .corollary-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for corollary container */
-         [data-theme="dark"] .corollary-container {
-             background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(155, 89, 182, 0.15));
-             border-left-color: #9b59b6;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .corollary-container::before {
-             color: #bb7dd8;
-         }
-
-         /* Proposition container styles */
-         .proposition-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid #9f7aea;
-             background: linear-gradient(135deg, rgba(159, 122, 234, 0.05), rgba(159, 122, 234, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .proposition-container::before {
-             content: attr(data-proposition-title);
-             display: block;
-             font-weight: bold;
-             color: #9f7aea;
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(159, 122, 234, 0.3);
-         }
-
-         .proposition-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for proposition container */
-         [data-theme="dark"] .proposition-container {
-             background: linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(159, 122, 234, 0.15));
-             border-left-color: #9f7aea;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .proposition-container::before {
-             color: #9f7aea;
-         }
-
-         /* Lemma container styles */
-         .lemma-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid #e74c3c;
-             background: linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(231, 76, 60, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .lemma-container::before {
-             content: attr(data-lemma-title);
-             display: block;
-             font-weight: bold;
-             color: #e74c3c;
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(231, 76, 60, 0.3);
-         }
-
-         .lemma-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for lemma container */
-         [data-theme="dark"] .lemma-container {
-             background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.15));
-             border-left-color: #e74c3c;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .lemma-container::before {
-             color: #ec7063;
-         }
-
-         /* Remark container styles */
-         .remark-container {
-             margin: 20px 0;
-             padding: 20px;
-             border-left: 4px solid #17a2b8;
-             background: linear-gradient(135deg, rgba(23, 162, 184, 0.05), rgba(23, 162, 184, 0.1));
-             border-radius: 8px;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-             position: relative;
-             font-family: "Times New Roman", "KaTeX_Main", serif;
-         }
-
-         .remark-container::before {
-             content: attr(data-remark-title);
-             display: block;
-             font-weight: bold;
-             color: #17a2b8;
-             font-size: 1.1em;
-             margin-bottom: 12px;
-             padding-bottom: 8px;
-             border-bottom: 1px solid rgba(23, 162, 184, 0.3);
-         }
-
-         .remark-content {
-             line-height: 1.7;
-             font-size: 1.05em;
-         }
-
-         /* Dark mode support for remark container */
-         [data-theme="dark"] .remark-container {
-             background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.15));
-             border-left-color: #17a2b8;
-             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-         }
-
-         [data-theme="dark"] .remark-container::before {
-             color: #5bc0de;
-         }
-
-         /* Table scroll wrapper for responsive tables */
-         .table-scroll-wrapper {
-             overflow-x: auto;
-             margin: 0 -20px;
-             padding: 0 20px;
-         }
-
-         .table-scroll-wrapper table {
-             min-width: 600px;
-             white-space: nowrap;
-         }
-
-         .table-scroll-wrapper table td,
-         .table-scroll-wrapper table th {
-             white-space: nowrap;
-             min-width: 120px;
-         }
-
-         /* Math formulas in tables - allow proper rendering */
-         .table-scroll-wrapper .math-container {
-             white-space: normal;
-         }
-
-         /* Display mode math in tables */
-         .table-scroll-wrapper .math-container.katex-display {
-             display: inline-block;
-             vertical-align: middle;
-             white-space: normal;
-         }
-
-         /* Allow multiline math formulas to render properly */
-         .table-scroll-wrapper .katex-display .katex-html {
-             white-space: normal;
-             overflow: visible;
-         }
-
-         /* Scrollbar styling for table wrapper */
-         .table-scroll-wrapper::-webkit-scrollbar {
-             height: 8px;
-         }
-
-         .table-scroll-wrapper::-webkit-scrollbar-track {
-             background: #f1f1f1;
-             border-radius: 4px;
-         }
-
-         .table-scroll-wrapper::-webkit-scrollbar-thumb {
-             background: #c1c1c1;
-             border-radius: 4px;
-         }
-
-         .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-             background: #a8a8a8;
-         }
-
-         [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-track {
-             background: #4a5568;
-         }
-
-         [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-thumb {
-             background: #718096;
-         }
-
-         [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
-             background: #a0aec0;
-         }
-
-         /* Math formula styles */
-         .katex {
-             font-size: 1.1em;
-         }
-
-         .katex-display {
-             margin: 12px 0;
-             text-align: center;
-             display: block;
-             overflow: hidden;
-         }
-
-         /* 确保块级公式容器正确显示 */
-         .math-container.katex-display {
-             display: block;
-             text-align: center;
-             margin: 12px 0;
-             overflow: hidden;
-         }
-
-         /* 确保KaTeX渲染的块级公式正确居中 */
-         .katex-display .katex {
-             display: inline-block;
-             text-align: center;
-         }
-
-         /* 防止公式换行 */
-         .katex-display .katex-html {
-             white-space: nowrap;
-             overflow-x: auto;
-         }
-
-         /* Selectable math formulas (for copying original text) */
-         .math-container {
-             position: relative;
-             display: inline-block;
-         }
-
-         .math-source {
-             display: none;
-             position: absolute;
-             top: 100%;
-             left: 0;
-             background: #2d3748;
-             color: white;
-             padding: 4px 8px;
-             border-radius: 4px;
-             font-size: 12px;
-             white-space: nowrap;
-             z-index: 1000;
-             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-         }
-
-         .math-container:hover .math-source {
-             display: block;
-         }
-
-         /* Formula tooltip styles */
-         .formula-tooltip {
-             position: fixed;
-             background: rgba(45, 55, 72, 0.95);
-             color: white;
-             padding: 15px;
-             border-radius: 8px;
-             font-size: 14px;
-             z-index: 10000;
-             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-             backdrop-filter: blur(10px);
-             -webkit-backdrop-filter: blur(10px);
-             border: 1px solid rgba(255,255,255,0.1);
-             max-width: 600px;
-             min-width: 200px;
-             pointer-events: none;
-             opacity: 0;
-             transform: translateY(10px);
-             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-             word-wrap: break-word;
-             overflow-wrap: break-word;
-         }
-
-         .formula-tooltip.show {
-             opacity: 1;
-             transform: translateY(0);
-         }
-
-         .formula-tooltip .katex {
-             font-size: 1.2em;
-             color: white;
-         }
-
-         .formula-tooltip .katex-display {
-             margin: 0;
-             text-align: center;
-             white-space: normal;
-             overflow: visible;
-         }
-
-         .formula-tooltip .katex-html {
-             white-space: normal;
-             overflow: visible;
-             word-wrap: break-word;
-             overflow-wrap: break-word;
-         }
-
-         /* Dark mode support for tooltip */
-         [data-theme="dark"] .formula-tooltip {
-             background: rgba(26, 32, 44, 0.95);
-             border: 1px solid rgba(255,255,255,0.2);
-         }
-
-         /* 博客引用预览样式 */
-         .blog-reference-link {
-             position: relative;
-             color: var(--accent-color);
-             text-decoration: none;
-             border-bottom: 1px dashed var(--accent-color);
-             transition: all 0.3s ease;
-         }
-
-         .blog-reference-link:hover {
-             color: var(--primary-color);
-             border-bottom-color: var(--primary-color);
-             text-decoration: none;
-         }
-
-         .blog-preview-tooltip {
-             position: fixed;
-             background: rgba(248, 249, 250, 0.95);
-             color: var(--text-color);
-             border: 1px solid var(--accent-color);
-             border-radius: 12px;
-             box-shadow: 0 12px 48px rgba(0,0,0,0.15);
-             z-index: 10001;
-             width: 320px;
-             max-width: 90vw;
-             font-size: 0.9rem;
-             line-height: 1.5;
-             backdrop-filter: blur(16px);
-             -webkit-backdrop-filter: blur(16px);
-             display: none;
-             pointer-events: none;
-             opacity: 0;
-             transform: translateY(-10px);
-             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-         }
-
-         .blog-preview-tooltip[style*="display: block"] {
-             opacity: 1;
-             transform: translateY(0);
-         }
-
-         .blog-preview-header {
-             padding: 16px 16px 12px 16px;
-             border-bottom: 1px solid rgba(52, 152, 219, 0.1);
-         }
-
-         .blog-preview-title {
-             font-size: 1.1rem;
-             font-weight: 600;
-             margin: 0 0 8px 0;
-             color: var(--primary-color);
-             line-height: 1.3;
-         }
-
-         .blog-preview-meta {
-             display: flex;
-             flex-wrap: wrap;
-             gap: 8px;
-             align-items: center;
-         }
-
-         .blog-preview-date {
-             color: var(--text-color);
-             opacity: 0.7;
-             font-size: 0.85rem;
-             display: flex;
-             align-items: center;
-             gap: 4px;
-         }
-
-         .preview-tag {
-             background: var(--accent-color);
-             color: white;
-             padding: 2px 8px;
-             border-radius: 12px;
-             font-size: 0.75rem;
-             font-weight: 500;
-         }
-
-         .blog-preview-content {
-             padding: 12px 16px;
-         }
-
-         .blog-preview-excerpt {
-             margin: 0;
-             color: var(--text-color);
-             opacity: 0.8;
-             line-height: 1.5;
-             font-size: 0.9rem;
-         }
-
-         .blog-preview-footer {
-             padding: 8px 16px 12px 16px;
-             text-align: center;
-             border-top: 1px solid rgba(52, 152, 219, 0.1);
-         }
-
-         .blog-preview-loading,
-         .blog-preview-error {
-             padding: 16px;
-             text-align: center;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             gap: 8px;
-             color: var(--text-color);
-         }
-
-         .blog-preview-error {
-             color: #dc3545;
-         }
-
-         .blog-preview-loading i {
-             animation: spin 1s linear infinite;
-         }
-
-         @keyframes spin {
-             from { transform: rotate(0deg); }
-             to { transform: rotate(360deg); }
-         }
-
-         /* 深色模式下的博客预览样式 */
-         [data-theme="dark"] .blog-preview-tooltip {
-             background: rgba(26, 32, 44, 0.95);
-             border-color: var(--dark-accent-color);
-         }
-
-         [data-theme="dark"] .blog-preview-header {
-             border-bottom-color: rgba(255, 255, 255, 0.1);
-         }
-
-         [data-theme="dark"] .blog-preview-footer {
-             border-top-color: rgba(255, 255, 255, 0.1);
-         }
-
-        .markdown-content ul, .markdown-content ol {
+        /* Theorem container styles */
+        .theorem-container {
             margin: 20px 0;
-            padding-left: 30px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-color);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
         }
 
-        .markdown-content li {
-            margin: 10px 0;
+        .theorem-container::before {
+            content: attr(data-theorem-title);
+            display: block;
+            font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.3);
         }
 
-        .markdown-content strong {
-            color: #ff0000; /* 红色 */
-            font-weight: 600;
+        .theorem-content {
+            line-height: 1.7;
+            font-size: 1.05em;
         }
 
-        .markdown-content em {
-            color: #0000ff; /* 蓝色 */
-            font-style: italic;
-            padding: 0 2px; /* 前后各增加4px的间距 */
-            margin: 0 2px; /* 前后各增加2px的外边距 */
+        /* Dark mode support for theorem container */
+        [data-theme="dark"] .theorem-container {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(52, 152, 219, 0.15));
+            border-left-color: var(--accent-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        .markdown-content a {
+        [data-theme="dark"] .theorem-container::before {
+            color: #4fd1c7;
+        }
+
+        /* Assumption container styles */
+        .assumption-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 4px solid #f39c12;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.05), rgba(243, 156, 18, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
+        }
+
+        .assumption-container::before {
+            content: attr(data-assumption-title);
+            display: block;
+            font-weight: bold;
+            color: #f39c12;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(243, 156, 18, 0.3);
+        }
+
+        .assumption-content {
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        /* Dark mode support for assumption container */
+        [data-theme="dark"] .assumption-container {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1), rgba(243, 156, 18, 0.15));
+            border-left-color: #f39c12;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .assumption-container::before {
+            color: #f1c40f;
+        }
+
+        /* Definition container styles */
+        .definition-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 4px solid #27ae60;
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.05), rgba(39, 174, 96, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
+        }
+
+        .definition-container::before {
+            content: attr(data-definition-title);
+            display: block;
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(39, 174, 96, 0.3);
+        }
+
+        .definition-content {
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        /* Dark mode support for definition container */
+        [data-theme="dark"] .definition-container {
+            background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.15));
+            border-left-color: #27ae60;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .definition-container::before {
+            color: #2ecc71;
+        }
+
+        /* Corollary container styles */
+        .corollary-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 4px solid #9b59b6;
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.05), rgba(155, 89, 182, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
+        }
+
+        .corollary-container::before {
+            content: attr(data-corollary-title);
+            display: block;
+            font-weight: bold;
+            color: #9b59b6;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(155, 89, 182, 0.3);
+        }
+
+        .corollary-content {
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        /* Dark mode support for corollary container */
+        [data-theme="dark"] .corollary-container {
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(155, 89, 182, 0.15));
+            border-left-color: #9b59b6;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .corollary-container::before {
+            color: #bb7dd8;
+        }
+
+        /* Proposition container styles */
+        .proposition-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 4px solid #9f7aea;
+            background: linear-gradient(135deg, rgba(159, 122, 234, 0.05), rgba(159, 122, 234, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
+        }
+
+        .proposition-container::before {
+            content: attr(data-proposition-title);
+            display: block;
+            font-weight: bold;
+            color: #9f7aea;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(159, 122, 234, 0.3);
+        }
+
+        .proposition-content {
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        /* Dark mode support for proposition container */
+        [data-theme="dark"] .proposition-container {
+            background: linear-gradient(135deg, rgba(159, 122, 234, 0.1), rgba(159, 122, 234, 0.15));
+            border-left-color: #9f7aea;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .proposition-container::before {
+            color: #9f7aea;
+        }
+
+        /* Lemma container styles */
+        .lemma-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 4px solid #e74c3c;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.05), rgba(231, 76, 60, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
+        }
+
+        .lemma-container::before {
+            content: attr(data-lemma-title);
+            display: block;
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .lemma-content {
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        /* Dark mode support for lemma container */
+        [data-theme="dark"] .lemma-container {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(231, 76, 60, 0.15));
+            border-left-color: #e74c3c;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .lemma-container::before {
+            color: #ec7063;
+        }
+
+        /* Remark container styles */
+        .remark-container {
+            margin: 20px 0;
+            padding: 20px;
+            border-left: 4px solid #17a2b8;
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.05), rgba(23, 162, 184, 0.1));
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            font-family: "Times New Roman", "KaTeX_Main", serif;
+        }
+
+        .remark-container::before {
+            content: attr(data-remark-title);
+            display: block;
+            font-weight: bold;
+            color: #17a2b8;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .remark-content {
+            line-height: 1.7;
+            font-size: 1.05em;
+        }
+
+        /* Dark mode support for remark container */
+        [data-theme="dark"] .remark-container {
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.15));
+            border-left-color: #17a2b8;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        [data-theme="dark"] .remark-container::before {
+            color: #5bc0de;
+        }
+
+        /* Table scroll wrapper for responsive tables */
+        .table-scroll-wrapper {
+            overflow-x: auto;
+            margin: 0 -20px;
+            padding: 0 20px;
+        }
+
+        .table-scroll-wrapper table {
+            min-width: 600px;
+            white-space: nowrap;
+        }
+
+        .table-scroll-wrapper table td,
+        .table-scroll-wrapper table th {
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        /* Math formulas in tables - allow proper rendering */
+        .table-scroll-wrapper .math-container {
+            white-space: normal;
+        }
+
+        /* Display mode math in tables */
+        .table-scroll-wrapper .math-container.katex-display {
+            display: inline-block;
+            vertical-align: middle;
+            white-space: normal;
+        }
+
+        /* Allow multiline math formulas to render properly */
+        .table-scroll-wrapper .katex-display .katex-html {
+            white-space: normal;
+            overflow: visible;
+        }
+
+        /* Scrollbar styling for table wrapper */
+        .table-scroll-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-track {
+            background: #4a5568;
+        }
+
+        [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #718096;
+        }
+
+        [data-theme="dark"] .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* Math formula styles */
+        .katex {
+            font-size: 1.1em;
+        }
+
+        .katex-display {
+            margin: 12px 0;
+            text-align: center;
+            display: block;
+            overflow: hidden;
+        }
+
+        /* 确保块级公式容器正确显示 */
+        .math-container.katex-display {
+            display: block;
+            text-align: center;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+
+        /* 确保KaTeX渲染的块级公式正确居中 */
+        .katex-display .katex {
+            display: inline-block;
+            text-align: center;
+        }
+
+        /* 防止公式换行 */
+        .katex-display .katex-html {
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        /* Selectable math formulas (for copying original text) */
+        .math-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .math-source {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #2d3748;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .math-container:hover .math-source {
+            display: block;
+        }
+
+        /* Formula tooltip styles */
+        .formula-tooltip {
+            position: fixed;
+            background: rgba(45, 55, 72, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 600px;
+            min-width: 200px;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .formula-tooltip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .formula-tooltip .katex {
+            font-size: 1.2em;
+            color: white;
+        }
+
+        .formula-tooltip .katex-display {
+            margin: 0;
+            text-align: center;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .formula-tooltip .katex-html {
+            white-space: normal;
+            overflow: visible;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Dark mode support for tooltip */
+        [data-theme="dark"] .formula-tooltip {
+            background: rgba(26, 32, 44, 0.95);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* 博客引用预览样式 */
+        .blog-reference-link {
+            position: relative;
             color: var(--accent-color);
             text-decoration: none;
-            border-bottom: 1px solid transparent;
+            border-bottom: 1px dashed var(--accent-color);
             transition: all 0.3s ease;
         }
 
-        .markdown-content a:hover {
-            border-bottom-color: var(--accent-color);
+        .blog-reference-link:hover {
             color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            text-decoration: none;
         }
 
-        .markdown-content p {
-            margin: 15px 0;
-        }
-
-        .markdown-content hr {
-            border: none;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-color), transparent);
-            margin: 30px 0;
-        }
-
-        /* Enhanced project gallery styles */
-        .projects-gallery .project-card {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .projects-gallery .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.6s ease;
-            z-index: 1;
-        }
-
-        .projects-gallery .project-card:hover::before {
-            left: 100%;
-        }
-
-        .projects-gallery .tag {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .projects-gallery .tag::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: all 0.4s ease;
-        }
-
-        .projects-gallery .tag:hover::after {
-            left: 100%;
-        }
-
-        .projects-gallery .project-image:before {
-            content: '🚀';
-            font-size: 3rem;
-            color: white;
-            opacity: 0.8;
-        }
-
-        .projects-gallery .project-card[data-category="algorithms"] .project-image:before {
-            content: '⚙️';
-        }
-
-        .projects-gallery .project-card[data-category="applications"] .project-image:before {
-            content: '🔬';
-        }
-
-        .projects-gallery .project-card[data-category="materials"] .project-image:before {
-            content: '🧪';
-        }
-
-        .projects-gallery .project-card[data-category="security"] .project-image:before {
-            content: '🛡️';
-        }
-
-        /* Error message */
-        .error-message {
-            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-            color: #721c24;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #f5c6cb;
-            text-align: center;
-            margin: 40px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        /* Mobile menu button */
-        .mobile-menu-btn {
-            display: none;
+        .blog-preview-tooltip {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            background: rgba(248, 249, 250, 0.95);
+            color: var(--text-color);
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+            z-index: 10001;
+            width: 320px;
+            max-width: 90vw;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: none;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .mobile-menu-btn:hover {
-            background: var(--secondary-color);
-            transform: scale(1.05);
+        .blog-preview-tooltip[style*="display: block"] {
+            opacity: 1;
+            transform: translateY(0);
         }
+
+        .blog-preview-header {
+            padding: 16px 16px 12px 16px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.1);
+        }
+
+        .blog-preview-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        .blog-preview-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .blog-preview-date {
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .preview-tag {
+            background: var(--accent-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .blog-preview-content {
+            padding: 12px 16px;
+        }
+
+        .blog-preview-excerpt {
+            margin: 0;
+            color: var(--text-color);
+            opacity: 0.8;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .blog-preview-footer {
+            padding: 8px 16px 12px 16px;
+            text-align: center;
+            border-top: 1px solid rgba(52, 152, 219, 0.1);
+        }
+
+        .blog-preview-loading,
+        .blog-preview-error {
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-color);
+        }
+
+        .blog-preview-error {
+            color: #dc3545;
+        }
+
+        .blog-preview-loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 深色模式下的博客预览样式 */
+        [data-theme="dark"] .blog-preview-tooltip {
+            background: rgba(26, 32, 44, 0.95);
+            border-color: var(--dark-accent-color);
+        }
+
+        [data-theme="dark"] .blog-preview-header {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .blog-preview-footer {
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+       .markdown-content ul, .markdown-content ol {
+           margin: 20px 0;
+           padding-left: 30px;
+       }
+
+       .markdown-content li {
+           margin: 10px 0;
+       }
+
+       .markdown-content strong {
+           color: #ff0000; /* 红色 */
+           font-weight: 600;
+       }
+
+       .markdown-content em {
+           color: #0000ff; /* 蓝色 */
+           font-style: italic;
+           padding: 0 2px; /* 前后各增加4px的间距 */
+           margin: 0 2px; /* 前后各增加2px的外边距 */
+       }
+
+       .markdown-content a {
+           color: var(--accent-color);
+           text-decoration: none;
+           border-bottom: 1px solid transparent;
+           transition: all 0.3s ease;
+       }
+
+       .markdown-content a:hover {
+           border-bottom-color: var(--accent-color);
+           color: var(--primary-color);
+       }
+
+       .markdown-content p {
+           margin: 15px 0;
+       }
+
+       .markdown-content hr {
+           border: none;
+           height: 2px;
+           background: linear-gradient(90deg, var(--accent-color), transparent);
+           margin: 30px 0;
+       }
+
+       /* Enhanced project gallery styles */
+       .projects-gallery .project-card {
+           position: relative;
+           overflow: hidden;
+       }
+
+       .projects-gallery .project-card::before {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: -100%;
+           width: 100%;
+           height: 100%;
+           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+           transition: all 0.6s ease;
+           z-index: 1;
+       }
+
+       .projects-gallery .project-card:hover::before {
+           left: 100%;
+       }
+
+       .projects-gallery .tag {
+           position: relative;
+           overflow: hidden;
+       }
+
+       .projects-gallery .tag::after {
+           content: '';
+           position: absolute;
+           top: 0;
+           left: -100%;
+           width: 100%;
+           height: 100%;
+           background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+           transition: all 0.4s ease;
+       }
+
+       .projects-gallery .tag:hover::after {
+           left: 100%;
+       }
+
+       .projects-gallery .project-image:before {
+           content: '🚀';
+           font-size: 3rem;
+           color: white;
+           opacity: 0.8;
+       }
+
+       .projects-gallery .project-card[data-category="algorithms"] .project-image:before {
+           content: '⚙️';
+       }
+
+       .projects-gallery .project-card[data-category="applications"] .project-image:before {
+           content: '🔬';
+       }
+
+       .projects-gallery .project-card[data-category="materials"] .project-image:before {
+           content: '🧪';
+       }
+
+       .projects-gallery .project-card[data-category="security"] .project-image:before {
+           content: '🛡️';
+       }
+
+       /* Error message */
+       .error-message {
+           background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+           color: #721c24;
+           padding: 30px;
+           border-radius: 12px;
+           border: 1px solid #f5c6cb;
+           text-align: center;
+           margin: 40px 0;
+           box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+       }
+
+       /* Mobile menu button */
+       .mobile-menu-btn {
+           display: none;
+           position: fixed;
+           top: 20px;
+           left: 20px;
+           z-index: 1001;
+           background: var(--primary-color);
+           color: white;
+           border: none;
+           border-radius: 8px;
+           width: 50px;
+           height: 50px;
+           font-size: 1.2rem;
+           box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+           transition: all 0.3s ease;
+       }
+
+       .mobile-menu-btn:hover {
+           background: var(--secondary-color);
+           transform: scale(1.05);
+       }
 
         /* Responsive design */
         @media (max-width: 768px) {
