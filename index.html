@@ -1919,17 +1919,17 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            width: 280px;
-            max-height: 70vh;
+            width: 200px;
+            max-height: 60vh;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             z-index: 998;
             transform: translateX(calc(100% + 20px));
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .toc-container.show {
@@ -1940,22 +1940,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 6px 10px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
             background: var(--accent-color);
             color: white;
-            border-radius: 12px 12px 0 0;
+            border-radius: 8px 8px 0 0;
             font-weight: 500;
+            font-size: 0.75rem;
         }
 
         .toc-toggle {
             background: none;
             border: none;
             color: white;
-            font-size: 1.1rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
+            padding: 2px;
+            border-radius: 3px;
             transition: all 0.2s ease;
         }
 
@@ -1964,13 +1965,13 @@
         }
 
         .toc-content {
-            max-height: calc(70vh - 60px);
+            max-height: calc(60vh - 32px);
             overflow-y: auto;
-            padding: 8px 0;
+            padding: 4px 0;
         }
 
         .toc-content::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
         }
 
         .toc-content::-webkit-scrollbar-track {
@@ -1978,78 +1979,82 @@
         }
 
         .toc-content::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.15);
             border-radius: 2px;
         }
 
         .toc-item {
             display: block;
-            padding: 6px 16px;
+            padding: 3px 10px;
             color: var(--text-color);
             text-decoration: none;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+            transition: all 0.15s ease;
             cursor: pointer;
-            font-size: 0.85rem;
-            line-height: 1.4;
+            font-size: 0.75rem;
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .toc-item:hover {
-            background: rgba(52, 152, 219, 0.1);
+            background: rgba(52, 152, 219, 0.08);
             border-left-color: var(--accent-color);
             color: var(--primary-color);
         }
 
         .toc-item.active {
-            background: rgba(52, 152, 219, 0.15);
+            background: rgba(52, 152, 219, 0.12);
             border-left-color: var(--accent-color);
             color: var(--accent-color);
             font-weight: 500;
         }
 
         .toc-item.level-1 {
-            padding-left: 16px;
+            padding-left: 10px;
             font-weight: 500;
+            font-size: 0.78rem;
         }
 
         .toc-item.level-2 {
-            padding-left: 28px;
-            font-size: 0.8rem;
+            padding-left: 20px;
+            font-size: 0.72rem;
         }
 
         .toc-item.level-3 {
-            padding-left: 40px;
-            font-size: 0.75rem;
+            padding-left: 30px;
+            font-size: 0.68rem;
             opacity: 0.8;
         }
 
         .toc-item.level-4 {
-            padding-left: 52px;
-            font-size: 0.75rem;
+            padding-left: 38px;
+            font-size: 0.65rem;
             opacity: 0.7;
         }
 
         .toc-item.level-5,
         .toc-item.level-6 {
-            padding-left: 64px;
-            font-size: 0.7rem;
+            padding-left: 46px;
+            font-size: 0.62rem;
             opacity: 0.6;
         }
 
         /* TOC Toggle Button */
         .toc-fab {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 56px;
-            height: 56px;
+            bottom: 24px;
+            right: 24px;
+            width: 36px;
+            height: 36px;
             background: var(--accent-color);
             color: white;
             border: none;
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 0.85rem;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 2px 12px rgba(52, 152, 219, 0.25);
             z-index: 997;
             transition: all 0.3s ease;
             display: none;
@@ -2059,8 +2064,8 @@
 
         .toc-fab:hover {
             background: var(--primary-color);
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(52, 152, 219, 0.4);
+            transform: scale(1.08);
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.35);
         }
 
         .toc-fab.show {
@@ -2079,8 +2084,8 @@
         /* Responsive adjustments for TOC */
         @media (max-width: 1200px) {
             .toc-container {
-                width: 240px;
-                right: 15px;
+                width: 180px;
+                right: 10px;
             }
         }
 
@@ -2090,15 +2095,15 @@
                 right: 5%;
                 left: 5%;
                 top: 80px;
-                max-height: 60vh;
+                max-height: 50vh;
             }
             
             .toc-fab {
                 bottom: 20px;
                 right: 20px;
-                width: 48px;
-                height: 48px;
-                font-size: 1rem;
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
             }
         }
 
