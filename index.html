@@ -10424,6 +10424,7 @@
             let selectedMonth = '全部';
             let displayMode = '日'; // 年/月/日
             let filteredData = runData;
+            let sortedData = [];
             const runSectionDiv = document.getElementById('run-section');
             runSectionDiv.innerHTML = `
                 <div style="max-width:640px;">
@@ -10562,7 +10563,7 @@
                     document.getElementById('run-timeline').innerHTML = '<div style="text-align:center;padding:40px 0;color:#999;">暂无记录</div>';
                     return;
                 }
-                const sortedData = [...filteredData].sort((a, b) => new Date(b.date) - new Date(a.date));
+                sortedData = [...filteredData].sort((a, b) => new Date(b.date) - new Date(a.date));
                 let html = '';
                 let lastMonth = '';
                 sortedData.forEach((r, idx) => {
@@ -10602,7 +10603,7 @@
                                 <div class="run-timeline-header">
                                     <span class="run-timeline-name">${moodName}</span>
                                     <span class="run-timeline-date">${dateDisplay}</span>
-                                    <button class="run-share-btn" onclick="shareRunCard(${JSON.stringify(r).replace(/"/g, '&quot;')})" title="分享打卡"><i class="fas fa-share-alt"></i></button>
+                                    <button class="run-share-btn" data-record-idx="${idx}" title="分享打卡"><i class="fas fa-share-alt"></i></button>
                                 </div>
                                 ${tags ? `<div class="run-timeline-tags">${tags}</div>` : ''}
                                 ${r.note ? `<div class="run-timeline-note">${r.note.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')}</div>` : ''}
@@ -10760,6 +10761,17 @@
                 a.download = `run-${date}.png`;
                 a.click();
             }
+
+            // 事件委托：分享按钮点击
+            document.getElementById('run-timeline').addEventListener('click', function(e) {
+                const btn = e.target.closest('.run-share-btn');
+                if (!btn) return;
+                const idx = parseInt(btn.dataset.recordIdx);
+                const records = sortedData;
+                if (records && records[idx]) {
+                    shareRunCard(records[idx]);
+                }
+            });
 
             function renderCalendar() {
                 log('=== renderCalendar 开始 ===');
