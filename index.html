@@ -10619,7 +10619,7 @@
             function shareRunCard(record) {
                 const canvas = document.createElement('canvas');
                 const dpr = Math.min(window.devicePixelRatio || 2, 3);
-                const W = 420, H = 680;
+                const W = 420, H = 720;
                 canvas.width = W * dpr;
                 canvas.height = H * dpr;
                 const ctx = canvas.getContext('2d');
@@ -10629,82 +10629,102 @@
                 ctx.fillStyle = '#0a0a0a';
                 ctx.fillRect(0, 0, W, H);
 
+                // 圆角边框
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 1;
+                const r = 16;
+                ctx.beginPath();
+                ctx.moveTo(r, 0); ctx.lineTo(W - r, 0);
+                ctx.arcTo(W, 0, W, r, r); ctx.lineTo(W, H - r);
+                ctx.arcTo(W, H, W - r, H, r); ctx.lineTo(r, H);
+                ctx.arcTo(0, H, 0, H - r, r); ctx.lineTo(0, r);
+                ctx.arcTo(0, 0, r, 0, r);
+                ctx.stroke();
+
                 // 顶部装饰线
                 const grad = ctx.createLinearGradient(0, 0, W, 0);
-                grad.addColorStop(0, '#333');
-                grad.addColorStop(0.5, '#666');
-                grad.addColorStop(1, '#333');
+                grad.addColorStop(0, 'rgba(255,255,255,0)');
+                grad.addColorStop(0.5, 'rgba(255,255,255,0.15)');
+                grad.addColorStop(1, 'rgba(255,255,255,0)');
                 ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, W, 2);
+                ctx.fillRect(0, 0, W, 1);
 
                 // Emoji
-                ctx.font = '56px sans-serif';
+                ctx.font = '48px sans-serif';
                 ctx.textAlign = 'center';
-                ctx.fillText(record.emoji || '🏃', W / 2, 100);
+                ctx.fillText(record.emoji || '🏃', W / 2, 90);
 
                 // 心情名
-                ctx.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
                 ctx.fillStyle = '#fff';
-                ctx.fillText(record.mood_name || '哲民', W / 2, 140);
+                ctx.fillText(record.mood_name || '哲民', W / 2, 130);
 
                 // 日期
                 const d = new Date(record.date + 'T00:00:00');
                 const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
                 const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}  周${weekDays[d.getDay()]}`;
-                ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                ctx.fillStyle = '#555';
-                ctx.fillText(dateStr, W / 2, 168);
+                ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#444';
+                ctx.fillText(dateStr, W / 2, 155);
 
                 // 分隔线
                 ctx.strokeStyle = '#1a1a1a';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(60, 195);
-                ctx.lineTo(W - 60, 195);
+                ctx.moveTo(40, 180);
+                ctx.lineTo(W - 40, 180);
                 ctx.stroke();
 
-                // 运动数据
-                let yPos = 240;
+                // 运动数据 - 网格布局
                 const items = [];
-                if (Number(record.distance_km) > 0) items.push({ label: '跑步', value: `${record.distance_km}km`, icon: '🏃' });
-                if (Number(record.pushups || 0) > 0) items.push({ label: '俯卧撑', value: `${record.pushups}个`, icon: '💪' });
-                if (Number(record.situps || 0) > 0) items.push({ label: '仰卧起坐', value: `${record.situps}个`, icon: '🔥' });
-                if (Number(record.squats || 0) > 0) items.push({ label: '深蹲', value: `${record.squats}个`, icon: '🦵' });
+                if (Number(record.distance_km) > 0) items.push({ label: '跑步', value: `${record.distance_km}`, unit: 'km' });
+                if (Number(record.pushups || 0) > 0) items.push({ label: '俯卧撑', value: `${record.pushups}`, unit: '个' });
+                if (Number(record.situps || 0) > 0) items.push({ label: '仰卧起坐', value: `${record.situps}`, unit: '个' });
+                if (Number(record.squats || 0) > 0) items.push({ label: '深蹲', value: `${record.squats}`, unit: '个' });
+
+                const cols = 2;
+                const cellW = (W - 80) / cols;
+                const cellH = 80;
+                const startY = 200;
 
                 items.forEach((item, i) => {
-                    const y = yPos + i * 64;
+                    const col = i % cols;
+                    const row = Math.floor(i / cols);
+                    const cx = 40 + col * cellW + cellW / 2;
+                    const cy = startY + row * cellH;
+
                     // 数值
-                    ctx.font = '700 32px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.font = '700 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
                     ctx.fillStyle = '#fff';
-                    ctx.textAlign = 'left';
-                    ctx.fillText(item.value, 60, y);
-                    // 标签
+                    ctx.textAlign = 'center';
+                    ctx.fillText(item.value, cx, cy + 10);
+                    // 单位
                     ctx.font = '400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
                     ctx.fillStyle = '#555';
-                    ctx.fillText(item.label, 60, y + 22);
+                    ctx.fillText(item.unit, cx, cy + 30);
+                    // 标签
+                    ctx.font = '400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#333';
+                    ctx.fillText(item.label, cx, cy + 50);
                 });
 
                 // 分隔线
-                if (items.length > 0) {
-                    const sepY = yPos + items.length * 64 + 10;
-                    ctx.strokeStyle = '#1a1a1a';
-                    ctx.beginPath();
-                    ctx.moveTo(60, sepY);
-                    ctx.lineTo(W - 60, sepY);
-                    ctx.stroke();
-                    yPos = sepY + 30;
-                } else {
-                    yPos = 220;
-                }
+                const dataRows = Math.ceil(items.length / cols);
+                const sepY = startY + dataRows * cellH + 10;
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.beginPath();
+                ctx.moveTo(40, sepY);
+                ctx.lineTo(W - 40, sepY);
+                ctx.stroke();
+                let yPos = sepY + 25;
 
                 // 感想
                 if (record.note) {
-                    // 去掉 markdown 链接语法，保留文字
                     const cleanNote = record.note.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-                    ctx.font = '400 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#aaa';
+                    ctx.font = '400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#888';
                     ctx.textAlign = 'left';
-                    const maxW = W - 120;
+                    const maxW = W - 80;
                     const lines = [];
                     let line = '';
                     for (const ch of cleanNote) {
@@ -10716,26 +10736,26 @@
                         }
                     }
                     if (line) lines.push(line);
-                    const maxLines = 6;
+                    const maxLines = 7;
                     const showLines = lines.slice(0, maxLines);
                     showLines.forEach((l, i) => {
-                        ctx.fillText(l, 60, yPos + i * 24);
+                        ctx.fillText(l, 40, yPos + i * 22);
                     });
                     if (lines.length > maxLines) {
-                        ctx.fillStyle = '#555';
-                        ctx.fillText('...', 60, yPos + maxLines * 24);
+                        ctx.fillStyle = '#444';
+                        ctx.fillText('...', 40, yPos + maxLines * 22);
                     }
                 }
 
                 // 底部水印
-                ctx.font = '400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                ctx.fillStyle = '#2a2a2a';
+                ctx.font = '400 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#222';
                 ctx.textAlign = 'center';
-                ctx.fillText('lizhemin15.github.io', W / 2, H - 30);
+                ctx.fillText('lizhemin15.github.io', W / 2, H - 20);
 
                 // 底部装饰线
                 ctx.fillStyle = grad;
-                ctx.fillRect(0, H - 2, W, 2);
+                ctx.fillRect(0, H - 1, W, 1);
 
                 // 导出并分享
                 canvas.toBlob(async (blob) => {
