@@ -980,6 +980,26 @@
         .run-timeline-item:last-child .run-timeline-divider {
             display: none;
         }
+        .run-share-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            transition: color 0.15s, background 0.15s;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .run-share-btn:hover {
+            color: #333;
+            background: #f0f0f0;
+        }
+        [data-theme="dark"] .run-share-btn:hover {
+            color: #ddd;
+            background: #333;
+        }
         .run-charts-toggle {
             display: inline-flex;
             align-items: center;
@@ -10582,6 +10602,7 @@
                                 <div class="run-timeline-header">
                                     <span class="run-timeline-name">${moodName}</span>
                                     <span class="run-timeline-date">${dateDisplay}</span>
+                                    <button class="run-share-btn" onclick="shareRunCard(${JSON.stringify(r).replace(/"/g, '&quot;')})" title="分享打卡"><i class="fas fa-share-alt"></i></button>
                                 </div>
                                 ${tags ? `<div class="run-timeline-tags">${tags}</div>` : ''}
                                 ${r.note ? `<div class="run-timeline-note">${r.note.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')}</div>` : ''}
@@ -10592,6 +10613,154 @@
                 });
                 document.getElementById('run-timeline').innerHTML = html;
             }
+
+            // === 分享打卡图 ===
+            function shareRunCard(record) {
+                const canvas = document.createElement('canvas');
+                const dpr = Math.min(window.devicePixelRatio || 2, 3);
+                const W = 420, H = 680;
+                canvas.width = W * dpr;
+                canvas.height = H * dpr;
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+
+                // 背景
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, W, H);
+
+                // 顶部装饰线
+                const grad = ctx.createLinearGradient(0, 0, W, 0);
+                grad.addColorStop(0, '#333');
+                grad.addColorStop(0.5, '#666');
+                grad.addColorStop(1, '#333');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, W, 2);
+
+                // Emoji
+                ctx.font = '56px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(record.emoji || '🏃', W / 2, 100);
+
+                // 心情名
+                ctx.font = '600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(record.mood_name || '哲民', W / 2, 140);
+
+                // 日期
+                const d = new Date(record.date + 'T00:00:00');
+                const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+                const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}  周${weekDays[d.getDay()]}`;
+                ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#555';
+                ctx.fillText(dateStr, W / 2, 168);
+
+                // 分隔线
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(60, 195);
+                ctx.lineTo(W - 60, 195);
+                ctx.stroke();
+
+                // 运动数据
+                let yPos = 240;
+                const items = [];
+                if (Number(record.distance_km) > 0) items.push({ label: '跑步', value: `${record.distance_km}km`, icon: '🏃' });
+                if (Number(record.pushups || 0) > 0) items.push({ label: '俯卧撑', value: `${record.pushups}个`, icon: '💪' });
+                if (Number(record.situps || 0) > 0) items.push({ label: '仰卧起坐', value: `${record.situps}个`, icon: '🔥' });
+                if (Number(record.squats || 0) > 0) items.push({ label: '深蹲', value: `${record.squats}个`, icon: '🦵' });
+
+                items.forEach((item, i) => {
+                    const y = yPos + i * 64;
+                    // 数值
+                    ctx.font = '700 32px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(item.value, 60, y);
+                    // 标签
+                    ctx.font = '400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#555';
+                    ctx.fillText(item.label, 60, y + 22);
+                });
+
+                // 分隔线
+                if (items.length > 0) {
+                    const sepY = yPos + items.length * 64 + 10;
+                    ctx.strokeStyle = '#1a1a1a';
+                    ctx.beginPath();
+                    ctx.moveTo(60, sepY);
+                    ctx.lineTo(W - 60, sepY);
+                    ctx.stroke();
+                    yPos = sepY + 30;
+                } else {
+                    yPos = 220;
+                }
+
+                // 感想
+                if (record.note) {
+                    // 去掉 markdown 链接语法，保留文字
+                    const cleanNote = record.note.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+                    ctx.font = '400 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#aaa';
+                    ctx.textAlign = 'left';
+                    const maxW = W - 120;
+                    const lines = [];
+                    let line = '';
+                    for (const ch of cleanNote) {
+                        if (ctx.measureText(line + ch).width > maxW) {
+                            lines.push(line);
+                            line = ch;
+                        } else {
+                            line += ch;
+                        }
+                    }
+                    if (line) lines.push(line);
+                    const maxLines = 6;
+                    const showLines = lines.slice(0, maxLines);
+                    showLines.forEach((l, i) => {
+                        ctx.fillText(l, 60, yPos + i * 24);
+                    });
+                    if (lines.length > maxLines) {
+                        ctx.fillStyle = '#555';
+                        ctx.fillText('...', 60, yPos + maxLines * 24);
+                    }
+                }
+
+                // 底部水印
+                ctx.font = '400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#2a2a2a';
+                ctx.textAlign = 'center';
+                ctx.fillText('lizhemin15.github.io', W / 2, H - 30);
+
+                // 底部装饰线
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, H - 2, W, 2);
+
+                // 导出并分享
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], `run-${record.date}.png`, { type: 'image/png' });
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: `${record.date} 运动打卡`
+                            });
+                        } catch (e) {
+                            if (e.name !== 'AbortError') downloadCanvas(canvas, record.date);
+                        }
+                    } else {
+                        downloadCanvas(canvas, record.date);
+                    }
+                }, 'image/png');
+            }
+
+            function downloadCanvas(canvas, date) {
+                const a = document.createElement('a');
+                a.href = canvas.toDataURL('image/png');
+                a.download = `run-${date}.png`;
+                a.click();
+            }
+
             function renderCalendar() {
                 log('=== renderCalendar 开始 ===');
                 log('selectedYear:', selectedYear, 'selectedMonth:', selectedMonth);
