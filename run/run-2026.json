@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-11",
+    "distance_km": 1,
+    "pushups": 0,
+    "situps": 0,
+    "squats": 0,
+    "note": "今早洗澡时鼻血止不住，下午请了假在家休息，头昏脑胀，睡的不是很安稳。",
+    "emoji": "🩸",
+    "mood_name": "血战到底",
+    "mood": 2
+  },
+  {
     "date": "2026-08-10",
     "distance_km": 5,
     "pushups": 50,
