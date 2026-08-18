@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-18",
+    "distance_km": 6,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "肩颈有点僵硬，要多注意",
+    "emoji": "🏃",
+    "mood_name": "觉者",
+    "mood": 6
+  },
+  {
     "date": "2026-08-17",
     "distance_km": 3,
     "pushups": 30,
