@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-20",
+    "distance_km": 1,
+    "pushups": 0,
+    "situps": 0,
+    "squats": 0,
+    "note": "晚上吃东西和运动等有更好选择",
+    "emoji": "🏃",
+    "mood_name": "觉者",
+    "mood": 5
+  },
+  {
     "date": "2026-08-19",
     "distance_km": 4.5,
     "pushups": 30,
