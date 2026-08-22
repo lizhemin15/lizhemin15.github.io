@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-22",
+    "distance_km": 1,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "开始研究舆情量化了",
+    "emoji": "📊",
+    "mood_name": "量化探索者",
+    "mood": 7
+  },
+  {
     "date": "2026-08-21",
     "distance_km": 1,
     "pushups": 10,
