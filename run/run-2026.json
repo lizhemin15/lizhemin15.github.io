@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-23",
+    "distance_km": 5,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "今天登了山，状态甚佳",
+    "emoji": "🏔️",
+    "mood_name": "登高望远",
+    "mood": 8
+  },
+  {
     "date": "2026-08-22",
     "distance_km": 1,
     "pushups": 10,
