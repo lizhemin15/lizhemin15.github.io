@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-25",
+    "distance_km": 1,
+    "pushups": 0,
+    "situps": 0,
+    "squats": 0,
+    "note": "运动不能停，停了全方面跌落，站姿运动多多开发",
+    "emoji": "🏃",
+    "mood_name": "觉者",
+    "mood": 6
+  },
+  {
     "date": "2026-08-23",
     "distance_km": 5,
     "pushups": 30,
