@@ -10,7 +10,7 @@ pinned: false
 
 ## 缘起
 
-丙午年七月初九，始研DeepSeek之作《A Programming Paradigm for Spatiotemporal Composability》。此文立意深远，欲解现代软件之根本困境——**动态组合**。
+丙午年七月十四，始研DeepSeek之作《A Programming Paradigm for Spatiotemporal Composability》。此文立意深远，欲解现代软件之根本困境——**动态组合**。
 
 何谓动态组合？插件系统加载卸载，Agent harness自我演化，皆需运行时增删功能，而非重启重载。然今之实践，多赖粗粒度机制：进程重启、容器编排，弃运行时状态如敝屣。此乃权宜之计，非长久之道。
 
