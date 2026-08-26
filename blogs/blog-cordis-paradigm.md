@@ -8,6 +8,8 @@ visible: true
 pinned: false
 ---
 
+# 时空可组合之道
+
 ## 缘起
 
 今天开始研究DeepSeek的一篇论文——《A Programming Paradigm for Spatiotemporal Composability》。这篇论文想解决一个很根本的问题：**动态组合**。
@@ -326,7 +328,7 @@ export class Session {
 
 **其三，响应式之智。** 协效应本为静态标注，作者将其变为响应式依赖规范。上下文变化时，运行时分类并通知相关组件。Events的五种调度模式与Context Filter机制，让响应式协效应在实践中灵活而高效。
 
-正如论文所言：**"形式化不是为了证明正确性，而是为了指导设计。"** DeepSeek Harness证明了这一点——当理论足够深刻时，它可以自然地演化为优雅的工程实践。
+正如论文所言：**「形式化不是为了证明正确性，而是为了指导设计。」** DeepSeek Harness证明了这一点——当理论足够深刻时，它可以自然地演化为优雅的工程实践。
 
 ---
 
