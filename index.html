@@ -2646,15 +2646,45 @@
          }
 
          /* Dark mode support for comments */
-         [data-theme="dark"] .comments-section {
-             border-top-color: var(--dark-border-color);
-         }
+                 [data-theme="dark"] .comments-section {
+                     border-top-color: var(--dark-border-color);
+                 }
 
-         [data-theme="dark"] .comments-section h3 {
-             color: var(--dark-text-color);
-         }
+                 [data-theme="dark"] .comments-section h3 {
+                     color: var(--dark-text-color);
+                 }
 
-         /* Responsive design */
+                 /* ── 16:9 大屏博客阅读体验优化 ──────────────────────────────
+                                    在宽屏下让博客正文利用右侧空白：正文保持舒适行宽并相对居中，
+                                    同时拓出一条容纳右侧目录(TOC)的通道，消除"内容挤在左侧、右侧大片空白"的观感。 */
+                                 @media (min-width: 1600px) {
+                                     .content-wrapper:has(.blog-post) {
+                                         max-width: none;                       /* 博客正文页不再被 1000px 锁死 */
+                                         padding-right: 360px;                  /* 为固定右侧 TOC 预留通道 */
+                                     }
+
+                                     .blog-post-content {
+                                         max-width: 840px;                      /* 正文行宽上限，保持可读性 */
+                                         margin: 0 auto;                        /* 在可用区内水平居中，均衡两侧留白 */
+                                     }
+
+                                     /* 右侧 TOC 作为常驻阅读侧栏：加宽、垂直占满、带滚动 */
+                                     .content-wrapper:has(.blog-post) ~ .toc-container,
+                                     body:has(.blog-post) .toc-container {
+                                         width: 300px;
+                                         top: 24px;
+                                         bottom: 24px;
+                                         right: 28px;
+                                         height: auto;
+                                         max-height: none;                      /* 抵消基础样式 60vh 限制 */
+                                     }
+                                     body:has(.blog-post) .toc-container .toc-content {
+                                         max-height: calc(100vh - 120px);      /* 内容区随视口高度伸缩并内部滚动 */
+                                     }
+                                     body:has(.blog-post) .toc-fab { display: none !important; }
+                                 }
+
+                 /* Responsive design */
          @media (max-width: 768px) {
              .blogs-header h1 {
                  font-size: 2rem;
