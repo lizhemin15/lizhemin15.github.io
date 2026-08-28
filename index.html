@@ -5331,7 +5331,7 @@
                 
                 // Render single article
                 const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, propositionBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
-                let htmlContent = marked.parse(preprocessedContent);
+                let htmlContent = renderMarkdown(preprocessedContent);
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
                 htmlContent = renderTables(htmlContent, tableBlocks);
                 htmlContent = renderFigures(htmlContent, figureBlocks);
@@ -5896,7 +5896,7 @@
 
             // Use the same rendering pipeline as loadBlogPostByURL
             const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, propositionBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
-            let htmlContent = marked.parse(preprocessedContent);
+            let htmlContent = renderMarkdown(preprocessedContent);
             htmlContent = renderMathFormulas(htmlContent, mathBlocks);
             htmlContent = renderTables(htmlContent, tableBlocks);
             htmlContent = renderFigures(htmlContent, figureBlocks);
@@ -5962,6 +5962,17 @@
         // marked.setOptions is now called after checkDependencies() in the init handler
 
         // Fixed mathematical formula processing system
+        function renderMarkdown(md) {
+            // marked 的 emStrong 会把引号 — ASCII 双引号 "、中文引号 “ ” ‘ ’ — 误判为标点，
+            // 导致 **bold** 解析失败而原样输出。先把这些引号换成私有区占位符，
+            // 渲染后再还原，从而保护 **加粗** 内的引号。
+            const cjkQuoteMap = {'"': '\uE000', '\u201C': '\uE001', '\u201D': '\uE002', '\u2018': '\uE003', '\u2019': '\uE004'};
+            const quoteSafeMap = {'\uE000': '"', '\uE001': '\u201C', '\uE002': '\u201D', '\uE003': '\u2018', '\uE004': '\u2019'};
+            const protectedText = md.replace(/["\u201C\u201D\u2018\u2019]/g, ch => cjkQuoteMap[ch]);
+            const html = marked.parse(protectedText);
+            return html.replace(/[\uE000\uE001\uE002\uE003\uE004]/g, ch => quoteSafeMap[ch]);
+        }
+
         function preprocessMathFormulas(content) {
             const mathBlocks = [];
             let blockIndex = 0;
@@ -6503,7 +6514,7 @@
                     let originalTableContent = tableBlock.tableContent;
                     
                     // 直接渲染markdown，然后后处理数学公式
-                    let renderedTable = marked.parse(originalTableContent);
+                    let renderedTable = renderMarkdown(originalTableContent);
                     log('Markdown渲染后，开始处理数学公式...');
                     
                     // 辅助函数：解码HTML实体
@@ -6729,7 +6740,7 @@
                     const { content: processedContent, mathBlocks: theoremMathBlocks } = preprocessMathFormulas(theoremContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染定理内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, theoremMathBlocks);
@@ -6775,7 +6786,7 @@
                     const { content: processedContent, mathBlocks: assumptionMathBlocks } = preprocessMathFormulas(assumptionContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染假设内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, assumptionMathBlocks);
@@ -6821,7 +6832,7 @@
                     const { content: processedContent, mathBlocks: definitionMathBlocks } = preprocessMathFormulas(definitionContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染定义内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, definitionMathBlocks);
@@ -6867,7 +6878,7 @@
                     const { content: processedContent, mathBlocks: corollaryMathBlocks } = preprocessMathFormulas(corollaryContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染推论内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, corollaryMathBlocks);
@@ -6913,7 +6924,7 @@
                     const { content: processedContent, mathBlocks: propositionMathBlocks } = preprocessMathFormulas(propositionContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染命题内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, propositionMathBlocks);
@@ -6959,7 +6970,7 @@
                     const { content: processedContent, mathBlocks: lemmaMathBlocks } = preprocessMathFormulas(lemmaContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染引理内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, lemmaMathBlocks);
@@ -7005,7 +7016,7 @@
                     const { content: processedContent, mathBlocks: remarkMathBlocks } = preprocessMathFormulas(remarkContent);
                     
                     // 用marked解析处理过的内容
-                    let renderedContent = marked.parse(processedContent);
+                    let renderedContent = renderMarkdown(processedContent);
                     
                     // 渲染备注内容中的数学公式
                     renderedContent = renderMathFormulas(renderedContent, remarkMathBlocks);
@@ -8110,7 +8121,7 @@
                 const { content: preprocessedMarkdown, mathBlocks, tableBlocks, figureBlocks } = preprocessMathFormulas(markdownText);
                 
                 // Parse Markdown
-                let htmlContent = marked.parse(preprocessedMarkdown);
+                let htmlContent = renderMarkdown(preprocessedMarkdown);
                 
                 // Render math formulas (replace placeholders in HTML)
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
@@ -8715,7 +8726,7 @@
                 
                 // Render single article
                 const { content: preprocessedContent, mathBlocks, tableBlocks, figureBlocks, theoremBlocks, assumptionBlocks, definitionBlocks, corollaryBlocks, propositionBlocks, lemmaBlocks, remarkBlocks } = preprocessMathFormulas(post.content);
-                let htmlContent = marked.parse(preprocessedContent);
+                let htmlContent = renderMarkdown(preprocessedContent);
                 htmlContent = renderMathFormulas(htmlContent, mathBlocks);
                 htmlContent = renderTables(htmlContent, tableBlocks);
                 htmlContent = renderFigures(htmlContent, figureBlocks);
