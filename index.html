@@ -5963,9 +5963,15 @@
 
         // Fixed mathematical formula processing system
         function renderMarkdown(md) {
-            // marked 的 emStrong 会把引号 — ASCII 双引号 "、中文引号 “ ” ‘ ’ — 误判为标点，
-            // 导致 **bold** 解析失败而原样输出。先把这些引号换成私有区占位符，
-            // 渲染后再还原，从而保护 **加粗** 内的引号。
+            // 1) 规范化 `|| a | b | c ||` 三段式表格为标准 GFM 表格（`| a | b | c |`），
+            //    否则 marked 无法识别这类三边框表格而原样输出。
+            md = md.split('\n').map(function(line) {
+                const m = line.match(/^\|\|\s*(.*?)\s*\|\|$/);
+                return m ? '| ' + m[1] + ' |' : line;
+            }).join('\n');
+            // 2) marked 的 emStrong 会把引号 — ASCII 双引号 "、中文引号 “ ” ‘ ’ — 误判为标点，
+            //    导致 **bold** 解析失败而原样输出。先把这些引号换成私有区占位符，
+            //    渲染后再还原，从而保护 **加粗** 内的引号。
             const cjkQuoteMap = {'"': '\uE000', '\u201C': '\uE001', '\u201D': '\uE002', '\u2018': '\uE003', '\u2019': '\uE004'};
             const quoteSafeMap = {'\uE000': '"', '\uE001': '\u201C', '\uE002': '\u201D', '\uE003': '\u2018', '\uE004': '\u2019'};
             const protectedText = md.replace(/["\u201C\u201D\u2018\u2019]/g, ch => cjkQuoteMap[ch]);
