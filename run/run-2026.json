@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-29",
+    "distance_km": 3,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "仔细研究下dsh，无需所有的都跟进，有的时候仔细吃透一个集大成者便足矣",
+    "emoji": "🔬",
+    "mood_name": "一以贯之",
+    "mood": 7
+  },
+  {
     "date": "2026-08-28",
     "distance_km": 8,
     "pushups": 30,
