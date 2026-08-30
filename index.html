@@ -2872,6 +2872,37 @@
             opacity: 0.8;
         }
 
+        /* run 分享卡片大图预览的下载按钮（仅 run 预览时显示） */
+        .image-modal-download {
+            display: none;
+            position: absolute;
+            bottom: -88px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 26px;
+            border: none;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #141414;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s ease;
+            z-index: 12;
+        }
+        .image-modal-download.show {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .image-modal-download i.fa-download {
+            font-size: 1rem;
+        }
+        .image-modal-download:hover {
+            transform: translateX(-50%) scale(1.05);
+        }
+
         /* 图片缩放控制 */
         .image-zoom-controls {
             position: absolute;
@@ -4750,6 +4781,9 @@
             
             <img id="modal-image" src="" alt="全屏图片">
             <div class="image-modal-info" id="modal-image-info"></div>
+            <button class="image-modal-download" id="modal-download-btn" title="下载图片">
+                <i class="fas fa-download"></i><span>下载图片</span>
+            </button>
         </div>
     </div>
 
@@ -9149,6 +9183,14 @@
             
             // 移除键盘事件监听
             document.removeEventListener('keydown', handleImageModalKeydown);
+            
+            // 隐藏 run 分享下载按钮并清回调（避免在非 run 场景误显示）
+            const downloadBtn = document.getElementById('modal-download-btn');
+            if (downloadBtn) {
+                downloadBtn.classList.remove('show');
+                downloadBtn.onclick = null;
+            }
+            window.__shareDownloadFn = null;
         }
 
         // 处理图片模态框的键盘事件
@@ -10791,11 +10833,12 @@
                     const isBig = String(item.value).length <= 3;
                     ctx.textAlign = 'left';
                     ctx.font = isBig ? '700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' : '600 26px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    const valueW = ctx.measureText(item.value).width;  // 用数值字体测量宽度
                     ctx.fillStyle = '#111';
                     ctx.fillText(item.value, cx + 22, cy + 46);
                     ctx.font = '500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
                     ctx.fillStyle = '#8a8a8a';
-                    ctx.fillText(item.unit, cx + 22 + ctx.measureText(item.value).width + 7, cy + 44);
+                    ctx.fillText(item.unit, cx + 22 + valueW + 9, cy + 42);
 
                     // 标签（右下，低调）
                     ctx.font = '500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
@@ -10877,19 +10920,22 @@
                 ctx.lineTo(W / 2 + 28, H - 12);
                 ctx.stroke();
 
-                // ===== 导出并分享 =====
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], `run-${record.date}.png`, { type: 'image/png' });
-                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                        try {
-                            await navigator.share({
-                                files: [file],
-                                title: `${record.date} 运动打卡`
-                            });
-                        } catch (e) {
-                            if (e.name !== 'AbortError') downloadCanvas(canvas, record.date);
-                        }
+                // ===== 弹出大图预览并下载 =====
+                canvas.toBlob((blob) => {
+                    // 保存下载回调，供预览弹窗的下载按钮使用
+                    window.__shareDownloadFn = () => downloadCanvas(canvas, record.date);
+                    const downloadBtn = document.getElementById('modal-download-btn');
+                    if (downloadBtn) {
+                        downloadBtn.classList.add('show');
+                        downloadBtn.onclick = () => {
+                            if (window.__shareDownloadFn) window.__shareDownloadFn();
+                        };
+                    }
+                    // 弹出大图预览
+                    if (typeof openImageModal === 'function') {
+                        openImageModal(canvas.toDataURL('image/png'), `${record.date} · 运动打卡`);
                     } else {
+                        // 极端回退：无预览弹窗直接下载
                         downloadCanvas(canvas, record.date);
                     }
                 }, 'image/png');
