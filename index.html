@@ -10669,63 +10669,86 @@
             function shareRunCard(record) {
                 const canvas = document.createElement('canvas');
                 const dpr = Math.min(window.devicePixelRatio || 2, 3);
-                const W = 420, H = 720;
+                const W = 420, H = 780;
                 canvas.width = W * dpr;
                 canvas.height = H * dpr;
                 const ctx = canvas.getContext('2d');
                 ctx.scale(dpr, dpr);
 
-                // 背景
-                ctx.fillStyle = '#0a0a0a';
+                // 圆角矩形辅助（避免依赖原生 roundRect 兼容性）
+                function rr(x, y, w, h, r) {
+                    ctx.beginPath();
+                    ctx.moveTo(x + r, y);
+                    ctx.arcTo(x + w, y, x + w, y + h, r);
+                    ctx.arcTo(x + w, y + h, x, y + h, r);
+                    ctx.arcTo(x, y + h, x, y, r);
+                    ctx.arcTo(x, y, x + w, y, r);
+                    ctx.closePath();
+                }
+
+                // ===== 背景：浅色界面 =====
+                ctx.fillStyle = '#efefef';
                 ctx.fillRect(0, 0, W, H);
 
-                // 圆角边框
-                ctx.strokeStyle = '#1a1a1a';
+                // 主白卡
+                const cardX = 14, cardY = 14, cardW = W - 28, cardH = H - 28;
+                ctx.fillStyle = '#ffffff';
+                rr(cardX, cardY, cardW, cardH, 28);
+                ctx.fill();
+                ctx.strokeStyle = '#dedede';
                 ctx.lineWidth = 1;
-                const r = 16;
-                ctx.beginPath();
-                ctx.moveTo(r, 0); ctx.lineTo(W - r, 0);
-                ctx.arcTo(W, 0, W, r, r); ctx.lineTo(W, H - r);
-                ctx.arcTo(W, H, W - r, H, r); ctx.lineTo(r, H);
-                ctx.arcTo(0, H, 0, H - r, r); ctx.lineTo(0, r);
-                ctx.arcTo(0, 0, r, 0, r);
                 ctx.stroke();
 
-                // 顶部装饰线
-                const grad = ctx.createLinearGradient(0, 0, W, 0);
-                grad.addColorStop(0, 'rgba(255,255,255,0)');
-                grad.addColorStop(0.5, 'rgba(255,255,255,0.15)');
-                grad.addColorStop(1, 'rgba(255,255,255,0)');
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, 0, W, 1);
+                // ===== 顶部品牌区 =====
+                // 品牌小标签
+                ctx.textAlign = 'left';
+                ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#8a8a8a';
+                ctx.fillText('R U N · L O G', 40, 46);
 
-                // Emoji
-                ctx.font = '48px sans-serif';
+                // 右侧年度累计（仅跑步总里程）
+                let totalKm = 0;
+                try {
+                    if (Array.isArray(sortedData)) {
+                        totalKm = sortedData.reduce((s, x) => s + (Number(x.distance_km) || 0), 0);
+                    }
+                } catch (e) {}
+                ctx.textAlign = 'right';
+                ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#b0b0b0';
+                ctx.fillText(totalKm ? (Math.round(totalKm * 10) / 10) + ' km' : '', W - 40, 46);
+
+                // 顶部细分隔线
+                ctx.strokeStyle = '#f0f0f0';
+                ctx.beginPath();
+                ctx.moveTo(40, 62);
+                ctx.lineTo(W - 40, 62);
+                ctx.stroke();
+
+                // ===== 心情区 =====
+                // emoji 圆底
+                const emoR = 40, emoCX = W / 2, emoCY = 128;
+                ctx.fillStyle = '#f5f5f5';
+                rr(emoCX - emoR, emoCY - emoR, emoR * 2, emoR * 2, emoR);
+                ctx.fill();
                 ctx.textAlign = 'center';
-                ctx.fillText(record.emoji || '🏃', W / 2, 90);
+                ctx.font = '44px sans-serif';
+                ctx.fillText(record.emoji || '🏃', emoCX, emoCY + 15);
 
                 // 心情名
-                ctx.font = '600 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                ctx.fillStyle = '#fff';
-                ctx.fillText(record.mood_name || '哲民', W / 2, 130);
+                ctx.font = '700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#141414';
+                ctx.fillText(record.mood_name || '哲民', emoCX, 200);
 
                 // 日期
                 const d = new Date(record.date + 'T00:00:00');
                 const weekDays = ['日', '一', '二', '三', '四', '五', '六'];
-                const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}  周${weekDays[d.getDay()]}`;
-                ctx.font = '13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                ctx.fillStyle = '#444';
-                ctx.fillText(dateStr, W / 2, 155);
+                const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} · 周${weekDays[d.getDay()]}`;
+                ctx.font = '400 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#8a8a8a';
+                ctx.fillText(dateStr, emoCX, 226);
 
-                // 分隔线
-                ctx.strokeStyle = '#1a1a1a';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(40, 180);
-                ctx.lineTo(W - 40, 180);
-                ctx.stroke();
-
-                // 运动数据 - 网格布局
+                // ===== 运动数据卡片网格 =====
                 const items = [];
                 if (Number(record.distance_km) > 0) items.push({ label: '跑步', value: `${record.distance_km}`, unit: 'km' });
                 if (Number(record.pushups || 0) > 0) items.push({ label: '俯卧撑', value: `${record.pushups}`, unit: '个' });
@@ -10733,81 +10756,103 @@
                 if (Number(record.squats || 0) > 0) items.push({ label: '深蹲', value: `${record.squats}`, unit: '个' });
 
                 const cols = 2;
-                const cellW = (W - 80) / cols;
-                const cellH = 80;
-                const startY = 200;
+                const gap = 12;
+                const cellW = (W - 28 - 40 * 2 - gap) / cols;  // 主卡内左右40留白
+                const cellH = 92;
+                const gridX = 40, gridY = 250;
 
                 items.forEach((item, i) => {
                     const col = i % cols;
                     const row = Math.floor(i / cols);
-                    const cx = 40 + col * cellW + cellW / 2;
-                    const cy = startY + row * cellH;
+                    const cx = gridX + col * (cellW + gap);
+                    const cy = gridY + row * (cellH + gap);
 
-                    // 数值
-                    ctx.font = '700 28px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#fff';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(item.value, cx, cy + 10);
-                    // 单位
-                    ctx.font = '400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#555';
-                    ctx.fillText(item.unit, cx, cy + 30);
-                    // 标签
-                    ctx.font = '400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#333';
-                    ctx.fillText(item.label, cx, cy + 50);
+                    // 数据卡片底
+                    ctx.fillStyle = '#f6f6f7';
+                    rr(cx, cy, cellW, cellH, 16);
+                    ctx.fill();
+
+                    // 数值 + 单位
+                    const isBig = String(item.value).length <= 3;
+                    ctx.textAlign = 'left';
+                    ctx.font = isBig ? '700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' : '600 26px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#141414';
+                    ctx.fillText(item.value, cx + 20, cy + 42);
+                    ctx.font = '500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#7a7a7a';
+                    ctx.fillText(item.unit, cx + 20 + ctx.measureText(item.value).width + 8, cy + 40);
+
+                    // 标签（右下）
+                    ctx.font = '500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#9a9a9a';
+                    ctx.fillText(item.label, cx + 20, cy + 66);
+
+                    // 右上小圆点活性指示
+                    ctx.fillStyle = '#e2e2e2';
+                    ctx.beginPath();
+                    ctx.arc(cx + cellW - 16, cy + 16, 3, 0, Math.PI * 2);
+                    ctx.fill();
                 });
 
-                // 分隔线
+                // 感想卡片（若为 1 行数据，则居中）
                 const dataRows = Math.ceil(items.length / cols);
-                const sepY = startY + dataRows * cellH + 10;
-                ctx.strokeStyle = '#1a1a1a';
-                ctx.beginPath();
-                ctx.moveTo(40, sepY);
-                ctx.lineTo(W - 40, sepY);
-                ctx.stroke();
-                let yPos = sepY + 25;
+                let noteTop = gridY + dataRows * (cellH + gap) + 18;
 
-                // 感想
                 if (record.note) {
                     const cleanNote = record.note.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-                    ctx.font = '400 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#888';
+                    const noteX = 40, noteMaxW = W - 40 - 40;
+                    const noteH = 108;
+
+                    // 感想卡底 + 左侧色条
+                    ctx.fillStyle = '#f9f9fa';
+                    rr(noteX, noteTop, noteMaxW, noteH, 16);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ececec';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.fillStyle = '#141414';
+                    rr(noteX, noteTop + 16, 3, noteH - 32, 2);
+                    ctx.fill();
+
+                    // “今日感想”小标
+                    ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#141414';
                     ctx.textAlign = 'left';
-                    const maxW = W - 80;
+                    ctx.fillText('今日感想', noteX + 22, noteTop + 30);
+
+                    // 感想文字（自动换行，最多显示在卡片高度内）
+                    ctx.font = '400 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                    ctx.fillStyle = '#444';
+                    const lineMaxW = noteMaxW - 44;
                     const lines = [];
                     let line = '';
                     for (const ch of cleanNote) {
-                        if (ctx.measureText(line + ch).width > maxW) {
+                        if (ctx.measureText(line + ch).width > lineMaxW) {
                             lines.push(line);
                             line = ch;
-                        } else {
-                            line += ch;
-                        }
+                        } else line += ch;
                     }
                     if (line) lines.push(line);
-                    const maxLines = 7;
-                    const showLines = lines.slice(0, maxLines);
-                    showLines.forEach((l, i) => {
-                        ctx.fillText(l, 40, yPos + i * 22);
-                    });
-                    if (lines.length > maxLines) {
-                        ctx.fillStyle = '#444';
-                        ctx.fillText('...', 40, yPos + maxLines * 22);
+                    const maxShow = Math.floor((noteH - 44) / 20);
+                    const show = lines.slice(0, maxShow);
+                    show.forEach((l, i) => ctx.fillText(l, noteX + 22, noteTop + 52 + i * 20));
+                    if (lines.length > maxShow) {
+                        ctx.fillStyle = '#aaa';
+                        ctx.fillText('…', noteX + 22, noteTop + 52 + maxShow * 20);
                     }
                 }
 
-                // 底部水印
-                ctx.font = '400 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                ctx.fillStyle = '#222';
+                // ===== 底部水印 =====
                 ctx.textAlign = 'center';
-                ctx.fillText('lizhemin15.github.io', W / 2, H - 20);
+                ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillStyle = '#c6c6c6';
+                ctx.fillText('lizhemin15 · 运动打卡', W / 2, H - 34);
 
-                // 底部装饰线
-                ctx.fillStyle = grad;
-                ctx.fillRect(0, H - 1, W, 1);
+                // 底部微装饰
+                ctx.fillStyle = '#eaeaea';
+                ctx.fillRect(40, H - 22, W - 80, 1);
 
-                // 导出并分享
+                // ===== 导出并分享 =====
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], `run-${record.date}.png`, { type: 'image/png' });
                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -10824,7 +10869,6 @@
                     }
                 }, 'image/png');
             }
-
             function downloadCanvas(canvas, date) {
                 const a = document.createElement('a');
                 a.href = canvas.toDataURL('image/png');
