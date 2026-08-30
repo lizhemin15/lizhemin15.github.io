@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-08-30",
+    "distance_km": 1,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "好处在于尊重自己的真实想法，不好的地方在于目标还是不够明确，像是在随机游荡",
+    "emoji": "🪞",
+    "mood_name": "诚于己",
+    "mood": 6
+  },
+  {
     "date": "2026-08-29",
     "distance_km": 3,
     "pushups": 10,
