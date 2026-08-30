@@ -10704,7 +10704,7 @@
                 ctx.textAlign = 'left';
                 ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
                 ctx.fillStyle = '#8a8a8a';
-                ctx.fillText('R U N · L O G', 40, 46);
+                ctx.fillText('R U N  ·  L O G', 40, 46);
 
                 // 右侧年度累计（仅跑步总里程）
                 let totalKm = 0;
@@ -10726,11 +10726,17 @@
                 ctx.stroke();
 
                 // ===== 心情区 =====
-                // emoji 圆底
+                // emoji 圆底（浅灰径向渐变 + 细描边）
                 const emoR = 40, emoCX = W / 2, emoCY = 128;
-                ctx.fillStyle = '#f5f5f5';
+                const emoGrad = ctx.createRadialGradient(emoCX - 8, emoCY - 10, 6, emoCX, emoCY, emoR);
+                emoGrad.addColorStop(0, '#ffffff');
+                emoGrad.addColorStop(1, '#f0f0f0');
+                ctx.fillStyle = emoGrad;
                 rr(emoCX - emoR, emoCY - emoR, emoR * 2, emoR * 2, emoR);
                 ctx.fill();
+                ctx.strokeStyle = '#e6e6e6';
+                ctx.lineWidth = 1;
+                ctx.stroke();
                 ctx.textAlign = 'center';
                 ctx.font = '44px sans-serif';
                 ctx.fillText(record.emoji || '🏃', emoCX, emoCY + 15);
@@ -10767,30 +10773,39 @@
                     const cx = gridX + col * (cellW + gap);
                     const cy = gridY + row * (cellH + gap);
 
-                    // 数据卡片底
+                    // 数据卡片底（浅灰 + 顶部高光模拟凸起）
                     ctx.fillStyle = '#f6f6f7';
                     rr(cx, cy, cellW, cellH, 16);
+                    ctx.fill();
+                    // 卡片内细描边
+                    ctx.strokeStyle = '#ededed';
+                    ctx.lineWidth = 1;
+                    rr(cx, cy, cellW, cellH, 16);
+                    ctx.stroke();
+                    // 顶部高光条
+                    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                    rr(cx, cy, cellW, 4, 2);
                     ctx.fill();
 
                     // 数值 + 单位
                     const isBig = String(item.value).length <= 3;
                     ctx.textAlign = 'left';
                     ctx.font = isBig ? '700 34px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' : '600 26px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#141414';
-                    ctx.fillText(item.value, cx + 20, cy + 42);
+                    ctx.fillStyle = '#111';
+                    ctx.fillText(item.value, cx + 22, cy + 46);
                     ctx.font = '500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                    ctx.fillStyle = '#7a7a7a';
-                    ctx.fillText(item.unit, cx + 20 + ctx.measureText(item.value).width + 8, cy + 40);
+                    ctx.fillStyle = '#8a8a8a';
+                    ctx.fillText(item.unit, cx + 22 + ctx.measureText(item.value).width + 7, cy + 44);
 
-                    // 标签（右下）
+                    // 标签（右下，低调）
                     ctx.font = '500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
                     ctx.fillStyle = '#9a9a9a';
-                    ctx.fillText(item.label, cx + 20, cy + 66);
+                    ctx.fillText(item.label, cx + 22, cy + 68);
 
-                    // 右上小圆点活性指示
-                    ctx.fillStyle = '#e2e2e2';
+                    // 右上小圆点（微活性指示）
+                    ctx.fillStyle = '#e6e6e6';
                     ctx.beginPath();
-                    ctx.arc(cx + cellW - 16, cy + 16, 3, 0, Math.PI * 2);
+                    ctx.arc(cx + cellW - 18, cy + 18, 3, 0, Math.PI * 2);
                     ctx.fill();
                 });
 
@@ -10803,7 +10818,7 @@
                     const noteX = 40, noteMaxW = W - 40 - 40;
                     const noteH = 108;
 
-                    // 感想卡底 + 左侧色条
+                    // 感想卡底部 + 左侧竖色条（圆头）
                     ctx.fillStyle = '#f9f9fa';
                     rr(noteX, noteTop, noteMaxW, noteH, 16);
                     ctx.fill();
@@ -10811,8 +10826,11 @@
                     ctx.lineWidth = 1;
                     ctx.stroke();
                     ctx.fillStyle = '#141414';
-                    rr(noteX, noteTop + 16, 3, noteH - 32, 2);
+                    ctx.beginPath();
+                    ctx.arc(noteX + 14, noteTop + 22, 2.5, 0, Math.PI * 2);
+                    ctx.arc(noteX + 14, noteTop + noteH - 20, 2.5, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.fillRect(noteX + 11.5, noteTop + 22, 5, noteH - 42);
 
                     // “今日感想”小标
                     ctx.font = '600 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
@@ -10845,12 +10863,19 @@
                 // ===== 底部水印 =====
                 ctx.textAlign = 'center';
                 ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-                ctx.fillStyle = '#c6c6c6';
-                ctx.fillText('lizhemin15 · 运动打卡', W / 2, H - 34);
+                ctx.fillStyle = '#bcbcbc';
+                ctx.fillText('运动打卡 · 记录真实日常', W / 2, H - 36);
+                ctx.fillStyle = '#9d9d9d';
+                ctx.font = '600 10px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+                ctx.fillText('with  📸  lizhemin15', W / 2, H - 18);
 
-                // 底部微装饰
-                ctx.fillStyle = '#eaeaea';
-                ctx.fillRect(40, H - 22, W - 80, 1);
+                // 底部微装饰（居中小横线）
+                ctx.strokeStyle = '#e8e8e8';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(W / 2 - 28, H - 12);
+                ctx.lineTo(W / 2 + 28, H - 12);
+                ctx.stroke();
 
                 // ===== 导出并分享 =====
                 canvas.toBlob(async (blob) => {
