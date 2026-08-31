@@ -455,6 +455,55 @@
              color: inherit;
          }
 
+         /* Collapsible <details> block (e.g. appendix) */
+         .markdown-content details {
+             background: var(--light-bg);
+             border: 1px solid #dfe3e8;
+             border-left: 4px solid var(--accent-color);
+             border-radius: 8px;
+             padding: 6px 18px 18px 18px;
+             margin: 30px 0;
+             box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+         }
+         .markdown-content details[open] {
+             border-left-color: var(--accent-color);
+             background: var(--light-bg);
+         }
+         .markdown-content summary {
+             cursor: pointer;
+             font-weight: 600;
+             color: var(--primary-color);
+             padding: 12px 4px;
+             user-select: none;
+             position: relative;
+             list-style: none;
+             outline: none;
+         }
+         .markdown-content summary::-webkit-details-marker {
+             display: none;
+         }
+         .markdown-content summary::after {
+             content: '\25B8'; /* ▸ */
+             margin-left: 10px;
+             display: inline-block;
+             transition: transform 0.2s ease;
+             color: var(--accent-color);
+         }
+         .markdown-content details[open] > summary::after {
+             content: '\25BE'; /* ▾ */
+         }
+         .markdown-content summary:hover {
+             color: var(--accent-color);
+         }
+         [data-theme="dark"] .markdown-content details {
+             background: var(--dark-light-bg);
+             border-color: var(--dark-border-color);
+             border-left-color: var(--dark-accent-color);
+         }
+         [data-theme="dark"] .markdown-content details[open] {
+             border-left-color: var(--dark-accent-color);
+         }
+
          /* Code copy button */
          .code-block-wrapper {
              position: relative;
