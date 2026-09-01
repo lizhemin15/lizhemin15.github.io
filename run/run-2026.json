@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-01",
+    "distance_km": 5.4,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "晚上河南那一顿属实是吃的过多了，身体不适，要注意",
+    "emoji": "🍚",
+    "mood_name": "克己者",
+    "mood": 5
+  },
+  {
     "date": "2026-08-31",
     "distance_km": 7,
     "pushups": 30,
