@@ -11,6 +11,17 @@
     "mood": 6
   },
   {
+    "date": "2026-09-02",
+    "distance_km": 1,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "淡定，善于分解 敢于布置",
+    "emoji": "🙂",
+    "mood_name": "分解者",
+    "mood": 6
+  },
+  {
     "date": "2026-09-01",
     "distance_km": 5.4,
     "pushups": 30,
