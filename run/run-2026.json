@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-04",
+    "distance_km": 1,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "逐渐恢复学术研究",
+    "emoji": "📚",
+    "mood_name": "回归者",
+    "mood": 6
+  },
+  {
     "date": "2026-09-03",
     "distance_km": 7.5,
     "pushups": 30,
