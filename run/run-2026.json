@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-07",
+    "distance_km": 7,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "打造自己的学术工具，认真研究",
+    "emoji": "🔧",
+    "mood_name": "工匠人",
+    "mood": 8
+  },
+  {
     "date": "2026-09-06",
     "distance_km": 1,
     "pushups": 10,
