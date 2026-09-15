@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-15",
+    "distance_km": 1,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "多做顶层设计，构建系统，自然会形成功能",
+    "emoji": "🏗️",
+    "mood_name": "顶层设计",
+    "mood": 8
+  },
+  {
     "date": "2026-09-14",
     "distance_km": 8,
     "pushups": 30,
