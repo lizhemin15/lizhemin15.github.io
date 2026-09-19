@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-09-19",
+    "distance_km": 2,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "16天冲刺论文计划，开跑",
+    "emoji": "🚀",
+    "mood_name": "论文冲刺",
+    "mood": 9
+  },
+  {
     "date": "2026-09-18",
     "distance_km": 8,
     "pushups": 30,
