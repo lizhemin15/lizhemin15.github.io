@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-08",
+    "distance_km": 5,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "第一次跑满5公里，冲过终点一阵眩晕，直接瘫坐在地上。喘着粗气的时候突然想：AI时代，普通人还能做点什么？",
+    "emoji": "🤖",
+    "mood_name": "时代之问",
+    "mood": 8
+  },
+  {
     "date": "2026-10-06",
     "distance_km": 1,
     "pushups": 10,
