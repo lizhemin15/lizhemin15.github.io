@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-09",
+    "distance_km": 5.5,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "感谢王导，tip为自己学术生涯画上了圆满句号。接下来的征程，要自己走了。",
+    "emoji": "🎓",
+    "mood_name": "独自启程",
+    "mood": 10
+  },
+  {
     "date": "2026-10-08",
     "distance_km": 5,
     "pushups": 30,
