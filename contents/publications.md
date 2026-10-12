@@ -1,5 +1,9 @@
 # Publications
 
+### 2026
+
+[8] **Zhemin Li**†, Liyuan Ma†, Yisi Luo†, Shilong Han, Hongxia Wang, and Deyu Meng. INRR: Plug-and-Play and Self-Learned Regularization for Implicit Neural Representations. *IEEE Transactions on Image Processing*, 2026. (CCF-A) († Equal Contribution; Corresponding authors: Hongxia Wang and Deyu Meng)  [🔗](https://github.com/lizhemin15/RSS)
+
 ### 2025
 
 [7] **Zhemin Li**, Liyuan Ma, Hongxia Wang, Yaoyun Zeng, Xiaolong Han. Learning Input Encodings for Kernel-Optimal Implicit Neural Representations. *Proceedings of the International Conference on Machine Learning (ICML)*, pp. 1-12, Vancouver, Canada, July 2025. (CCF-A) [📋](https://openreview.net/pdf?id=Cx80t5FAQJ)  [🔗](https://github.com/lizhemin15/KAR)  [🎬](https://www.bilibili.com/video/BV1ZgGJzhExr/?vd_source=10e998b32a9f8987940b8a044e698685)
