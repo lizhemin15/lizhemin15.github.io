@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-12",
+    "distance_km": 8.5,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "突然想开了，该专注自我了",
+    "emoji": "🧘",
+    "mood_name": "专注自我",
+    "mood": 9
+  },
+  {
     "date": "2026-10-09",
     "distance_km": 5.5,
     "pushups": 10,
