@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-13",
+    "distance_km": 4,
+    "pushups": 30,
+    "situps": 30,
+    "squats": 30,
+    "note": "尊重自己的生命",
+    "emoji": "❤️",
+    "mood_name": "敬重生命",
+    "mood": 9
+  },
+  {
     "date": "2026-10-12",
     "distance_km": 8.5,
     "pushups": 30,
