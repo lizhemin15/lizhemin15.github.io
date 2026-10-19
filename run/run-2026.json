@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-19",
+    "distance_km": 1,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "开始把信息资源的整合与转化，当成一件正经事去做了",
+    "emoji": "🔗",
+    "mood_name": "信息转化",
+    "mood": 8
+  },
+  {
     "date": "2026-10-13",
     "distance_km": 4,
     "pushups": 30,
