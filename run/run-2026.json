@@ -1,5 +1,16 @@
 [
   {
+    "date": "2026-10-20",
+    "distance_km": 2,
+    "pushups": 10,
+    "situps": 10,
+    "squats": 10,
+    "note": "每日实践驾驭AI，终将到达彼岸",
+    "emoji": "⛵",
+    "mood_name": "抵达彼岸",
+    "mood": 9
+  },
+  {
     "date": "2026-10-19",
     "distance_km": 1,
     "pushups": 10,
