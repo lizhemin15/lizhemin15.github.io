@@ -1014,6 +1014,10 @@
             background: #f5f5f5;
             color: #555;
         }
+        .run-tag-activity {
+            background: #f5f5f5;
+            color: #555;
+        }
         .run-timeline-note {
             font-size: 0.88rem;
             line-height: 1.8;
@@ -10728,9 +10732,10 @@
                     if(Number(r.pushups||0) > 0) tags += `<span class="run-tag run-tag-pushup">${r.pushups}俯卧撑</span>`;
                     if(Number(r.situps||0) > 0) tags += `<span class="run-tag run-tag-situp">${r.situps}仰卧起坐</span>`;
                     if(Number(r.squats||0) > 0) tags += `<span class="run-tag run-tag-squat">${r.squats}深蹲</span>`;
+                    if(r.activity) tags += `<span class="run-tag run-tag-activity">${r.activity}</span>`;
                     
                     // 判断是否为"休息日"（只有感想没有运动数据）
-                    const isRest = Number(r.distance_km) === 0 && Number(r.pushups||0) === 0 && Number(r.situps||0) === 0 && Number(r.squats||0) === 0;
+                    const isRest = Number(r.distance_km) === 0 && Number(r.pushups||0) === 0 && Number(r.situps||0) === 0 && Number(r.squats||0) === 0 && !r.activity;
                     
                     // 心情emoji和名字（从数据读取，无则fallback）
                     const moodEmoji = r.emoji || (Number(r.distance_km) > 0 ? '🏃' : '💭');
@@ -10851,6 +10856,7 @@
                 if (Number(record.pushups || 0) > 0) items.push({ label: '俯卧撑', value: `${record.pushups}`, unit: '个' });
                 if (Number(record.situps || 0) > 0) items.push({ label: '仰卧起坐', value: `${record.situps}`, unit: '个' });
                 if (Number(record.squats || 0) > 0) items.push({ label: '深蹲', value: `${record.squats}`, unit: '个' });
+                if (record.activity) items.push({ label: '训练', value: `${record.activity}`, unit: '' });
 
                 const cols = 2;
                 const gap = 12;
